@@ -1,0 +1,9 @@
+This directory contains the "Gnulib" hash table, from:
+    https://www.gnu.org/software/gnulib/MODULES.html#module=hash
+This hash table depends on a few other bits of code (bitrotate, xalloc-oversized), which are also found in this directory.
+
+Possibly useful web page discussing some old performance caveats, etc.:
+	http://old.nabble.com/linkedhash-list-vs.-hash-td18602882.html
+
+Search for "PJH" in the files in this directory to see where I made changes in order to resolve build errors.
+

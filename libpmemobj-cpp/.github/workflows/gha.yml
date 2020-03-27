@@ -1,0 +1,130 @@
+#
+# The 'XXX_DISABLE_' suffix is used twice in this file to disable two actions:
+# 1) XXX_DISABLE_${CI_FILE_PUSH_IMAGE_TO_REPO} - disables pushing the rebuilt Docker image and
+# 2) XXX_DISABLE_AUTO_DOC_UPDATE - disables making pull requests with the update of documentation.
+# Those two actions are disabled, because they conflict with the same ones run on Travis.
+# Only one CI (Travis or GitHub Actions) can run them at the time, so they can be enabled here,
+# when we decide to switch from Travis to GitHub Actions. The 'XXX_DISABLE_' suffix should be removed then.
+#
+
+name: CPP
+on: [push, pull_request]
+
+env:
+    GITHUB_REPO:    pmem/libpmemobj-cpp
+    DOCKERHUB_REPO: pmem/libpmemobj-cpp
+
+jobs:
+  linux:
+    name: Linux
+    runs-on: ubuntu-latest
+    env:
+      HOST_WORKDIR:   /home/runner/work/libpmemobj-cpp/libpmemobj-cpp
+      WORKDIR:        utils/docker
+    strategy:
+      matrix:
+        CONFIG: ["N=1 OS=ubuntu OS_VER=19.10 TYPE=debug PUSH_IMAGE=1",
+                 "N=2 OS=fedora OS_VER=31    TYPE=debug PUSH_IMAGE=1",
+                 "N=3 OS=ubuntu OS_VER=19.10 TYPE=release",
+                 "N=4 OS=fedora OS_VER=31    TYPE=release XXX_DISABLE_AUTO_DOC_UPDATE=1",
+                 "N=5 OS=ubuntu OS_VER=19.10 TYPE=valgrind",
+                 "N=6 OS=ubuntu OS_VER=19.10 TYPE=memcheck_drd",
+                 "N=7 OS=ubuntu OS_VER=19.10 TYPE=package",
+                 "N=8 OS=fedora OS_VER=31    TYPE=package",
+                 "N=9 OS=ubuntu OS_VER=19.10 TYPE=coverage",
+                "N=10 OS=ubuntu OS_VER=19.10 TYPE=coverity"]
+    steps:
+       - name: Clone the git repo
+         uses: actions/checkout@v1
+
+       - name: Pull or rebuild the image
+         run: cd $WORKDIR && ${{ matrix.CONFIG }} ./pull-or-rebuild-image.sh
+
+       - name: Run the build
+         run: cd $WORKDIR && ${{ matrix.CONFIG }} ./build.sh
+
+       - name: Push the image
+         run: cd $WORKDIR && source ./set-vars.sh && ${{ matrix.CONFIG }} /bin/bash -c "if [[ -f XXX_DISABLE_${CI_FILE_PUSH_IMAGE_TO_REPO} ]]; then images/push-image.sh $OS-$OS_VER; fi"
+
+  windows:
+    name: Windows
+    runs-on: windows-latest
+    env:
+      platform: x64
+      VCPKG_DEFAULT_TRIPLET: x64-windows
+      GENERATOR: "Visual Studio 16 2019"
+      ARCH:      "x64"
+      PMDK_VERSION: "1.7"
+      CMAKE_TOOLCHAIN_FILE: "C:\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
+      CMAKE_INSTALL_PREFIX: "C:\\install\\libpmemobj-cpp"
+      WORKDIR:  "D:\\a\\libpmemobj-cpp\\libpmemobj-cpp\\"
+      MSBUILD:  "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\MSBuild\\Current\\Bin"
+    strategy:
+      matrix:
+        CONFIG: [Debug, Release]
+    steps:
+       - name: Update PATH
+         run: |
+           echo "::add-path::$Env:MSBUILD"
+
+       - name: Cache vcpkg packages
+         uses: actions/cache@v1
+         id: cache-vcpkg-packages
+         with:
+            path: C:/vcpkg/packages
+            key:  vcpkg-packages-45e5a67
+
+       - name: Cache vcpkg installed
+         uses: actions/cache@v1
+         id: cache-vcpkg-installed
+         with:
+            path: C:/vcpkg/installed
+            key:  vcpkg-installed-45e5a67
+
+       - name: Clone the git repo
+         uses: actions/checkout@v1
+
+       - name: Update vcpkg's pmdk version
+         working-directory: C:\\vcpkg
+         run: |
+            git checkout 2019.11
+            git apply -v "${env:WORKDIR}\\.github\\workflows\\update_pmdk\\portfile.cmake.patch"
+            Copy-Item -Path "${env:WORKDIR}\\.github\\workflows\\update_pmdk\\controlfile" -Destination "C:\\vcpkg\\ports\\pmdk\\CONTROL"
+
+       - name: Install PMDK
+         run: |
+            vcpkg install pmdk:x64-windows
+            vcpkg install sfml:x64-windows
+            vcpkg install tbb:x64-windows
+            vcpkg update
+            vcpkg upgrade pmdk:x64-windows --no-dry-run
+
+       - name: vcpkg integrate install
+         run: vcpkg integrate install
+
+       - name: Configure
+         run: cmake . -Bbuild
+                      -G "${env:GENERATOR}"
+                      -A "${env:ARCH}"
+                      -DCMAKE_TOOLCHAIN_FILE="${env:CMAKE_TOOLCHAIN_FILE}"
+                      -DCMAKE_INSTALL_PREFIX="${env:CMAKE_INSTALL_PREFIX}"
+                      -DLIBPMEMOBJ_VERSION="${env:PMDK_VERSION}"
+                      -DTESTS_USE_FORCED_PMEM=ON
+                      -DTESTS_TBB=ON
+
+       - name: Build
+         run: msbuild build/ALL_BUILD.vcxproj /property:Configuration=${{ matrix.CONFIG }} /verbosity:minimal /m
+
+       - name: Tests
+         working-directory: build
+         run: ctest -C ${{ matrix.CONFIG }} --output-on-failure --timeout 540
+
+       - name: Install
+         working-directory: build
+         run: msbuild INSTALL.vcxproj /verbosity:minimal /m
+
+       - name: Examples
+         working-directory: examples/map_cli
+         run: |
+            cmake . -G "${env:GENERATOR}" -A "${env:ARCH}" -DCMAKE_TOOLCHAIN_FILE="${env:CMAKE_TOOLCHAIN_FILE}" -DCMAKE_PREFIX_PATH="${env:CMAKE_INSTALL_PREFIX}"
+            msbuild ALL_BUILD.vcxproj /verbosity:minimal /m

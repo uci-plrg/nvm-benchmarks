@@ -1,0 +1,16 @@
+http://help.github.com/fork-a-repo/
+
+These instructions don't work exactly when the forked repo is a "gist". Here's my history of commands:
+  604  git clone git@gist.github.com:1453219.git vector
+  605  cd vector/
+  611  git remote add upstream git://gist.github.com/1453219.git
+  612  git fetch upstream
+  613  git branch
+  ... edit files
+  620  git add kp_macros.h 
+  621  git add test_vector.c 
+  622  git add vector.c 
+  623  git add vector.h 
+  625  git commit -m "Initial commit: revised vector interface, reimplemented delete function, added test file."
+  626  git push origin master
+

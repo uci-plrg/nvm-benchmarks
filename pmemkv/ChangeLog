@@ -1,0 +1,94 @@
+Fri Jan 31 2019 Szymon Romik <szymon.romik@intel.com>
+
+	* Version 1.1
+
+	This release introduces a defragmentation feature and cmap engine
+	optimizations.
+
+	Features:
+	- API extension for defragmentation (currently supported only by cmap engine)
+
+	Optimizations:
+	- faster restart time of cmap engine
+	- faster put method execution for cmap engine
+
+Mon Oct 28 2019 Szymon Romik <szymon.romik@intel.com>
+
+	* Version 1.0.1
+
+	This is a bugfix release for pmemkv 1.0
+
+	Major fixes:
+	- fix finding memkind package
+	- fix finding gtest in user-defined paths
+	- add SOVERSION
+	- skip valgrind and pmemcheck tests if they are not installed
+
+Fri Oct 04 2019 Szymon Romik <szymon.romik@intel.com>
+
+	* Version 1.0
+
+	This is the first release of pmemkv project which guarantees backward
+	compatibility.
+
+	Optimizations:
+	- refactored core for libpmemobj-based engines
+	- adjusted cmap engine to libpmemobj-cpp 1.8 optimizations
+
+	Changes in tests and build system:
+	- added support for generic tests parameterized i.a. by engine type
+	- added framework for pmreorder tests
+
+	Other changes:
+	- added new, more specific error statuses
+	- added C++ API for config structure
+	- added doxygen documentation for C++ API
+	- moved function to create configuration from JSON string to a new
+		optional library
+	- generic support for libpmemobj-based engines for handling persistent
+		pointers as a config parameter
+
+Fri Jun 28 2019 Szymon Romik <szymon.romik@intel.com>
+
+	* Version 0.8
+
+	This is the first official release of pmemkv project.
+
+	It unifies and extends native C and C++ API and introduces config
+	structure - flexible way for configuring engines.
+
+	Pmemkv core was redesigned - C++ API is implemented on the top of C API
+	now and exposed as a header-only library.
+
+	We have also provided extended pmemkv engines and API documentation in
+	form of man pages.
+
+	Optimizations:
+	- string_view class for optimal keys passing
+	- heterogeneous lookup in cmap engine
+
+	Features:
+	- added error messages
+	- extended error handling
+
+	Changes in tests and build system:
+	- added Travis CI
+	- cmake creation and build system refactoring
+	- added tests with pmemcheck/memcheck/helgrind/drd
+	- added clang-format
+	- added Coverity support
+	- added coverage support
+	- added CI jobs for checking compatibility with Ruby, Java, Node.js bindings
+
+	Others:
+	- removed functions to iterate over keys only
+	- removed engine_context function
+
+	We have also modified existing engines and tests to meet changes in both
+	pmemkv core and API. Poorly chosen function names were cleaned up.
+
+	The reason this release has version 0.8 is because we are still open for
+	suggestions from customers before we stabilize the APIs and commit
+	to maintaining backward compatibility. It does not mean that the library
+	is unfinished or unstable. However, more engines and extended
+	functionality are planned to be delivered in the future.

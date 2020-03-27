@@ -1,0 +1,11 @@
+delete/
+*.a
+*.o
+*.so*
+*.out
+evaluation/*.o
+*.log
+*.txt
+.*.swp
+*trace*
+pin/*

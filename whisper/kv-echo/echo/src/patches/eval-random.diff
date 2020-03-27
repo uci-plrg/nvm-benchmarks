@@ -1,0 +1,587 @@
+Index: evaluation.c
+===================================================================
+--- evaluation.c	(revision 537)
++++ evaluation.c	(working copy)
+@@ -6,7 +6,7 @@
+  * 8/28/2011
+  */
+ 
+-#define CASSANDRA_INSTALLED
++//#define CASSANDRA_INSTALLED
+ 
+ 
+ #include <stdio.h>
+@@ -97,6 +97,12 @@
+ #define eval_debug(f, a...) do { ; } while(0)
+ #endif
+ 
++typedef struct random_ints_ {
++  int *array;
++  unsigned int count;
++  unsigned int idx;
++} random_ints;
++
+ /* Structure to push arguments to the worker */
+ typedef struct benchmark_args_struct {
+ 	cpu_set_t cpu_set;
+@@ -109,6 +115,7 @@
+   bool split_keys;
+   int my_id;
+   bool do_measure;
++  random_ints *ints;
+ } benchmark_thread_args;
+ 
+ typedef struct kp_timers_struct {
+@@ -152,9 +159,7 @@
+ void **second_values;                // Space for malloc copies to go (vals)
+ void **second_keys;                  // Space for malloc copies to go (keys)
+ 
+-long int *random_int_array = NULL;
+ unsigned int random_int_count = 0;
+-unsigned int random_int_idx = 0;
+ 
+ /* Timing Functions */
+ void start_timing(kp_timers *timers);
+@@ -174,21 +179,23 @@
+ 
+ /* Randomizing functions */
+ void reset_counts(void);
+-int biased_update_coin(void);
+-int biased_put_get_coin(void);
+-int pick_random_key(int input_num_keys);
++int biased_update_coin(random_ints *ints);
++int biased_put_get_coin(random_ints *ints);
++int pick_random_key(int input_num_keys, random_ints *ints);
+ int create_random_key(int size, char *key);
+ int create_random_value(int size, void *value);
+-int setup_random_ints(int num_iterations, int num_threads);
+-int get_next_random_int(void);
+-void cleanup_random_ints(void);
++int random_ints_create(random_ints **ints, unsigned int count);
++int random_ints_next(random_ints *ints);
++void random_ints_destroy(random_ints *ints);
+ 
+ /* Workload, microbenchmark, and request generation functions */
+-int random_on_single_key(void *store, void *trans, int i, char* key);
++int random_on_single_key(void *store, void *trans, int i, char* key,
++    random_ints *ints);
+ int random_on_partitioned_keys(void *store, void *trans, int i, 
+-                               int offset, int *partition_count);
+-int create_random_request(void *store, void *trans, int i);
+-int workload_evaluation(int num_iterations, void *store);
++                               int offset, int *partition_count,
++                               random_ints *ints);
++int create_random_request(void *store, void *trans, int i, random_ints *ints);
++int workload_evaluation(int num_iterations, void *store, random_ints *ints);
+ int latency_evaluation(int num_iterations, void* store);
+ int split_latency_evaluation(int num_iterations, void* store);
+ int memcpy_malloc_evaluation(int num_iterations, bool free_me);
+@@ -861,8 +868,12 @@
+ 
+ 
+ /* Uses a biased flip to determine if it's a put-new or put-old */
+-int biased_update_coin(void){
+-  int r = get_next_random_int();
++int biased_update_coin(random_ints *ints){
++  int r;
++  if (!ints)
++    kp_die("ints is NULL!\n");
++  r = random_ints_next(ints);
++
+   float rd = (float)r/(float)RAND_MAX;
+   if(rd > update_probability)
+       return 0; // put
+@@ -871,8 +882,12 @@
+ }
+ 
+ /* Uses a biased flip to determine if it's a put or a get */
+-int biased_put_get_coin(void){
+-  int r = get_next_random_int();
++int biased_put_get_coin(random_ints *ints){
++  int r;
++  if (!ints)
++    kp_die("ints is NULL!\n");
++  r = random_ints_next(ints);
++
+   float rd = (float)r/(float)RAND_MAX;
+   if(rd > put_probability)
+       return 1; // gets
+@@ -881,8 +896,12 @@
+ }
+ 
+ /* Pick any random key from those we've added (for gets/deletes/updates) */
+-int pick_random_key(int input_num_keys){
+-  int r = get_next_random_int();
++int pick_random_key(int input_num_keys, random_ints *ints){
++  int r;
++  if (!ints)
++    kp_die("ints is NULL!\n");
++  r = random_ints_next(ints);
++
+   float rd = (float)r/(float)RAND_MAX ;
+   r = rd*(input_num_keys-1);
+   if(K_DEBUG)
+@@ -922,94 +941,79 @@
+   
+ }
+ 
+-/* Pre-generates all of the random integers that may be needed during
+- * one run of the evaluation code. This function calls srandom(time())
+- * to seed the pseudo-random number generator.
+- * Returns: 0 on success, -1 on error.
+- */
+-int setup_random_ints(int num_iterations, int num_threads)
++/* Allocates a struct for storing thread-local random integers.
++ * srandom() must have been called before calling this function!!!
++ *
++ * Returns: 0 on success, -1 on error. On success, *ints is set
++ * to point to the newly allocated random_ints struct. */
++int random_ints_create(random_ints **ints, unsigned int count)
+ {
+   unsigned int i;
+ 
+-  /* Calculate the number of random integers that might be needed:
+-   * all of the randomness that is currently needed during the actual
+-   * evaluation run (i.e. ignoring the creation of random keys and values)
+-   * stems from create_random_request(), which could need up to 3 rand nums
+-   *
+-   * calls from workload   = (#iters) * (2 calls in)
+-   * calls from latency    = (0     ) * (2 calls in)
+-   * calls from local_size = (#iters) * (1 call in)
+-   * calls from back/thread= (#iters) * (# threads) * (MT_EXTEND)
+-   * total = 3* (# iters)*(3+MT_EXTEND*#threads)
+-   */
+-  random_int_count = num_iterations * 3 * (3 + MT_EXTEND*num_threads);
+-  kp_print("calculated random_int_count=%u\n", random_int_count);
++  if (!ints || count == 0) {
++    kp_error("invalid argument: ints=%p, count=%u\n", ints, count);
++    return -1;
++  }
+ 
+-  /* Now, allocate an array to hold this many integers, and pick them all
+-   * by calling random()!
+-   */
+-  if (random_int_array != NULL) {
+-    kp_error("random_int_array is not NULL; can only call this function"
+-        "once!\n");
++  /* Need to allocate the struct itself, then allocate the array: */
++  *ints = malloc(sizeof(random_ints));
++  if (! *ints) {
++    kp_error("malloc(*ints) failed\n");
+     return -1;
+   }
+-  random_int_array = malloc(sizeof(long int) * random_int_count);
+-  if (random_int_array == NULL) {
+-    kp_error("random_int_array allocation failed\n");
++  (*ints)->array = malloc(sizeof(int) * count);
++  if (! (*ints)->array) {
++    kp_error("malloc((*ints)->array) failed\n");
++    free(*ints);
+     return -1;
+   }
+ 
+   /* Use random() instead of rand() - both are pseudo-random, but random()
+-   * is alleged to have better quality.
+-   */
+-  srandom(time(NULL));
+-  for (i = 0; i < random_int_count; i++) {
+-    random_int_array[i] = random();
++   * is alleged to have better quality. */
++  for (i = 0; i < count; i++) {
++    ((*ints)->array)[i] = (int)random();
+   }
++  (*ints)->count = count;
++  (*ints)->idx = 0;
+ 
+-  random_int_idx = 0;
+-  kp_debug("allocated %u random integers, initialized random_int_idx "
+-      "to %u\n", random_int_count, random_int_idx);
+   return 0;
+ }
+ 
+-/* Returns the next random integer from the array of pre-allocated random
+- * ints. If the program requests more random integers than were initially
+- * created, this function will wrap-around and return the same integers
+- * from the front of the array.
+- * This function does not perform any error/validity checking, so it will not
+- * warn the caller about array wrap-around, and it will segfault if
+- * setup_random_ints() was not called first.
+- * Returns: a random integer.
+- */
+-int get_next_random_int(void)
++/* Don't pass NULL to this function, or you will pay dearly!! */
++int random_ints_next(random_ints *ints)
+ {
+-  /* Cast long int to int: they're usually the same thing (4B) anyway. */
+-  int random_int = (int)(random_int_array[random_int_idx % random_int_count]);
+-  random_int_idx++;
+-  return random_int;
++  int i = ints->array[ints->idx];
++  ints->idx += 1;
++  if (ints->idx == ints->count) {
++    kp_warn("cycling around random_ints array!\n");
++    ints->idx = 0;
++  }
++  
++  //kp_print("returning random int=%d; count=%u, idx=%u\n",
++  //   i, ints->count, ints->idx);
++  return i;
+ }
+ 
+-/* Frees the array of random integers created by setup_random_ints(). */
+-void cleanup_random_ints(void)
++/* Frees a random_ints struct. */
++void random_ints_destroy(random_ints *ints)
+ {
+-  if (random_int_array) {
+-    free(random_int_array);
+-    random_int_array = NULL;
+-    random_int_count = 0;
+-  } else {
+-    kp_error("random_int_array is already NULL!\n");
++  if (ints) {
++    if (ints->array) {
++      free(ints->array);
++    }
++    free(ints);
+   }
+ }
+ 
+-int random_on_single_key(void *store, void *trans, int i, char* key){
++int random_on_single_key(void *store, void *trans, int i, char* key,
++    random_ints *ints){
+   int key_num = -1;
+   int retval, rc = 0;
+   void *value = NULL;
+   size_t size;
+   
+   /* Pick put or get */
+-  rc = biased_put_get_coin();
++  rc = biased_put_get_coin(ints);
+   if(rc  == 0){    
+     if(K_DEBUG){
+       printf("DEBUG: Request is a put...\n");
+@@ -1069,7 +1073,8 @@
+  * random request was a get.
+  */
+ int random_on_partitioned_keys(void *store, void *trans, int i, 
+-                               int offset, int *partition_count){
++                               int offset, int *partition_count,
++                               random_ints *ints){
+   int key_num = -1;
+   int retval, rc = 0;
+   void *value = NULL;
+@@ -1077,13 +1082,13 @@
+   char *key = NULL;
+   
+   /* Pick put or get */
+-  rc = biased_put_get_coin();
++  rc = biased_put_get_coin(ints);
+   if((*partition_count < max_kv_size) && 
+      ((*partition_count == 0) || (rc == 0))){
+     if(K_DEBUG)
+       printf("DEBUG: Request is a put...\n");
+ 
+-    rc = biased_update_coin();
++    rc = biased_update_coin(ints);
+   
+     /* pick update or append */
+     if((*partition_count == 0) | (rc == 0)){
+@@ -1126,7 +1131,7 @@
+     else{
+       /* Randomly choose a key from the range of keys that we've already
+        * put to: */
+-      key_num = pick_random_key(*partition_count) + offset;
++      key_num = pick_random_key(*partition_count, ints) + offset;
+       if(K_DEBUG){
+         printf("PICKING TO DO A NORMAL UPDATE %d\n", key_num);
+         printf("DEBUG: \tof an old key...\n");
+@@ -1162,7 +1167,7 @@
+ 
+     /* Randomly choose a key from the range of keys that we've already
+      * put to: */
+-    key_num = pick_random_key(*partition_count) + offset;
++    key_num = pick_random_key(*partition_count, ints) + offset;
+     if(K_DEBUG)
+       printf("PICKING TO DO A NORMAL GET %d\n", key_num);
+ 
+@@ -1196,7 +1201,7 @@
+   return retval;
+ }
+ 
+-int create_random_request(void *store, void *trans, int i){
++int create_random_request(void *store, void *trans, int i, random_ints *ints){
+   int key_num = -1;
+   int retval, rc = 0;
+   void *value = NULL;
+@@ -1204,12 +1209,12 @@
+   char *key = NULL;
+   
+   /* Pick put or get */
+-  rc = biased_put_get_coin();
++  rc = biased_put_get_coin(ints);
+   if((num_keys < max_kv_size) && ((num_keys == 0) || (rc == 0))){
+     if(K_DEBUG)
+       printf("DEBUG: Request is a put...\n");
+ 
+-    rc = biased_update_coin();
++    rc = biased_update_coin(ints);
+   
+     /* pick update or append */
+     if((num_keys == 0) | (rc == 0)){
+@@ -1254,7 +1259,7 @@
+     else{
+       /* Randomly choose a key from the range of keys that we've already
+        * put to: */
+-      key_num = pick_random_key(num_keys);
++      key_num = pick_random_key(num_keys, ints);
+       if(K_DEBUG){
+         printf("PICKING TO DO A NORMAL UPDATE %d\n", key_num);
+         printf("DEBUG: \tof an old key...\n");
+@@ -1292,7 +1297,7 @@
+ 
+     /* Randomly choose a key from the range of keys that we've already
+      * put to: */
+-    key_num = pick_random_key(num_keys);
++    key_num = pick_random_key(num_keys, ints);
+     if(K_DEBUG)
+       printf("PICKING TO DO A NORMAL GET %d\n", key_num);
+     eval_debug("WORKER: picked random key=%d (of %d so far) for get; "
+@@ -1334,7 +1339,7 @@
+  * Only collects info of successful calls. 0 success, -1 failure
+  * TODO: workload has weird spikes. check out return values, maybe ?
+  */
+-int workload_evaluation(int num_iterations, void *store){
++int workload_evaluation(int num_iterations, void *store, random_ints *ints){
+   int i, rc = 0;
+   kp_timers timers;
+   int error_count = 0;
+@@ -1362,7 +1367,7 @@
+ 
+   trans = generic_trans_start(store);
+   for (i=0; i < num_iterations; i++){
+-    rc = create_random_request(store, trans,  i);
++    rc = create_random_request(store, trans,  i, ints);
+     if (rc == -1) {
+       error_count++;
+       kp_log(log_file,
+@@ -2497,6 +2502,7 @@
+   void *trans = NULL;
+   int error_count = 0;
+   int ret = 0, conflicts = 0, commits = 0;
++  random_ints *ints;
+ 
+   /* setup thread */
+   tid = pthread_self();
+@@ -2504,12 +2510,13 @@
+   master = thread_args->master;
+   worker = generic_worker_create(master);
+   num_puts = 0;
++  ints = thread_args->ints;
+ 
+   /* Do work */
+ 
+   trans = generic_trans_start(worker);
+   for (i=0; i < MT_EXTEND*iterations; i++){ //Extend long enough to get mt during lat
+-    rc = create_random_request(worker, trans, i);
++    rc = create_random_request(worker, trans, i, ints);
+     if (rc == -1) {
+       error_count++;
+       kp_log(log_file,
+@@ -2567,20 +2574,21 @@
+   benchmark_thread_args *thread_args;
+   void *master;
+   void *worker;
++  random_ints *ints;
+ 
+-
+   /* setup thread */
+   tid = pthread_self();
+   thread_args = (benchmark_thread_args *) arg;
+   master = thread_args->master;
+   worker = generic_worker_create(master);
++  ints = thread_args->ints;
+ 
+   /* Do work */
+   eval_debug("LATENCY: starting latency_evaluation()\n");
+   latency_evaluation(iterations, worker);
+   eval_debug("LATENCY: finished latency_evaluation(), starting "
+       "workload_evaluation()\n");
+-  workload_evaluation(iterations, worker);
++  workload_evaluation(iterations, worker, ints);
+   eval_debug("LATENCY: finished workload_evaluation()\n");
+ 
+ 
+@@ -2624,6 +2632,16 @@
+   /* Create the master and one local worker*/
+   void * master = generic_store_create();
+ 
++  /* Pre-allocate random numbers for each thread, _before_ starting any
++   * of them: */
++  for (i = 0; i < num_threads; i++) {
++    rc = random_ints_create(&(thread_args[i].ints), random_int_count);
++    if (rc != 0) {
++      kp_error("random_ints_create() failed\n");
++      return;
++    }
++  }
++
+   /* Create a single thread */
+   for (i=0; i < num_threads; i++){
+     /* Create attributes */
+@@ -2720,6 +2738,9 @@
+   fflush(NULL);
+ 
+   /* Cleanup */
++  for (i = 0; i < num_threads; i++) {
++    random_ints_destroy(thread_args[i].ints);
++  }
+   generic_store_destroy(master);
+ 
+   reset_counts();
+@@ -2746,6 +2767,7 @@
+   int rc, starting_ops;
+   int my_completed_ops = 0;
+   int ret = 0, conflicts = 0, commits = 0;
++  random_ints *ints;
+ 
+   /* setup thread */
+   tid = pthread_self();
+@@ -2755,6 +2777,7 @@
+   bench_cond = thread_args->bench_cond;
+   bench_mutex = thread_args->bench_mutex;
+   worker = generic_worker_create(master);
++  ints = thread_args->ints;
+ 
+   int my_num = thread_args->my_id;
+   int key_count = 0;
+@@ -2791,12 +2814,12 @@
+ 
+     /* Do work */
+     if(thread_args->slam_local)
+-      rc = random_on_single_key(worker, trans, i, temp_keys[0]);
++      rc = random_on_single_key(worker, trans, i, temp_keys[0], ints);
+     else if(thread_args->split_keys)
+       rc = random_on_partitioned_keys(worker, trans, i, 
+-                                      offset, &key_count);
++                                      offset, &key_count, ints);
+     else
+-      rc = create_random_request(worker, trans, i);
++      rc = create_random_request(worker, trans, i, ints);
+     if (rc == -1) {
+       kp_log(log_file,
+              "create_random_request() returned error, looping again\n");
+@@ -2905,7 +2928,16 @@
+     kp_die("pthread_mutex_lock() returned error %d\n", rc);
+   }
+ 
+-  /* Create a single thread */
++   /* Pre-allocate random numbers for each thread, _before_ starting any
++   * of them: */
++  for (i = 0; i < num_threads; i++) {
++    rc = random_ints_create(&(thread_args[i].ints), random_int_count);
++    if (rc != 0) {
++      kp_error("random_ints_create() failed\n");
++      return;
++    }
++  }
++ /* Create a single thread */
+   for (i=0; i < num_threads; i++){
+     /* Create attributes */
+     rc = pthread_attr_init(&attr);
+@@ -3034,6 +3066,9 @@
+   /* Cleanup */
+   generic_worker_destroy(worker);
+   generic_store_destroy(master);
++  for (i = 0; i < num_threads; i++) {
++    random_ints_destroy(thread_args[i].ints);
++  }
+ 
+   reset_counts();
+ 
+@@ -3149,15 +3184,17 @@
+   benchmark_thread_args *thread_args;
+   void *master;
+   void *worker;
++  random_ints *ints;
+ 
+   /* setup thread */
+   tid = pthread_self();
+   thread_args = (benchmark_thread_args *) arg;
+   master = thread_args->master;
++  ints = thread_args->ints;
+ 
+   /* Do work */
+   worker = generic_worker_create(master);
+-  workload_evaluation(iterations, worker);
++  workload_evaluation(iterations, worker, ints);
+   generic_worker_destroy(worker);
+   reset_counts();
+ 
+@@ -3207,6 +3244,7 @@
+   pthread_t thread;
+   benchmark_thread_args thread_args;
+   void *master;
++  random_ints *ints;
+   
+   /* Setup for everybody: don't spawn yet */
+   /* Set CPU */
+@@ -3233,6 +3271,12 @@
+   /* Create the master for latency and memcpy*/
+   master = generic_store_create();
+   thread_args.master = master;
++  rc = random_ints_create(&ints, random_int_count);
++  if (rc != 0) {
++    kp_error("random_ints_create() failed\n");
++    return;
++  }
++  thread_args.ints = ints;
+ 
+   /* Spawn the thread */
+   rc = pthread_create(&thread, &attr, &little_latency_wrapper,
+@@ -3558,6 +3602,8 @@
+   bool base = false;
+   int delay = 0;
+ 
++  srandom(time(NULL));
++
+   parse_arguments(argc, argv, &num_threads, &pause_before_start, &delay, &base);
+   kp_debug("after parse_arguments(), num_threads=%d, pause_before_start=%s, "
+       "delay=%d, do_conflict_detection=%s\n", num_threads,
+@@ -3670,7 +3716,10 @@
+       rc = create_random_value(value_size, temp_values[i]);
+     }
+   }
++  random_int_count = iterations * MT_EXTEND * 3;
+   printf("Created %u random keys and values\n", max_kv_size);
++  printf("Will create %u random integers for each child thread\n",
++      random_int_count);
+ 
+   printf("Now starting evaluation for key-value store: %s\n",
+      WHICH_KEY_VALUE_STORE == 0 ? "kp_kvstore" :
+@@ -3691,16 +3740,6 @@
+   if (!second_keys)
+     kp_die("malloc(second_keys) failed\n");
+ 
+-  /* Pre-select random numbers: do this here because random() is expensive,
+-   * and for isolation purposes we don't want to do it while we're timing
+-   * things in the evaluation.
+-   */
+-  rc = setup_random_ints(iterations, num_threads);
+-  if (rc != 0) {
+-    kp_error("setup_random_ints() returned error=%d\n", rc);
+-    return -1;
+-  }
+-
+   /*--------------------------------------------------------------*/
+   /* Run either single-threaded evaluation or multi-threaded evaluation,
+    * depending on num_threads arg:
+@@ -3750,8 +3789,6 @@
+   free(second_values);
+   free(second_keys);
+ 
+-  cleanup_random_ints();
+-
+   /* end */
+   if(rc)
+     printf("We should probably check eval return values. Oops.\n");

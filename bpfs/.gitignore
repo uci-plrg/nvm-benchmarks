@@ -1,0 +1,10 @@
+bpfs
+mkfs.bpfs
+pwrite
+*.o
+tags
+TAGS
+mnt
+bench/postmark-1_5
+bench/linux-2.6.15.tar
+bench/httpd-2.0.63.tar.gz

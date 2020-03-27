@@ -1,0 +1,64 @@
+# Autotools
+Makefile
+Makefile.in
+configure
+*.o
+*~
+config.*
+config-h.in
+libtool
+.deps
+aclocal.m4
+autom4te.cache
+autom4te.cache/*
+stamp-h1
+aux-scripts
+#*#
+#.#*
+depcomp
+install-sh
+libtool
+ltmain.sh
+missing
+stamp-h*
+
+# Build files 
+build
+build/*
+*.o
+*.sym
+*.a
+*.la
+*.out
+*.pyc
+*core
+*.db
+config
+nstore
+pmem_check
+
+# Log/Tmp files
+log*
+*.log
+*tmp
+perf.*
+GPATH
+GTAGS
+GRTAGS
+
+# Editor
+.settings/*
+
+bin/*
+zfile
+
+# Plots
+results/*.pdf
+/Debug
+misc/linux-examples/*
+
+#Misc
+.*.swp
+*.txt
+pin/
+configured

@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: BSD-3-Clause
+/* Copyright 2018, Intel Corporation */
+
+/**
+ * @file
+ * Auto-generated file containing source version
+ */
+
+#ifndef LIBPMEMOBJ_CPP_VERSION_HPP
+#define LIBPMEMOBJ_CPP_VERSION_HPP
+
+#define LIBPMEMOBJ_CPP_VERSION_MAJOR @VERSION_MAJOR@
+#define LIBPMEMOBJ_CPP_VERSION_MINOR @VERSION_MINOR@
+#define LIBPMEMOBJ_CPP_VERSION_PATCH @VERSION_PATCH@
+
+#define LIBPMEMOBJ_CPP_VERSION "@VERSION@"
+
+#endif /* LIBPMEMOBJ_CPP_VERSION_HPP */

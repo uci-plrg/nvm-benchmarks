@@ -1,0 +1,8 @@
+To build and run this code:
+
+Install thrift and its dependencies (including glib).
+Generate thrift code for cassandra: this has already been done
+(cassandra*.* in this directory).
+Set LD_RUN_PATH (see Makefile for instructions).
+Run "make"
+

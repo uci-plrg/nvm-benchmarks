@@ -1,0 +1,4 @@
+DIR=`pwd`
+export LD_RUN_PATH=${DIR}/../lib:${DIR}/leveldb/lib:${DIR}/malloc/lib:${DIR}/masstree
+export LD_LIBRARY_PATH=${DIR}/../lib:${DIR}/leveldb/lib:${DIR}/malloc/lib:${DIR}/masstree
+echo "LD_RUN_PATH set to $LD_RUN_PATH; you should now be able to use leveldb, tcmalloc, and jemalloc"

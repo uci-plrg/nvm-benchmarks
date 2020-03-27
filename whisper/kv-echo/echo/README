@@ -1,0 +1,50 @@
+Files:
+	./include                 header files
+	./include/kp_kvstore.h    versioned key-value store interface
+
+	./lib                     local libraries
+
+	./src                     source code and testing code
+	./src/Makefile            Makefile
+	./src/obj/                object files go here, keep them out of the way
+	./src/kp_kvstore.c        versioned key-value store implementation
+//	./src/dummy_code.c        test harness...
+
+Projects in Makefile:
+	...
+//	dummytest: compiles dummy_code with kpvm to produce test code
+
+
+More about the project:
+	...
+
+Bugs / todos:
+	...
+
+
+SWAPNIL:
+
+Set FLUSH_IT macro in kp_recovery.h, which determines if clflushes are used instead of nops
+
+The kp_store struct has a bool use_nvm which if true, uses extra flushing to make data durable.
+
+From evaluation/evaluation.c :
+/* These two parameters define whether or not we perform extra non-volatile
+ * memory steps for the local stores and the master store: */
+ bool use_nvm_local  = false;
+ bool use_nvm_master = true;
+
+Make clean after every change! The makefile is not written properly so might not work.
+
+TODO: Clean up all the bugs marked todo by the original authors.
+
+Command lines:
+
+#!/bin/bash
+cd src/
+make clean
+make evaluation
+export LD_LIBRARY_PATH=./malloc/lib/:../lib/:$LD_LIBRARY_PATH
+./evaluation/evaluation --kpvm-dram 2 3 128 1024 8 0.1 0.7 400 2
+# <cpus> <iters> <ksize> <vsize> <merge_every> <put_prob> <update_prob> <num_operations> <threads> 
+#PREPOP number is a macro hardcoded in evaluation.c, which determines number of prepopulated keys

@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# This file is part of BPFS. BPFS is copyright 2009-2010 The Regents of the
+# University of California. It is distributed under the terms of version 2
+# of the GNU GPL. See the file LICENSE for details.
+
+# Run bpfs inside Pin to collect stats on bpfs's writes to BPRAM
+
+DIR="`dirname "$0"`"
+
+PIN=$DIR/pin/pin
+
+PINOPTS=${PINOPTS:-}
+
+if [ ! -d $DIR/pin ]; then
+	echo "Pin not found at $DIR/pin/." 1>&2
+	echo "Pin is available from http://www.pintool.org/." 1>&2
+	echo "bpramcount was developed against Pin 27887 gcc4 ia32/intel64." 1>&2
+	exit 1
+fi
+
+if [ ! -x $PIN ]; then
+	echo "Could not find $PIN" 1>&2
+	exit 1
+fi
+
+# Assume there is just one obj-* so that we don't have to detect the
+# appropriate directory
+TOOL="`ls $DIR/obj-*/bpramcount.so`"
+
+if [ ! -f "$TOOL" ]; then
+	echo "Could not find $DIR/obj-*/bpramcount.so." 1>&2
+	echo "Did you compile bpramcount.so? 'make -f makefile-pin'." 1>&2
+	exit 1
+fi
+
+exec $PIN -t $TOOL $PINOPTS -- $DIR/../bpfs $@

@@ -1,0 +1,26 @@
+/* Exim: OS-specific C header file for OpenBSD */
+
+#define HAVE_BSD_GETLOADAVG
+#define HAVE_MMAP
+#define HAVE_SYS_MOUNT_H
+#define SIOCGIFCONF_GIVES_ADDR
+#define HAVE_ARC4RANDOM
+/* In May 2014, OpenBSD 5.5 was released which cleaned up the arc4random_* API
+   which removed the arc4random_stir() function. Set NOT_HAVE_ARC4RANDOM_STIR
+   if the version released is past that point. */
+#include <sys/param.h>
+#if OpenBSD >= 201405
+#define NOT_HAVE_ARC4RANDOM_STIR
+#endif
+
+typedef struct flock flock_t;
+
+#define os_strsignal strsignal
+#define OS_STRSIGNAL
+
+typedef struct __res_state *res_state;
+
+/* default is non-const */
+#define ICONV_ARG2_TYPE const char **
+
+/* End */

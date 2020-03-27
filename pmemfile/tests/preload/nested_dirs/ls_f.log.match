@@ -1,0 +1,4 @@
+total $(N)
+drwxr-xr-x 3 $(N) .
+drwxr-xr-x 3 $(N) ..
+drwxr-xr-x 68 $(N) g

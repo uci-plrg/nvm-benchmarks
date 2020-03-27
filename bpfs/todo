@@ -1,0 +1,106 @@
+- could make truncate(expand) write fewer bytes by adding an inode field
+	'valid', where valid <= nbytes
+- introduce offset typedefs: blockno_t, pgno_t, byteno_t, nbytes_t, ?
+	typedef uint64_t blkno_t;  // BPRAM block number
+	typedef uint64_t blkidx_t; // block index into a file
+	typedef uint64_t byteno_t; // byte number
+- valgrind: http://valgrind.org/docs/manual/manual-core-adv.html
+
+* benchmarks
+- postmark
+- untar
+- rm
+- something involving rename
+- small, large appends, overwrites
+- create large file
+- well-respected benchmark (IOzone, FileBench (FSL port?))
+
+* measurements
+- compare SCSP to SP. and minimal? and ext2,ext3,ext4,btrfs?
+- bytes written
+  - measure actual writes
+    - what code contributes how much to this measurement?
+	- must the controller write an entire cache line? if so, measure this?
+  - measure #bytes that change in file system image
+- best, worst, and "expected" results
+- number of epoch barriers?
+- correctness
+  - detect consistency
+  - detect syscall atomicity
+  - detect if file system does what it is supposed to (eg renames the file)
+
+* limits
+- SCSP write() can be atomic, but is it guaranteed? eg failed allocation part
+  way through a large write? in general, how does abort work?
+  perhaps there are two types of failures:
+  - one write makes all the preceeding writes visible
+    - easy to solve: log frees/allocs and reverse on failure
+  - more than one live write (eg cmtime with write or rename)
+    - is this ok for most apps? can we make it better? eg guarantee
+      that if data is modified, the mtime was updated? or vice-versa.
+    - can I turn these into single commits without much overhead?
+
+* long term notes
+- code seems too complicated. maybe how to commit is tied too closely to other?
+- when SCSP has to COW, would it ever be helpful to wait on committing the change for a later write that would have to re-COW a shared set of blocks?
+	- SP mode would do this
+- can SCSP work with one crawl down and then back up?
+
+* unimplemented write optimizations
+- make truncate(expand) write fewer bytes by adding an inode field 'valid'
+  where valid <= nbytes
+- could not CoW unused inodes and dirent regions
+  - do not CoW the entire dirent block(s) for rename (skip the ino field(s))
+  - do not CoW unused and to-be-overwritten dirent entries for rename
+  - do not CoW unused and to-be-overwritten inodes for rename
+- only CoW indir block portions that will not be overwritten
+- changing the height separately from the root addr is needless for append
+
+* near term notes
+- convince self that current code is correct.
+- correctness test: snapshot ram before op, during op, and after: during should "match" before or after
+	- want to snapshot during not during a machine instruction?
+	- maybe track which bytes/pages change and only compare them for speed?
+	- work with large file systems, too? (or, woozle has 8GB ram)
+	- issue: syscalls are not "atomic". inode file grows in size, freed entries are modified, timestamp updates.
+	- perhaps track in pin
+- implement readdir() that works when called multiple times and contents change
+- 64bit bpfs can create inos larger than 32b fuse can store. probably don't fix, just keep this in mind.
+- fixme: commit_abort() does not abort entire syscall in SCSP
+- do not allocate the first directory block when creating a directory?
+- consider kernel_cache and *_timeout
+- replace dcache bits for find_dirent() with persistent hashes in dirs?
+
+* current work
+- WC vs. WT for memory throughput benchmark
+- explain bytes written differences
+- move time updates to before modifications?
+- optimize cows that are made (ie cow and then overwrite some blocks)
+- add benchmarks and measurement tools
+	- measure layout choices? e.g., to not store "..", no resource bitmaps, ...
+	- postmark: run with smaller size of ram to bytes written ratio?
+	- postmark: make runs deterministic
+	- bonnie++: not deterministic, but variance seems <0.1%
+	- build_apache: which app(s) make the small overwrites? could they be improved?
+	- more macro/real-world benchmarks that involve durability
+		- how should we evaluate disk sync costs? #bytes written.
+		- mail delivery? (or, postfix suffices?)
+		- dbt2
+	- microbenchmark(s) for each syscall?
+	- add macrobenchmarks: a good/respected one
+		- truncate separate from unlink? write into a hole?
+	- expand microbenchmark repetition to ~fill ext[34] journals?
+	- use impressions?
+- sort of feel that it is too much of a toy/not under realistic workloads.
+	real workloads/hardware may make the performance benefits inconsequential
+	or negative.
+- is it ok to optimize only writes? (not reads or other aspects)
+	- optimize runtime to make testing easier? to know it won't be a bottleneck?
+		crawl_indir, crawl_tree_ref, crawl_inode
+- should I prototype ENOSPC recovery?
+- consider journaling
+- could expand atomic writes to 16B: gcc -mcx16 and CMPXCHG16B
+
+* possibly useful
+- add more code documentation? (function definitions?) and/or clean up.
+- make code fast in time, too, for ucsd?

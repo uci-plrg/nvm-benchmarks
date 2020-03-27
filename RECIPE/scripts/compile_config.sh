@@ -1,0 +1,6 @@
+alias gcc='/scratch/nvm/benchmarks/RECIPE/gcc'
+alias cc='/scratch/nvm/benchmarks/RECIPE/gcc'
+alias g++='/scratch/nvm/benchmarks/RECIPE/g++'
+alias c++='/scratch/nvm/benchmarks/RECIPE/g++'
+export CC='/scratch/nvm/benchmarks/RECIPE/gcc'
+export CXX='/scratch/nvm/benchmarks/RECIPE/g++'

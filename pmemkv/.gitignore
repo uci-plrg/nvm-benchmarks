@@ -1,0 +1,11 @@
+.*
+!.gitignore
+!.gitattributes
+!.github/
+!.travis.yml
+!.clang-format
+*.d
+/bin/
+/build/
+cmake-build-debug/
+/googletest-*.zip

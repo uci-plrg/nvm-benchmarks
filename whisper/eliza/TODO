@@ -1,0 +1,5 @@
+* Remove *.q files from /dev/shm, No one needs them
+* Eliminate all dependencies on *.csv file. Only generate per-thread logs
+* PLug in all analysis into one module and generate one stats file
+* Don't do everything again. There is no time.
+* Remove padding from Mnemosyne (look for padding[32]) and see what happens. Does the cross-dep rate go up ?

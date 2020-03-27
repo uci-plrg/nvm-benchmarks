@@ -1,0 +1,1488 @@
+Script started on Mon 09 Jan 2017 06:29:51 PM CST
+]777;notify;Command completed;exit]0;snalli@adsl-sl01:~/Desktop/redis]7;file://adsl-sl01.cs.wisc.edu/home/snalli/Desktop/redis[0;31m[snalli@adsl-sl01 redis]$ [m./copm[K[Kmpile.sh 
+cd src && make distclean
+make[1]: Entering directory '/home/snalli/Desktop/redis/src'
+rm -rf redis-server redis-sentinel redis-cli redis-benchmark redis-check-rdb redis-check-aof *.o *.gcda *.gcno *.gcov redis.info lcov-html
+(cd ../deps && make distclean)
+make[2]: Entering directory '/home/snalli/Desktop/redis/deps'
+(cd hiredis && make clean) > /dev/null || true
+(cd linenoise && make clean) > /dev/null || true
+(cd lua && make clean) > /dev/null || true
+(cd geohash-int && make clean) > /dev/null || true
+(cd jemalloc && [ -f Makefile ] && make distclean) > /dev/null || true
+(cd nvml && make clobber) > /dev/null || true
+(rm -f .make-*)
+make[2]: Leaving directory '/home/snalli/Desktop/redis/deps'
+(rm -f .make-*)
+make[1]: Leaving directory '/home/snalli/Desktop/redis/src'
+cd src && make clean
+make[1]: Entering directory '/home/snalli/Desktop/redis/src'
+rm -rf redis-server redis-sentinel redis-cli redis-benchmark redis-check-rdb redis-check-aof *.o *.gcda *.gcno *.gcov redis.info lcov-html
+make[1]: Leaving directory '/home/snalli/Desktop/redis/src'
+cd src && make noopt
+make[1]: Entering directory '/home/snalli/Desktop/redis/src'
+make OPTIMIZATION="-O0"
+make[2]: Entering directory '/home/snalli/Desktop/redis/src'
+rm -rf redis-server redis-sentinel redis-cli redis-benchmark redis-check-rdb redis-check-aof *.o *.gcda *.gcno *.gcov redis.info lcov-html
+(cd ../deps && make distclean)
+make[3]: Entering directory '/home/snalli/Desktop/redis/deps'
+(cd hiredis && make clean) > /dev/null || true
+(cd linenoise && make clean) > /dev/null || true
+(cd lua && make clean) > /dev/null || true
+(cd geohash-int && make clean) > /dev/null || true
+(cd jemalloc && [ -f Makefile ] && make distclean) > /dev/null || true
+(cd nvml && make clobber) > /dev/null || true
+(rm -f .make-*)
+make[3]: Leaving directory '/home/snalli/Desktop/redis/deps'
+(rm -f .make-*)
+echo STD=-std=gnu99 >> .make-settings
+echo WARN=-Wall -W >> .make-settings
+echo OPT=-O0 >> .make-settings
+echo MALLOC=jemalloc >> .make-settings
+echo CFLAGS= >> .make-settings
+echo LDFLAGS= >> .make-settings
+echo REDIS_CFLAGS= >> .make-settings
+echo REDIS_LDFLAGS= >> .make-settings
+echo PREV_FINAL_CFLAGS=-std=gnu99 -Wall -W -O0 -g -ggdb   -I../deps/geohash-int -I../deps/hiredis -I../deps/linenoise -I../deps/lua/src -DUSE_JEMALLOC -I../deps/jemalloc/include -I../deps/nvml/src/include -DUSE_NVML >> .make-settings
+echo PREV_FINAL_LDFLAGS=  -g -ggdb -rdynamic >> .make-settings
+(cd ../deps && make hiredis linenoise lua geohash-int jemalloc nvml)
+make[3]: Entering directory '/home/snalli/Desktop/redis/deps'
+(cd hiredis && make clean) > /dev/null || true
+(cd linenoise && make clean) > /dev/null || true
+(cd lua && make clean) > /dev/null || true
+(cd geohash-int && make clean) > /dev/null || true
+(cd jemalloc && [ -f Makefile ] && make distclean) > /dev/null || true
+(cd nvml && make clobber) > /dev/null || true
+(rm -f .make-*)
+(echo "" > .make-cflags)
+(echo "" > .make-ldflags)
+[32;1mMAKE[0m [37;1mhiredis[0m
+cd hiredis && make static
+make[4]: Entering directory '/home/snalli/Desktop/redis/deps/hiredis'
+cc -std=c99 -pedantic -c -O0 -fPIC  -Wall -W -Wstrict-prototypes -Wwrite-strings -g -ggdb  net.c
+In file included from [01m[K/usr/include/sys/types.h:25:0[m[K,
+                 from [01m[Knet.c:34[m[K:
+[01m[K/usr/include/features.h:148:3:[m[K [01;35m[Kwarning: [m[K#warning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE" [[01;35m[K-Wcpp[m[K]
+ # [01;35m[Kwarning[m[K "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE"
+   [01;35m[K^~~~~~~[m[K
+cc -std=c99 -pedantic -c -O0 -fPIC  -Wall -W -Wstrict-prototypes -Wwrite-strings -g -ggdb  hiredis.c
+In file included from [01m[K/usr/include/string.h:25:0[m[K,
+                 from [01m[Khiredis.c:33[m[K:
+[01m[K/usr/include/features.h:148:3:[m[K [01;35m[Kwarning: [m[K#warning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE" [[01;35m[K-Wcpp[m[K]
+ # [01;35m[Kwarning[m[K "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE"
+   [01;35m[K^~~~~~~[m[K
+cc -std=c99 -pedantic -c -O0 -fPIC  -Wall -W -Wstrict-prototypes -Wwrite-strings -g -ggdb  sds.c
+cc -std=c99 -pedantic -c -O0 -fPIC  -Wall -W -Wstrict-prototypes -Wwrite-strings -g -ggdb  async.c
+In file included from [01m[K/usr/include/stdlib.h:24:0[m[K,
+                 from [01m[Kasync.c:33[m[K:
+[01m[K/usr/include/features.h:148:3:[m[K [01;35m[Kwarning: [m[K#warning "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE" [[01;35m[K-Wcpp[m[K]
+ # [01;35m[Kwarning[m[K "_BSD_SOURCE and _SVID_SOURCE are deprecated, use _DEFAULT_SOURCE"
+   [01;35m[K^~~~~~~[m[K
+ar rcs libhiredis.a net.o hiredis.o sds.o async.o
+make[4]: Leaving directory '/home/snalli/Desktop/redis/deps/hiredis'
+[32;1mMAKE[0m [37;1mlinenoise[0m
+cd linenoise && make
+make[4]: Entering directory '/home/snalli/Desktop/redis/deps/linenoise'
+cc -std=gnu99 -Wall -Os -g  -c linenoise.c
+make[4]: Leaving directory '/home/snalli/Desktop/redis/deps/linenoise'
+[32;1mMAKE[0m [37;1mlua[0m
+cd lua/src && make all CFLAGS="-O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC='' " MYLDFLAGS="" AR="ar rcu"
+make[4]: Entering directory '/home/snalli/Desktop/redis/deps/lua/src'
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lapi.o lapi.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lcode.o lcode.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o ldebug.o ldebug.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o ldo.o ldo.c
+[01m[Kldo.c:[m[K In function ‘[01m[Kf_parser[m[K’:
+[01m[Kldo.c:496:7:[m[K [01;35m[Kwarning: [m[Kunused variable ‘[01m[Kc[m[K’ [[01;35m[K-Wunused-variable[m[K]
+   int [01;35m[Kc[m[K = luaZ_lookahead(p->z);
+       [01;35m[K^[m[K
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o ldump.o ldump.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lfunc.o lfunc.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lgc.o lgc.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o llex.o llex.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lmem.o lmem.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lobject.o lobject.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lopcodes.o lopcodes.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lparser.o lparser.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lstate.o lstate.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lstring.o lstring.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o ltable.o ltable.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o ltm.o ltm.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lundump.o lundump.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lvm.o lvm.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lzio.o lzio.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o strbuf.o strbuf.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o fpconv.o fpconv.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lauxlib.o lauxlib.c
+[01m[Klauxlib.c:[m[K In function ‘[01m[KluaL_loadfile[m[K’:
+[01m[Klauxlib.c:577:4:[m[K [01;35m[Kwarning: [m[Kthis ‘[01m[Kwhile[m[K’ clause does not guard... [[01;35m[K-Wmisleading-indentation[m[K]
+    [01;35m[Kwhile[m[K ((c = getc(lf.f)) != EOF && c != LUA_SIGNATURE[0]) ;
+    [01;35m[K^~~~~[m[K
+[01m[Klauxlib.c:578:5:[m[K [01;36m[Knote: [m[K...this statement, but the latter is misleadingly indented as if it is guarded by the ‘[01m[Kwhile[m[K’
+     [01;36m[Klf[m[K.extraline = 0;
+     [01;36m[K^~[m[K
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lbaselib.o lbaselib.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o ldblib.o ldblib.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o liolib.o liolib.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lmathlib.o lmathlib.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o loslib.o loslib.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o ltablib.o ltablib.c
+[01m[Kltablib.c:[m[K In function ‘[01m[Kaddfield[m[K’:
+[01m[Kltablib.c:137:3:[m[K [01;35m[Kwarning: [m[Kthis ‘[01m[Kif[m[K’ clause does not guard... [[01;35m[K-Wmisleading-indentation[m[K]
+   [01;35m[Kif[m[K (!lua_isstring(L, -1))
+   [01;35m[K^~[m[K
+[01m[Kltablib.c:140:5:[m[K [01;36m[Knote: [m[K...this statement, but the latter is misleadingly indented as if it is guarded by the ‘[01m[Kif[m[K’
+     [01;36m[KluaL_addvalue[m[K(b);
+     [01;36m[K^~~~~~~~~~~~~[m[K
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lstrlib.o lstrlib.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o loadlib.o loadlib.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o linit.o linit.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lua_cjson.o lua_cjson.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lua_struct.o lua_struct.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lua_cmsgpack.o lua_cmsgpack.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lua_bit.o lua_bit.c
+ar rcu liblua.a lapi.o lcode.o ldebug.o ldo.o ldump.o lfunc.o lgc.o llex.o lmem.o lobject.o lopcodes.o lparser.o lstate.o lstring.o ltable.o ltm.o lundump.o lvm.o lzio.o strbuf.o fpconv.o lauxlib.o lbaselib.o ldblib.o liolib.o lmathlib.o loslib.o ltablib.o lstrlib.o loadlib.o linit.o lua_cjson.o lua_struct.o lua_cmsgpack.o lua_bit.o	# DLL needs all object files
+ranlib liblua.a
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o lua.o lua.c
+cc -o lua  lua.o liblua.a -lm 
+liblua.a(loslib.o): In function `os_tmpname':
+loslib.c:(.text+0x27c): warning: the use of `tmpnam' is dangerous, better use `mkstemp'
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o luac.o luac.c
+cc -O2 -Wall -DLUA_ANSI -DENABLE_CJSON_GLOBAL -DREDIS_STATIC=''    -c -o print.o print.c
+cc -o luac  luac.o print.o liblua.a -lm 
+make[4]: Leaving directory '/home/snalli/Desktop/redis/deps/lua/src'
+[32;1mMAKE[0m [37;1mgeohash-int[0m
+cd geohash-int && make
+make[4]: Entering directory '/home/snalli/Desktop/redis/deps/geohash-int'
+cc -std=gnu99 -Wall -O2 -g  -c geohash.c
+cc -std=gnu99 -Wall -O2 -g  -c geohash_helper.c
+make[4]: Leaving directory '/home/snalli/Desktop/redis/deps/geohash-int'
+[32;1mMAKE[0m [37;1mjemalloc[0m
+cd jemalloc && ./configure --with-jemalloc-prefix=je_ --enable-cc-silence CFLAGS="-std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops " LDFLAGS=""
+checking for xsltproc... /usr/bin/xsltproc
+checking for gcc... gcc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... none needed
+checking whether compiler supports -Wno-error... yes
+checking how to run the C preprocessor... gcc -E
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking whether byte ordering is bigendian... no
+checking size of void *... 8
+checking size of int... 4
+checking size of long... 8
+checking size of intmax_t... 8
+checking build system type... x86_64-unknown-linux-gnu
+checking host system type... x86_64-unknown-linux-gnu
+checking whether pause instruction is compilable... yes
+checking for ar... ar
+checking malloc.h usability... yes
+checking malloc.h presence... yes
+checking for malloc.h... yes
+checking whether malloc_usable_size definition can use const argument... no
+checking whether __attribute__ syntax is compilable... yes
+checking whether compiler supports -fvisibility=hidden... yes
+checking whether compiler supports -Werror... yes
+checking whether tls_model attribute is compilable... yes
+checking whether compiler supports -Werror... yes
+checking whether alloc_size attribute is compilable... yes
+checking whether compiler supports -Werror... yes
+checking whether format(gnu_printf, ...) attribute is compilable... yes
+checking whether compiler supports -Werror... yes
+checking whether format(printf, ...) attribute is compilable... yes
+checking for a BSD-compatible install... /usr/bin/install -c
+checking for ranlib... ranlib
+checking for ld... /usr/bin/ld
+checking for autoconf... /usr/bin/autoconf
+checking for memalign... yes
+checking for valloc... yes
+checking configured backtracing method... N/A
+checking for sbrk... yes
+checking whether utrace(2) is compilable... no
+checking whether valgrind is compilable... no
+checking whether a program using __builtin_ffsl is compilable... yes
+checking LG_PAGE... 12
+checking pthread.h usability... yes
+checking pthread.h presence... yes
+checking for pthread.h... yes
+checking for pthread_create in -lpthread... yes
+checking for library containing clock_gettime... none required
+checking for secure_getenv... yes
+checking for issetugid... no
+checking for _malloc_thread_cleanup... no
+checking for _pthread_mutex_init_calloc_cb... no
+checking for TLS... yes
+checking whether C11 atomics is compilable... no
+checking whether atomic(9) is compilable... no
+checking whether Darwin OSAtomic*() is compilable... no
+checking whether madvise(2) is compilable... yes
+checking whether to force 32-bit __sync_{add,sub}_and_fetch()... no
+checking whether to force 64-bit __sync_{add,sub}_and_fetch()... no
+checking for __builtin_clz... yes
+checking whether Darwin OSSpin*() is compilable... no
+checking whether glibc malloc hook is compilable... yes
+checking whether glibc memalign hook is compilable... yes
+checking whether pthreads adaptive mutexes is compilable... yes
+checking for stdbool.h that conforms to C99... yes
+checking for _Bool... yes
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating jemalloc.pc
+config.status: creating doc/html.xsl
+config.status: creating doc/manpages.xsl
+config.status: creating doc/jemalloc.xml
+config.status: creating include/jemalloc/jemalloc_macros.h
+config.status: creating include/jemalloc/jemalloc_protos.h
+config.status: creating include/jemalloc/jemalloc_typedefs.h
+config.status: creating include/jemalloc/internal/jemalloc_internal.h
+config.status: creating test/test.sh
+config.status: creating test/include/test/jemalloc_test.h
+config.status: creating config.stamp
+config.status: creating bin/jemalloc-config
+config.status: creating bin/jemalloc.sh
+config.status: creating bin/jeprof
+config.status: creating include/jemalloc/jemalloc_defs.h
+config.status: creating include/jemalloc/internal/jemalloc_internal_defs.h
+config.status: creating test/include/test/jemalloc_test_defs.h
+config.status: executing include/jemalloc/internal/private_namespace.h commands
+config.status: executing include/jemalloc/internal/private_unnamespace.h commands
+config.status: executing include/jemalloc/internal/public_symbols.txt commands
+config.status: executing include/jemalloc/internal/public_namespace.h commands
+config.status: executing include/jemalloc/internal/public_unnamespace.h commands
+config.status: executing include/jemalloc/internal/size_classes.h commands
+config.status: executing include/jemalloc/jemalloc_protos_jet.h commands
+config.status: executing include/jemalloc/jemalloc_rename.h commands
+config.status: executing include/jemalloc/jemalloc_mangle.h commands
+config.status: executing include/jemalloc/jemalloc_mangle_jet.h commands
+config.status: executing include/jemalloc/jemalloc.h commands
+===============================================================================
+jemalloc version   : 4.0.3-0-ge9192eacf8935e29fc62fddc2701f7942b1cc02c
+library revision   : 2
+
+CONFIG             : --with-jemalloc-prefix=je_ --enable-cc-silence 'CFLAGS=-std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops ' LDFLAGS=
+CC                 : gcc
+CFLAGS             : -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -Wno-error -fvisibility=hidden
+CPPFLAGS           :  -D_GNU_SOURCE -D_REENTRANT
+LDFLAGS            : 
+EXTRA_LDFLAGS      : 
+LIBS               :  -lpthread
+TESTLIBS           : 
+RPATH_EXTRA        : 
+
+XSLTPROC           : /usr/bin/xsltproc
+XSLROOT            : 
+
+PREFIX             : /usr/local
+BINDIR             : /usr/local/bin
+DATADIR            : /usr/local/share
+INCLUDEDIR         : /usr/local/include
+LIBDIR             : /usr/local/lib
+MANDIR             : /usr/local/share/man
+
+srcroot            : 
+abs_srcroot        : /home/snalli/Desktop/redis/deps/jemalloc/
+objroot            : 
+abs_objroot        : /home/snalli/Desktop/redis/deps/jemalloc/
+
+JEMALLOC_PREFIX    : je_
+JEMALLOC_PRIVATE_NAMESPACE
+                   : je_
+install_suffix     : 
+autogen            : 0
+cc-silence         : 1
+debug              : 0
+code-coverage      : 0
+stats              : 1
+prof               : 0
+prof-libunwind     : 0
+prof-libgcc        : 0
+prof-gcc           : 0
+tcache             : 1
+fill               : 1
+utrace             : 0
+valgrind           : 0
+xmalloc            : 0
+munmap             : 0
+lazy_lock          : 0
+tls                : 1
+cache-oblivious    : 1
+===============================================================================
+cd jemalloc && make CFLAGS="-std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops " LDFLAGS="" lib/libjemalloc.a
+make[4]: Entering directory '/home/snalli/Desktop/redis/deps/jemalloc'
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/jemalloc.o src/jemalloc.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/arena.o src/arena.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/atomic.o src/atomic.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/base.o src/base.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/bitmap.o src/bitmap.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/chunk.o src/chunk.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/chunk_dss.o src/chunk_dss.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/chunk_mmap.o src/chunk_mmap.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/ckh.o src/ckh.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/ctl.o src/ctl.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/extent.o src/extent.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/hash.o src/hash.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/huge.o src/huge.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/mb.o src/mb.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/mutex.o src/mutex.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/pages.o src/pages.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/prof.o src/prof.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/quarantine.o src/quarantine.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/rtree.o src/rtree.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/stats.o src/stats.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/tcache.o src/tcache.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/util.o src/util.c
+gcc -std=gnu99 -Wall -pipe -g3 -O3 -funroll-loops  -c -D_GNU_SOURCE -D_REENTRANT -Iinclude -Iinclude -o src/tsd.o src/tsd.c
+ar crus lib/libjemalloc.a src/jemalloc.o src/arena.o src/atomic.o src/base.o src/bitmap.o src/chunk.o src/chunk_dss.o src/chunk_mmap.o src/ckh.o src/ctl.o src/extent.o src/hash.o src/huge.o src/mb.o src/mutex.o src/pages.o src/prof.o src/quarantine.o src/rtree.o src/stats.o src/tcache.o src/util.o src/tsd.o
+make[4]: Leaving directory '/home/snalli/Desktop/redis/deps/jemalloc'
+[32;1mMAKE[0m [37;1mnvml[0m
+cd nvml && make
+make[4]: Entering directory '/home/snalli/Desktop/redis/deps/nvml'
+make -C src all
+make[5]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src'
+make -C libpmem
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmem'
+cc -MD -c -o ../nondebug/libpmem/libpmem.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC libpmem.c
+cc -MD -c -o ../nondebug/libpmem/pmem.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC pmem.c
+cc -MD -c -o ../nondebug/libpmem/pmem_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC pmem_linux.c
+cc -MD -c -o ../nondebug/libpmem/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../nondebug/libpmem/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../nondebug/libpmem/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+cc -MD -c -o ../nondebug/libpmem/cpu.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC ../../src/../src/common/cpu.c
+ld -o ../nondebug/libpmem/libpmem_unscoped.o -r ../nondebug/libpmem/libpmem.o ../nondebug/libpmem/pmem.o ../nondebug/libpmem/pmem_linux.o ../nondebug/libpmem/util.o ../nondebug/libpmem/util_linux.o ../nondebug/libpmem/out.o ../nondebug/libpmem/cpu.o 
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libpmem.map` ../nondebug/libpmem/libpmem_unscoped.o ../nondebug/libpmem/libpmem_all.o
+ar rv ../nondebug/libpmem/../libpmem.a ../nondebug/libpmem/libpmem_all.o
+ar: creating ../nondebug/libpmem/../libpmem.a
+a - ../nondebug/libpmem/libpmem_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../nondebug/libpmem/.. -shared -Wl,--version-script=libpmem.map,-soname,libpmem.so.1 -o ../nondebug/libpmem/../libpmem.so.1.0.0 ../nondebug/libpmem/libpmem.o ../nondebug/libpmem/pmem.o ../nondebug/libpmem/pmem_linux.o ../nondebug/libpmem/util.o ../nondebug/libpmem/util_linux.o ../nondebug/libpmem/out.o ../nondebug/libpmem/cpu.o  
+ln -sf libpmem.so.1.0.0 ../nondebug/libpmem/../libpmem.so.1
+ln -sf libpmem.so.1 ../nondebug/libpmem/../libpmem.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmem'
+make -C libpmem DEBUG=1
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmem'
+cc -MD -c -o ../debug/libpmem/libpmem.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC libpmem.c
+cc -MD -c -o ../debug/libpmem/pmem.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC pmem.c
+cc -MD -c -o ../debug/libpmem/pmem_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC pmem_linux.c
+cc -MD -c -o ../debug/libpmem/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../debug/libpmem/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../debug/libpmem/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+cc -MD -c -o ../debug/libpmem/cpu.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -DNO_LIBPTHREAD -I../include -I../common/ -fPIC ../../src/../src/common/cpu.c
+ld -o ../debug/libpmem/libpmem_unscoped.o -r ../debug/libpmem/libpmem.o ../debug/libpmem/pmem.o ../debug/libpmem/pmem_linux.o ../debug/libpmem/util.o ../debug/libpmem/util_linux.o ../debug/libpmem/out.o ../debug/libpmem/cpu.o 
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libpmem.map` ../debug/libpmem/libpmem_unscoped.o ../debug/libpmem/libpmem_all.o
+ar rv ../debug/libpmem/../libpmem.a ../debug/libpmem/libpmem_all.o
+ar: creating ../debug/libpmem/../libpmem.a
+a - ../debug/libpmem/libpmem_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../debug/libpmem/.. -shared -Wl,--version-script=libpmem.map,-soname,libpmem.so.1 -o ../debug/libpmem/../libpmem.so.1.0.0 ../debug/libpmem/libpmem.o ../debug/libpmem/pmem.o ../debug/libpmem/pmem_linux.o ../debug/libpmem/util.o ../debug/libpmem/util_linux.o ../debug/libpmem/out.o ../debug/libpmem/cpu.o  
+ln -sf libpmem.so.1.0.0 ../debug/libpmem/../libpmem.so.1
+ln -sf libpmem.so.1 ../debug/libpmem/../libpmem.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmem'
+make -C jemalloc -f Makefile.nvml jemalloc
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/jemalloc'
+cd /home/snalli/Desktop/redis/deps/nvml/src/jemalloc && \
+    autoconf
+mkdir -p ../nondebug/jemalloc
+rm -f -f  ../nondebug/jemalloc/config.stamp  ../nondebug/jemalloc/test/include/test/jemalloc_test.h  ../nondebug/jemalloc/test/include/test/jemalloc_test_defs.h  ../nondebug/jemalloc/test/test.sh  ../nondebug/jemalloc/include/jemalloc/jemalloc_macros.h  ../nondebug/jemalloc/include/jemalloc/jemalloc_protos.h  ../nondebug/jemalloc/include/jemalloc/jemalloc_defs.h  ../nondebug/jemalloc/include/jemalloc/jemalloc_typedefs.h  ../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h  ../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal_defs.h  ../nondebug/jemalloc/Makefile  ../nondebug/jemalloc/doc/manpages.xsl  ../nondebug/jemalloc/doc/jemalloc.xml  ../nondebug/jemalloc/doc/html.xsl  ../nondebug/jemalloc/bin/jemalloc.sh
+cd ../nondebug/jemalloc && \
+	CFLAGS="-std=gnu99 -Wall -Werror -pthread -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error" LDFLAGS="-Wl,-z,relro -Wl,--fatal-warnings -L../nondebug/jemalloc/.." /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/configure --without-export --with-jemalloc-prefix=je_vmem_ --with-private-namespace=je_vmem_ --disable-xmalloc --disable-munmap EXTRA_CFLAGS="-DJEMALLOC_LIBVMEM"
+checking for xsltproc... /usr/bin/xsltproc
+checking for gcc... gcc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... none needed
+checking whether compiler supports -DJEMALLOC_LIBVMEM... yes
+checking how to run the C preprocessor... gcc -E
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking whether byte ordering is bigendian... no
+checking size of void *... 8
+checking size of int... 4
+checking size of long... 8
+checking size of intmax_t... 8
+checking build system type... x86_64-unknown-linux-gnu
+checking host system type... x86_64-unknown-linux-gnu
+checking whether pause instruction is compilable... yes
+checking whether SSE2 intrinsics is compilable... yes
+checking for ar... ar
+checking malloc.h usability... yes
+checking malloc.h presence... yes
+checking for malloc.h... yes
+checking whether malloc_usable_size definition can use const argument... no
+checking whether __attribute__ syntax is compilable... yes
+checking whether compiler supports -fvisibility=hidden... yes
+checking whether compiler supports -Werror... yes
+checking whether tls_model attribute is compilable... no
+checking for a BSD-compatible install... /usr/bin/install -c
+checking for ranlib... ranlib
+checking for ld... /usr/bin/ld
+checking for autoconf... /usr/bin/autoconf
+checking for memalign... yes
+checking for valloc... yes
+checking configured backtracing method... N/A
+checking for sbrk... yes
+checking whether utrace(2) is compilable... no
+checking whether valgrind is compilable... no
+checking whether a program using __builtin_ffsl is compilable... yes
+checking STATIC_PAGE_SHIFT... 12
+checking pthread.h usability... yes
+checking pthread.h presence... yes
+checking for pthread.h... yes
+checking for pthread_create in -lpthread... yes
+checking for _malloc_thread_cleanup... no
+checking for _pthread_mutex_init_calloc_cb... no
+checking for TLS... yes
+checking whether atomic(9) is compilable... no
+checking whether Darwin OSAtomic*() is compilable... no
+checking whether madvise(2) is compilable... yes
+checking whether to force 32-bit __sync_{add,sub}_and_fetch()... no
+checking whether to force 64-bit __sync_{add,sub}_and_fetch()... no
+checking for __builtin_clz... yes
+checking whether Darwin OSSpin*() is compilable... no
+checking for stdbool.h that conforms to C99... yes
+checking for _Bool... yes
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating doc/html.xsl
+config.status: creating doc/manpages.xsl
+config.status: creating doc/jemalloc.xml
+config.status: creating include/jemalloc/jemalloc_macros.h
+config.status: creating include/jemalloc/jemalloc_protos.h
+config.status: creating include/jemalloc/jemalloc_typedefs.h
+config.status: creating include/jemalloc/internal/jemalloc_internal.h
+config.status: creating test/test.sh
+config.status: creating test/include/test/jemalloc_test.h
+config.status: creating config.stamp
+config.status: creating bin/jemalloc.sh
+config.status: creating include/jemalloc/jemalloc_defs.h
+config.status: creating include/jemalloc/internal/jemalloc_internal_defs.h
+config.status: creating test/include/test/jemalloc_test_defs.h
+config.status: executing include/jemalloc/internal/private_namespace.h commands
+config.status: executing include/jemalloc/internal/private_unnamespace.h commands
+config.status: executing include/jemalloc/internal/public_symbols.txt commands
+config.status: executing include/jemalloc/internal/public_namespace.h commands
+config.status: executing include/jemalloc/internal/public_unnamespace.h commands
+config.status: executing include/jemalloc/internal/size_classes.h commands
+config.status: executing include/jemalloc/jemalloc_protos_jet.h commands
+config.status: executing include/jemalloc/jemalloc_rename.h commands
+config.status: executing include/jemalloc/jemalloc_mangle.h commands
+config.status: executing include/jemalloc/jemalloc_mangle_jet.h commands
+config.status: executing include/jemalloc/jemalloc.h commands
+===============================================================================
+jemalloc version   : 
+library revision   : 2
+
+CC                 : gcc
+CPPFLAGS           :  -D_GNU_SOURCE -D_REENTRANT
+CFLAGS             : -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden
+LDFLAGS            : -Wl,-z,relro -Wl,--fatal-warnings -L../nondebug/jemalloc/..
+EXTRA_LDFLAGS      : 
+LIBS               :  -lpthread
+RPATH_EXTRA        : 
+
+XSLTPROC           : /usr/bin/xsltproc
+XSLROOT            : 
+
+PREFIX             : /usr/local
+BINDIR             : /usr/local/bin
+INCLUDEDIR         : /usr/local/include
+LIBDIR             : /usr/local/lib
+DATADIR            : /usr/local/share
+MANDIR             : /usr/local/share/man
+
+srcroot            : /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/
+abs_srcroot        : /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/
+objroot            : 
+abs_objroot        : /home/snalli/Desktop/redis/deps/nvml/src/nondebug/jemalloc/
+
+JEMALLOC_PREFIX    : je_vmem_
+JEMALLOC_PRIVATE_NAMESPACE
+                   : je_vmem_je_
+install_suffix     : 
+autogen            : 0
+cc-silence         : 1
+debug              : 0
+code-coverage      : 0
+stats              : 1
+prof               : 0
+prof-libunwind     : 0
+prof-libgcc        : 0
+prof-gcc           : 0
+tcache             : 1
+fill               : 1
+utrace             : 0
+valgrind           : 0
+xmalloc            : 0
+munmap             : 0
+lazy_lock          : 0
+tls                : 1
+===============================================================================
+make objroot=../nondebug/jemalloc/ -f ../nondebug/jemalloc/Makefile -C /home/snalli/Desktop/redis/deps/nvml/src/jemalloc all
+make[7]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/jemalloc'
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/jemalloc.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/jemalloc.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/jemalloc.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/arena.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/arena.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/arena.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/pool.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/pool.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/pool.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/atomic.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/atomic.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/atomic.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/base.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/base.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/base.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/bitmap.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/bitmap.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/bitmap.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/chunk.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/chunk_dss.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk_dss.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk_dss.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/vector.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/vector.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/vector.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/chunk_mmap.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk_mmap.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk_mmap.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/ckh.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/ckh.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/ckh.c:38[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/ctl.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/ctl.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/ctl.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/extent.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/extent.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/extent.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/hash.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/hash.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/hash.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/huge.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/huge.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/huge.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/mb.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mb.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mb.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/mutex.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mutex.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mutex.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/prof.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/prof.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/prof.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/quarantine.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/quarantine.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/quarantine.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/rtree.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/rtree.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/rtree.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/stats.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/stats.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/stats.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/tcache.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/tcache.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/tcache.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/util.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/util.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/util.c:23[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/tsd.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/tsd.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/tsd.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -shared -Wl,-soname,libjemalloc.so.2  -o ../nondebug/jemalloc/lib/libjemalloc.so.2 ../nondebug/jemalloc/src/jemalloc.pic.o ../nondebug/jemalloc/src/arena.pic.o ../nondebug/jemalloc/src/pool.pic.o ../nondebug/jemalloc/src/atomic.pic.o ../nondebug/jemalloc/src/base.pic.o ../nondebug/jemalloc/src/bitmap.pic.o ../nondebug/jemalloc/src/chunk.pic.o ../nondebug/jemalloc/src/chunk_dss.pic.o ../nondebug/jemalloc/src/vector.pic.o ../nondebug/jemalloc/src/chunk_mmap.pic.o ../nondebug/jemalloc/src/ckh.pic.o ../nondebug/jemalloc/src/ctl.pic.o ../nondebug/jemalloc/src/extent.pic.o ../nondebug/jemalloc/src/hash.pic.o ../nondebug/jemalloc/src/huge.pic.o ../nondebug/jemalloc/src/mb.pic.o ../nondebug/jemalloc/src/mutex.pic.o ../nondebug/jemalloc/src/prof.pic.o ../nondebug/jemalloc/src/quarantine.pic.o ../nondebug/jemalloc/src/rtree.pic.o ../nondebug/jemalloc/src/stats.pic.o ../nondebug/jemalloc/src/tcache.pic.o ../nondebug/jemalloc/src/util.pic.o ../nondebug/jemalloc/src/tsd.pic.o -Wl,-z,relro -Wl,--fatal-warnings -L../nondebug/jemalloc/.. -lpthread 
+ln -sf libjemalloc.so.2 ../nondebug/jemalloc/lib/libjemalloc.so
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/jemalloc.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/jemalloc.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/jemalloc.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/arena.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/arena.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/arena.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/pool.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/pool.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/pool.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/atomic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/atomic.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/atomic.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/base.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/base.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/base.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/bitmap.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/bitmap.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/bitmap.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/chunk.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/chunk_dss.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk_dss.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk_dss.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/vector.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/vector.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/vector.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/chunk_mmap.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk_mmap.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk_mmap.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/ckh.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/ckh.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/ckh.c:38[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/ctl.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/ctl.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/ctl.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/extent.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/extent.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/extent.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/hash.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/hash.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/hash.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/huge.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/huge.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/huge.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/mb.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mb.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mb.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/mutex.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mutex.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mutex.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/prof.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/prof.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/prof.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/quarantine.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/quarantine.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/quarantine.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/rtree.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/rtree.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/rtree.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/stats.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/stats.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/stats.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/tcache.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/tcache.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/tcache.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/util.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/util.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/util.c:23[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../nondebug/jemalloc/include -o ../nondebug/jemalloc/src/tsd.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/tsd.c
+In file included from [01m[K../nondebug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/tsd.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+ar crus ../nondebug/jemalloc/lib/libjemalloc.a ../nondebug/jemalloc/src/jemalloc.o ../nondebug/jemalloc/src/arena.o ../nondebug/jemalloc/src/pool.o ../nondebug/jemalloc/src/atomic.o ../nondebug/jemalloc/src/base.o ../nondebug/jemalloc/src/bitmap.o ../nondebug/jemalloc/src/chunk.o ../nondebug/jemalloc/src/chunk_dss.o ../nondebug/jemalloc/src/vector.o ../nondebug/jemalloc/src/chunk_mmap.o ../nondebug/jemalloc/src/ckh.o ../nondebug/jemalloc/src/ctl.o ../nondebug/jemalloc/src/extent.o ../nondebug/jemalloc/src/hash.o ../nondebug/jemalloc/src/huge.o ../nondebug/jemalloc/src/mb.o ../nondebug/jemalloc/src/mutex.o ../nondebug/jemalloc/src/prof.o ../nondebug/jemalloc/src/quarantine.o ../nondebug/jemalloc/src/rtree.o ../nondebug/jemalloc/src/stats.o ../nondebug/jemalloc/src/tcache.o ../nondebug/jemalloc/src/util.o ../nondebug/jemalloc/src/tsd.o
+ar crus ../nondebug/jemalloc/lib/libjemalloc_pic.a ../nondebug/jemalloc/src/jemalloc.pic.o ../nondebug/jemalloc/src/arena.pic.o ../nondebug/jemalloc/src/pool.pic.o ../nondebug/jemalloc/src/atomic.pic.o ../nondebug/jemalloc/src/base.pic.o ../nondebug/jemalloc/src/bitmap.pic.o ../nondebug/jemalloc/src/chunk.pic.o ../nondebug/jemalloc/src/chunk_dss.pic.o ../nondebug/jemalloc/src/vector.pic.o ../nondebug/jemalloc/src/chunk_mmap.pic.o ../nondebug/jemalloc/src/ckh.pic.o ../nondebug/jemalloc/src/ctl.pic.o ../nondebug/jemalloc/src/extent.pic.o ../nondebug/jemalloc/src/hash.pic.o ../nondebug/jemalloc/src/huge.pic.o ../nondebug/jemalloc/src/mb.pic.o ../nondebug/jemalloc/src/mutex.pic.o ../nondebug/jemalloc/src/prof.pic.o ../nondebug/jemalloc/src/quarantine.pic.o ../nondebug/jemalloc/src/rtree.pic.o ../nondebug/jemalloc/src/stats.pic.o ../nondebug/jemalloc/src/tcache.pic.o ../nondebug/jemalloc/src/util.pic.o ../nondebug/jemalloc/src/tsd.pic.o
+make[7]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/jemalloc'
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/jemalloc'
+make -C jemalloc -f Makefile.nvml jemalloc DEBUG=1
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/jemalloc'
+mkdir -p ../debug/jemalloc
+rm -f -f  ../debug/jemalloc/config.stamp  ../debug/jemalloc/test/include/test/jemalloc_test.h  ../debug/jemalloc/test/include/test/jemalloc_test_defs.h  ../debug/jemalloc/test/test.sh  ../debug/jemalloc/include/jemalloc/jemalloc_macros.h  ../debug/jemalloc/include/jemalloc/jemalloc_protos.h  ../debug/jemalloc/include/jemalloc/jemalloc_defs.h  ../debug/jemalloc/include/jemalloc/jemalloc_typedefs.h  ../debug/jemalloc/include/jemalloc/internal/jemalloc_internal.h  ../debug/jemalloc/include/jemalloc/internal/jemalloc_internal_defs.h  ../debug/jemalloc/Makefile  ../debug/jemalloc/doc/manpages.xsl  ../debug/jemalloc/doc/jemalloc.xml  ../debug/jemalloc/doc/html.xsl  ../debug/jemalloc/bin/jemalloc.sh
+cd ../debug/jemalloc && \
+	CFLAGS="-std=gnu99 -Wall -Werror -pthread -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error" LDFLAGS="-Wl,-z,relro -Wl,--fatal-warnings -L../debug/jemalloc/.." /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/configure --without-export --with-jemalloc-prefix=je_vmem_ --with-private-namespace=je_vmem_ --disable-xmalloc --disable-munmap EXTRA_CFLAGS="-DJEMALLOC_LIBVMEM" --enable-debug
+checking for xsltproc... /usr/bin/xsltproc
+checking for gcc... gcc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ISO C89... none needed
+checking whether compiler supports -DJEMALLOC_LIBVMEM... yes
+checking how to run the C preprocessor... gcc -E
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking whether byte ordering is bigendian... no
+checking size of void *... 8
+checking size of int... 4
+checking size of long... 8
+checking size of intmax_t... 8
+checking build system type... x86_64-unknown-linux-gnu
+checking host system type... x86_64-unknown-linux-gnu
+checking whether pause instruction is compilable... yes
+checking whether SSE2 intrinsics is compilable... yes
+checking for ar... ar
+checking malloc.h usability... yes
+checking malloc.h presence... yes
+checking for malloc.h... yes
+checking whether malloc_usable_size definition can use const argument... no
+checking whether __attribute__ syntax is compilable... yes
+checking whether compiler supports -fvisibility=hidden... yes
+checking whether compiler supports -Werror... yes
+checking whether tls_model attribute is compilable... no
+checking for a BSD-compatible install... /usr/bin/install -c
+checking for ranlib... ranlib
+checking for ld... /usr/bin/ld
+checking for autoconf... /usr/bin/autoconf
+checking for memalign... yes
+checking for valloc... yes
+checking configured backtracing method... N/A
+checking for sbrk... yes
+checking whether utrace(2) is compilable... no
+checking whether valgrind is compilable... no
+checking whether a program using __builtin_ffsl is compilable... yes
+checking STATIC_PAGE_SHIFT... 12
+checking pthread.h usability... yes
+checking pthread.h presence... yes
+checking for pthread.h... yes
+checking for pthread_create in -lpthread... yes
+checking for _malloc_thread_cleanup... no
+checking for _pthread_mutex_init_calloc_cb... no
+checking for TLS... yes
+checking whether atomic(9) is compilable... no
+checking whether Darwin OSAtomic*() is compilable... no
+checking whether madvise(2) is compilable... yes
+checking whether to force 32-bit __sync_{add,sub}_and_fetch()... no
+checking whether to force 64-bit __sync_{add,sub}_and_fetch()... no
+checking for __builtin_clz... yes
+checking whether Darwin OSSpin*() is compilable... no
+checking for stdbool.h that conforms to C99... yes
+checking for _Bool... yes
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating doc/html.xsl
+config.status: creating doc/manpages.xsl
+config.status: creating doc/jemalloc.xml
+config.status: creating include/jemalloc/jemalloc_macros.h
+config.status: creating include/jemalloc/jemalloc_protos.h
+config.status: creating include/jemalloc/jemalloc_typedefs.h
+config.status: creating include/jemalloc/internal/jemalloc_internal.h
+config.status: creating test/test.sh
+config.status: creating test/include/test/jemalloc_test.h
+config.status: creating config.stamp
+config.status: creating bin/jemalloc.sh
+config.status: creating include/jemalloc/jemalloc_defs.h
+config.status: creating include/jemalloc/internal/jemalloc_internal_defs.h
+config.status: creating test/include/test/jemalloc_test_defs.h
+config.status: executing include/jemalloc/internal/private_namespace.h commands
+config.status: executing include/jemalloc/internal/private_unnamespace.h commands
+config.status: executing include/jemalloc/internal/public_symbols.txt commands
+config.status: executing include/jemalloc/internal/public_namespace.h commands
+config.status: executing include/jemalloc/internal/public_unnamespace.h commands
+config.status: executing include/jemalloc/internal/size_classes.h commands
+config.status: executing include/jemalloc/jemalloc_protos_jet.h commands
+config.status: executing include/jemalloc/jemalloc_rename.h commands
+config.status: executing include/jemalloc/jemalloc_mangle.h commands
+config.status: executing include/jemalloc/jemalloc_mangle_jet.h commands
+config.status: executing include/jemalloc/jemalloc.h commands
+===============================================================================
+jemalloc version   : 
+library revision   : 2
+
+CC                 : gcc
+CPPFLAGS           :  -D_GNU_SOURCE -D_REENTRANT
+CFLAGS             : -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden
+LDFLAGS            : -Wl,-z,relro -Wl,--fatal-warnings -L../debug/jemalloc/..
+EXTRA_LDFLAGS      : 
+LIBS               :  -lpthread
+RPATH_EXTRA        : 
+
+XSLTPROC           : /usr/bin/xsltproc
+XSLROOT            : 
+
+PREFIX             : /usr/local
+BINDIR             : /usr/local/bin
+INCLUDEDIR         : /usr/local/include
+LIBDIR             : /usr/local/lib
+DATADIR            : /usr/local/share
+MANDIR             : /usr/local/share/man
+
+srcroot            : /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/
+abs_srcroot        : /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/
+objroot            : 
+abs_objroot        : /home/snalli/Desktop/redis/deps/nvml/src/debug/jemalloc/
+
+JEMALLOC_PREFIX    : je_vmem_
+JEMALLOC_PRIVATE_NAMESPACE
+                   : je_vmem_je_
+install_suffix     : 
+autogen            : 0
+cc-silence         : 1
+debug              : 1
+code-coverage      : 0
+stats              : 1
+prof               : 0
+prof-libunwind     : 0
+prof-libgcc        : 0
+prof-gcc           : 0
+tcache             : 1
+fill               : 1
+utrace             : 0
+valgrind           : 0
+xmalloc            : 0
+munmap             : 0
+lazy_lock          : 0
+tls                : 1
+===============================================================================
+make objroot=../debug/jemalloc/ -f ../debug/jemalloc/Makefile -C /home/snalli/Desktop/redis/deps/nvml/src/jemalloc all
+make[7]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/jemalloc'
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/jemalloc.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/jemalloc.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/arena.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/arena.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/pool.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/pool.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/atomic.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/atomic.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/base.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/base.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/bitmap.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/bitmap.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/chunk.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/chunk_dss.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk_dss.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/vector.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/vector.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/chunk_mmap.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk_mmap.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/ckh.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/ckh.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/ctl.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/ctl.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/extent.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/extent.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/hash.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/hash.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/huge.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/huge.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/mb.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mb.c
+In file included from [01m[K../debug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mb.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/mutex.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mutex.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/prof.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/prof.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/quarantine.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/quarantine.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/rtree.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/rtree.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/stats.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/stats.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/tcache.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/tcache.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/util.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/util.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -fPIC -DPIC -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/tsd.pic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/tsd.c
+gcc -shared -Wl,-soname,libjemalloc.so.2  -o ../debug/jemalloc/lib/libjemalloc.so.2 ../debug/jemalloc/src/jemalloc.pic.o ../debug/jemalloc/src/arena.pic.o ../debug/jemalloc/src/pool.pic.o ../debug/jemalloc/src/atomic.pic.o ../debug/jemalloc/src/base.pic.o ../debug/jemalloc/src/bitmap.pic.o ../debug/jemalloc/src/chunk.pic.o ../debug/jemalloc/src/chunk_dss.pic.o ../debug/jemalloc/src/vector.pic.o ../debug/jemalloc/src/chunk_mmap.pic.o ../debug/jemalloc/src/ckh.pic.o ../debug/jemalloc/src/ctl.pic.o ../debug/jemalloc/src/extent.pic.o ../debug/jemalloc/src/hash.pic.o ../debug/jemalloc/src/huge.pic.o ../debug/jemalloc/src/mb.pic.o ../debug/jemalloc/src/mutex.pic.o ../debug/jemalloc/src/prof.pic.o ../debug/jemalloc/src/quarantine.pic.o ../debug/jemalloc/src/rtree.pic.o ../debug/jemalloc/src/stats.pic.o ../debug/jemalloc/src/tcache.pic.o ../debug/jemalloc/src/util.pic.o ../debug/jemalloc/src/tsd.pic.o -Wl,-z,relro -Wl,--fatal-warnings -L../debug/jemalloc/.. -lpthread 
+ln -sf libjemalloc.so.2 ../debug/jemalloc/lib/libjemalloc.so
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/jemalloc.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/jemalloc.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/arena.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/arena.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/pool.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/pool.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/atomic.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/atomic.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/base.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/base.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/bitmap.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/bitmap.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/chunk.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/chunk_dss.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk_dss.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/vector.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/vector.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/chunk_mmap.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/chunk_mmap.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/ckh.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/ckh.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/ctl.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/ctl.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/extent.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/extent.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/hash.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/hash.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/huge.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/huge.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/mb.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mb.c
+In file included from [01m[K../debug/jemalloc/include/jemalloc/internal/jemalloc_internal.h:445:0[m[K,
+                 from [01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mb.c:2[m[K:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:[m[K In function ‘[01m[Kje_vmem_je_mb_write[m[K’:
+[01m[K/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc/internal/mb.h:61:2:[m[K [01;35m[Kwarning: [m[Kimplicit declaration of function ‘[01m[KPM_FENCE[m[K’ [[01;35m[K-Wimplicit-function-declaration[m[K]
+  [01;35m[KPM_FENCE[m[K();
+  [01;35m[K^~~~~~~~[m[K
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/mutex.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/mutex.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/prof.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/prof.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/quarantine.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/quarantine.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/rtree.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/rtree.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/stats.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/stats.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/tcache.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/tcache.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/util.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/util.c
+gcc -std=gnu99 -Wall -Werror -pthread -DSRCVERSION="1.1-rc3-8-gd607cf9" -Og -fno-omit-frame-pointer -ggdb -DDEBUG -Wno-error -DJEMALLOC_LIBVMEM -fvisibility=hidden -c -D_GNU_SOURCE -D_REENTRANT -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include -I../debug/jemalloc/include -o ../debug/jemalloc/src/tsd.o /home/snalli/Desktop/redis/deps/nvml/src/jemalloc/src/tsd.c
+ar crus ../debug/jemalloc/lib/libjemalloc.a ../debug/jemalloc/src/jemalloc.o ../debug/jemalloc/src/arena.o ../debug/jemalloc/src/pool.o ../debug/jemalloc/src/atomic.o ../debug/jemalloc/src/base.o ../debug/jemalloc/src/bitmap.o ../debug/jemalloc/src/chunk.o ../debug/jemalloc/src/chunk_dss.o ../debug/jemalloc/src/vector.o ../debug/jemalloc/src/chunk_mmap.o ../debug/jemalloc/src/ckh.o ../debug/jemalloc/src/ctl.o ../debug/jemalloc/src/extent.o ../debug/jemalloc/src/hash.o ../debug/jemalloc/src/huge.o ../debug/jemalloc/src/mb.o ../debug/jemalloc/src/mutex.o ../debug/jemalloc/src/prof.o ../debug/jemalloc/src/quarantine.o ../debug/jemalloc/src/rtree.o ../debug/jemalloc/src/stats.o ../debug/jemalloc/src/tcache.o ../debug/jemalloc/src/util.o ../debug/jemalloc/src/tsd.o
+ar crus ../debug/jemalloc/lib/libjemalloc_pic.a ../debug/jemalloc/src/jemalloc.pic.o ../debug/jemalloc/src/arena.pic.o ../debug/jemalloc/src/pool.pic.o ../debug/jemalloc/src/atomic.pic.o ../debug/jemalloc/src/base.pic.o ../debug/jemalloc/src/bitmap.pic.o ../debug/jemalloc/src/chunk.pic.o ../debug/jemalloc/src/chunk_dss.pic.o ../debug/jemalloc/src/vector.pic.o ../debug/jemalloc/src/chunk_mmap.pic.o ../debug/jemalloc/src/ckh.pic.o ../debug/jemalloc/src/ctl.pic.o ../debug/jemalloc/src/extent.pic.o ../debug/jemalloc/src/hash.pic.o ../debug/jemalloc/src/huge.pic.o ../debug/jemalloc/src/mb.pic.o ../debug/jemalloc/src/mutex.pic.o ../debug/jemalloc/src/prof.pic.o ../debug/jemalloc/src/quarantine.pic.o ../debug/jemalloc/src/rtree.pic.o ../debug/jemalloc/src/stats.pic.o ../debug/jemalloc/src/tcache.pic.o ../debug/jemalloc/src/util.pic.o ../debug/jemalloc/src/tsd.pic.o
+make[7]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/jemalloc'
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/jemalloc'
+make -C libvmem
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libvmem'
+cc -MD -c -o ../nondebug/libvmem/libvmem.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../nondebug/jemalloc/include/jemalloc -I../include -I../common/ -fPIC libvmem.c
+cc -MD -c -o ../nondebug/libvmem/vmem.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../nondebug/jemalloc/include/jemalloc -I../include -I../common/ -fPIC vmem.c
+cc -MD -c -o ../nondebug/libvmem/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../nondebug/jemalloc/include/jemalloc -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../nondebug/libvmem/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../nondebug/jemalloc/include/jemalloc -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../nondebug/libvmem/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../nondebug/jemalloc/include/jemalloc -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+ld -o ../nondebug/libvmem/libvmem_unscoped.o -r ../nondebug/libvmem/libvmem.o ../nondebug/libvmem/vmem.o ../nondebug/libvmem/util.o ../nondebug/libvmem/util_linux.o ../nondebug/libvmem/out.o ../nondebug/jemalloc/lib/libjemalloc_pic.a
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libvmem.map` ../nondebug/libvmem/libvmem_unscoped.o ../nondebug/libvmem/libvmem_all.o
+ar rv ../nondebug/libvmem/../libvmem.a ../nondebug/libvmem/libvmem_all.o
+ar: creating ../nondebug/libvmem/../libvmem.a
+a - ../nondebug/libvmem/libvmem_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../nondebug/libvmem/.. -shared -Wl,--version-script=libvmem.map,-soname,libvmem.so.1 -o ../nondebug/libvmem/../libvmem.so.1.0.0 ../nondebug/libvmem/libvmem.o ../nondebug/libvmem/vmem.o ../nondebug/libvmem/util.o ../nondebug/libvmem/util_linux.o ../nondebug/libvmem/out.o ../nondebug/jemalloc/lib/libjemalloc_pic.a -pthread
+ln -sf libvmem.so.1.0.0 ../nondebug/libvmem/../libvmem.so.1
+ln -sf libvmem.so.1 ../nondebug/libvmem/../libvmem.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libvmem'
+make -C libvmem DEBUG=1
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libvmem'
+cc -MD -c -o ../debug/libvmem/libvmem.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../debug/jemalloc/include/jemalloc -I../include -I../common/ -fPIC libvmem.c
+cc -MD -c -o ../debug/libvmem/vmem.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../debug/jemalloc/include/jemalloc -I../include -I../common/ -fPIC vmem.c
+cc -MD -c -o ../debug/libvmem/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../debug/jemalloc/include/jemalloc -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../debug/libvmem/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../debug/jemalloc/include/jemalloc -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../debug/libvmem/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../debug/jemalloc/include/jemalloc -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+ld -o ../debug/libvmem/libvmem_unscoped.o -r ../debug/libvmem/libvmem.o ../debug/libvmem/vmem.o ../debug/libvmem/util.o ../debug/libvmem/util_linux.o ../debug/libvmem/out.o ../debug/jemalloc/lib/libjemalloc_pic.a
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libvmem.map` ../debug/libvmem/libvmem_unscoped.o ../debug/libvmem/libvmem_all.o
+ar rv ../debug/libvmem/../libvmem.a ../debug/libvmem/libvmem_all.o
+ar: creating ../debug/libvmem/../libvmem.a
+a - ../debug/libvmem/libvmem_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../debug/libvmem/.. -shared -Wl,--version-script=libvmem.map,-soname,libvmem.so.1 -o ../debug/libvmem/../libvmem.so.1.0.0 ../debug/libvmem/libvmem.o ../debug/libvmem/vmem.o ../debug/libvmem/util.o ../debug/libvmem/util_linux.o ../debug/libvmem/out.o ../debug/jemalloc/lib/libjemalloc_pic.a -pthread
+ln -sf libvmem.so.1.0.0 ../debug/libvmem/../libvmem.so.1
+ln -sf libvmem.so.1 ../debug/libvmem/../libvmem.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libvmem'
+make -C libpmemblk
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmemblk'
+cc -MD -c -o ../nondebug/libpmemblk/libpmemblk.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC libpmemblk.c
+cc -MD -c -o ../nondebug/libpmemblk/blk.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC blk.c
+cc -MD -c -o ../nondebug/libpmemblk/btt.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC btt.c
+cc -MD -c -o ../nondebug/libpmemblk/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../nondebug/libpmemblk/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../nondebug/libpmemblk/set.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/set.c
+cc -MD -c -o ../nondebug/libpmemblk/set_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/set_linux.c
+cc -MD -c -o ../nondebug/libpmemblk/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+ld -o ../nondebug/libpmemblk/libpmemblk_unscoped.o -r ../nondebug/libpmemblk/libpmemblk.o ../nondebug/libpmemblk/blk.o ../nondebug/libpmemblk/btt.o ../nondebug/libpmemblk/util.o ../nondebug/libpmemblk/util_linux.o ../nondebug/libpmemblk/set.o ../nondebug/libpmemblk/set_linux.o ../nondebug/libpmemblk/out.o 
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libpmemblk.map` ../nondebug/libpmemblk/libpmemblk_unscoped.o ../nondebug/libpmemblk/libpmemblk_all.o
+ar rv ../nondebug/libpmemblk/../libpmemblk.a ../nondebug/libpmemblk/libpmemblk_all.o
+ar: creating ../nondebug/libpmemblk/../libpmemblk.a
+a - ../nondebug/libpmemblk/libpmemblk_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../nondebug/libpmemblk/.. -shared -Wl,--version-script=libpmemblk.map,-soname,libpmemblk.so.1 -o ../nondebug/libpmemblk/../libpmemblk.so.1.0.0 ../nondebug/libpmemblk/libpmemblk.o ../nondebug/libpmemblk/blk.o ../nondebug/libpmemblk/btt.o ../nondebug/libpmemblk/util.o ../nondebug/libpmemblk/util_linux.o ../nondebug/libpmemblk/set.o ../nondebug/libpmemblk/set_linux.o ../nondebug/libpmemblk/out.o  -pthread -lpmem
+ln -sf libpmemblk.so.1.0.0 ../nondebug/libpmemblk/../libpmemblk.so.1
+ln -sf libpmemblk.so.1 ../nondebug/libpmemblk/../libpmemblk.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmemblk'
+make -C libpmemblk DEBUG=1
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmemblk'
+cc -MD -c -o ../debug/libpmemblk/libpmemblk.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC libpmemblk.c
+cc -MD -c -o ../debug/libpmemblk/blk.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC blk.c
+cc -MD -c -o ../debug/libpmemblk/btt.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC btt.c
+cc -MD -c -o ../debug/libpmemblk/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../debug/libpmemblk/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../debug/libpmemblk/set.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/set.c
+cc -MD -c -o ../debug/libpmemblk/set_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/set_linux.c
+cc -MD -c -o ../debug/libpmemblk/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+ld -o ../debug/libpmemblk/libpmemblk_unscoped.o -r ../debug/libpmemblk/libpmemblk.o ../debug/libpmemblk/blk.o ../debug/libpmemblk/btt.o ../debug/libpmemblk/util.o ../debug/libpmemblk/util_linux.o ../debug/libpmemblk/set.o ../debug/libpmemblk/set_linux.o ../debug/libpmemblk/out.o 
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libpmemblk.map` ../debug/libpmemblk/libpmemblk_unscoped.o ../debug/libpmemblk/libpmemblk_all.o
+ar rv ../debug/libpmemblk/../libpmemblk.a ../debug/libpmemblk/libpmemblk_all.o
+ar: creating ../debug/libpmemblk/../libpmemblk.a
+a - ../debug/libpmemblk/libpmemblk_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../debug/libpmemblk/.. -shared -Wl,--version-script=libpmemblk.map,-soname,libpmemblk.so.1 -o ../debug/libpmemblk/../libpmemblk.so.1.0.0 ../debug/libpmemblk/libpmemblk.o ../debug/libpmemblk/blk.o ../debug/libpmemblk/btt.o ../debug/libpmemblk/util.o ../debug/libpmemblk/util_linux.o ../debug/libpmemblk/set.o ../debug/libpmemblk/set_linux.o ../debug/libpmemblk/out.o  -pthread -lpmem
+ln -sf libpmemblk.so.1.0.0 ../debug/libpmemblk/../libpmemblk.so.1
+ln -sf libpmemblk.so.1 ../debug/libpmemblk/../libpmemblk.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmemblk'
+make -C libpmemlog
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmemlog'
+cc -MD -c -o ../nondebug/libpmemlog/libpmemlog.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC libpmemlog.c
+cc -MD -c -o ../nondebug/libpmemlog/log.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC log.c
+cc -MD -c -o ../nondebug/libpmemlog/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../nondebug/libpmemlog/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../nondebug/libpmemlog/set.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/set.c
+cc -MD -c -o ../nondebug/libpmemlog/set_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/set_linux.c
+cc -MD -c -o ../nondebug/libpmemlog/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+ld -o ../nondebug/libpmemlog/libpmemlog_unscoped.o -r ../nondebug/libpmemlog/libpmemlog.o ../nondebug/libpmemlog/log.o ../nondebug/libpmemlog/util.o ../nondebug/libpmemlog/util_linux.o ../nondebug/libpmemlog/set.o ../nondebug/libpmemlog/set_linux.o ../nondebug/libpmemlog/out.o 
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libpmemlog.map` ../nondebug/libpmemlog/libpmemlog_unscoped.o ../nondebug/libpmemlog/libpmemlog_all.o
+ar rv ../nondebug/libpmemlog/../libpmemlog.a ../nondebug/libpmemlog/libpmemlog_all.o
+ar: creating ../nondebug/libpmemlog/../libpmemlog.a
+a - ../nondebug/libpmemlog/libpmemlog_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../nondebug/libpmemlog/.. -shared -Wl,--version-script=libpmemlog.map,-soname,libpmemlog.so.1 -o ../nondebug/libpmemlog/../libpmemlog.so.1.0.0 ../nondebug/libpmemlog/libpmemlog.o ../nondebug/libpmemlog/log.o ../nondebug/libpmemlog/util.o ../nondebug/libpmemlog/util_linux.o ../nondebug/libpmemlog/set.o ../nondebug/libpmemlog/set_linux.o ../nondebug/libpmemlog/out.o  -pthread -lpmem
+ln -sf libpmemlog.so.1.0.0 ../nondebug/libpmemlog/../libpmemlog.so.1
+ln -sf libpmemlog.so.1 ../nondebug/libpmemlog/../libpmemlog.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmemlog'
+make -C libpmemlog DEBUG=1
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmemlog'
+cc -MD -c -o ../debug/libpmemlog/libpmemlog.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC libpmemlog.c
+cc -MD -c -o ../debug/libpmemlog/log.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC log.c
+cc -MD -c -o ../debug/libpmemlog/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../debug/libpmemlog/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../debug/libpmemlog/set.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/set.c
+cc -MD -c -o ../debug/libpmemlog/set_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/set_linux.c
+cc -MD -c -o ../debug/libpmemlog/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+ld -o ../debug/libpmemlog/libpmemlog_unscoped.o -r ../debug/libpmemlog/libpmemlog.o ../debug/libpmemlog/log.o ../debug/libpmemlog/util.o ../debug/libpmemlog/util_linux.o ../debug/libpmemlog/set.o ../debug/libpmemlog/set_linux.o ../debug/libpmemlog/out.o 
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libpmemlog.map` ../debug/libpmemlog/libpmemlog_unscoped.o ../debug/libpmemlog/libpmemlog_all.o
+ar rv ../debug/libpmemlog/../libpmemlog.a ../debug/libpmemlog/libpmemlog_all.o
+ar: creating ../debug/libpmemlog/../libpmemlog.a
+a - ../debug/libpmemlog/libpmemlog_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../debug/libpmemlog/.. -shared -Wl,--version-script=libpmemlog.map,-soname,libpmemlog.so.1 -o ../debug/libpmemlog/../libpmemlog.so.1.0.0 ../debug/libpmemlog/libpmemlog.o ../debug/libpmemlog/log.o ../debug/libpmemlog/util.o ../debug/libpmemlog/util_linux.o ../debug/libpmemlog/set.o ../debug/libpmemlog/set_linux.o ../debug/libpmemlog/out.o  -pthread -lpmem
+ln -sf libpmemlog.so.1.0.0 ../debug/libpmemlog/../libpmemlog.so.1
+ln -sf libpmemlog.so.1 ../debug/libpmemlog/../libpmemlog.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmemlog'
+make -C libpmemobj
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmemobj'
+cc -MD -c -o ../nondebug/libpmemobj/libpmemobj.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC libpmemobj.c
+cc -MD -c -o ../nondebug/libpmemobj/obj.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC obj.c
+cc -MD -c -o ../nondebug/libpmemobj/redo.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC redo.c
+cc -MD -c -o ../nondebug/libpmemobj/pmalloc.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC pmalloc.c
+cc -MD -c -o ../nondebug/libpmemobj/lane.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC lane.c
+cc -MD -c -o ../nondebug/libpmemobj/list.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC list.c
+cc -MD -c -o ../nondebug/libpmemobj/ctree.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ctree.c
+cc -MD -c -o ../nondebug/libpmemobj/bucket.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC bucket.c
+cc -MD -c -o ../nondebug/libpmemobj/heap.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC heap.c
+cc -MD -c -o ../nondebug/libpmemobj/cuckoo.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC cuckoo.c
+cc -MD -c -o ../nondebug/libpmemobj/sync.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC sync.c
+cc -MD -c -o ../nondebug/libpmemobj/tx.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC tx.c
+cc -MD -c -o ../nondebug/libpmemobj/memops.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC memops.c
+cc -MD -c -o ../nondebug/libpmemobj/memblock.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC memblock.c
+cc -MD -c -o ../nondebug/libpmemobj/pvector.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC pvector.c
+cc -MD -c -o ../nondebug/libpmemobj/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../nondebug/libpmemobj/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../nondebug/libpmemobj/set.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/set.c
+cc -MD -c -o ../nondebug/libpmemobj/set_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/set_linux.c
+cc -MD -c -o ../nondebug/libpmemobj/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+ld -o ../nondebug/libpmemobj/libpmemobj_unscoped.o -r ../nondebug/libpmemobj/libpmemobj.o ../nondebug/libpmemobj/obj.o ../nondebug/libpmemobj/redo.o ../nondebug/libpmemobj/pmalloc.o ../nondebug/libpmemobj/lane.o ../nondebug/libpmemobj/list.o ../nondebug/libpmemobj/ctree.o ../nondebug/libpmemobj/bucket.o ../nondebug/libpmemobj/heap.o ../nondebug/libpmemobj/cuckoo.o ../nondebug/libpmemobj/sync.o ../nondebug/libpmemobj/tx.o ../nondebug/libpmemobj/memops.o ../nondebug/libpmemobj/memblock.o ../nondebug/libpmemobj/pvector.o ../nondebug/libpmemobj/util.o ../nondebug/libpmemobj/util_linux.o ../nondebug/libpmemobj/set.o ../nondebug/libpmemobj/set_linux.o ../nondebug/libpmemobj/out.o 
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libpmemobj.map` ../nondebug/libpmemobj/libpmemobj_unscoped.o ../nondebug/libpmemobj/libpmemobj_all.o
+ar rv ../nondebug/libpmemobj/../libpmemobj.a ../nondebug/libpmemobj/libpmemobj_all.o
+ar: creating ../nondebug/libpmemobj/../libpmemobj.a
+a - ../nondebug/libpmemobj/libpmemobj_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../nondebug/libpmemobj/.. -shared -Wl,--version-script=libpmemobj.map,-soname,libpmemobj.so.1 -o ../nondebug/libpmemobj/../libpmemobj.so.1.0.0 ../nondebug/libpmemobj/libpmemobj.o ../nondebug/libpmemobj/obj.o ../nondebug/libpmemobj/redo.o ../nondebug/libpmemobj/pmalloc.o ../nondebug/libpmemobj/lane.o ../nondebug/libpmemobj/list.o ../nondebug/libpmemobj/ctree.o ../nondebug/libpmemobj/bucket.o ../nondebug/libpmemobj/heap.o ../nondebug/libpmemobj/cuckoo.o ../nondebug/libpmemobj/sync.o ../nondebug/libpmemobj/tx.o ../nondebug/libpmemobj/memops.o ../nondebug/libpmemobj/memblock.o ../nondebug/libpmemobj/pvector.o ../nondebug/libpmemobj/util.o ../nondebug/libpmemobj/util_linux.o ../nondebug/libpmemobj/set.o ../nondebug/libpmemobj/set_linux.o ../nondebug/libpmemobj/out.o  -pthread -lpmem
+ln -sf libpmemobj.so.1.0.0 ../nondebug/libpmemobj/../libpmemobj.so.1
+ln -sf libpmemobj.so.1 ../nondebug/libpmemobj/../libpmemobj.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmemobj'
+make -C libpmemobj DEBUG=1
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmemobj'
+cc -MD -c -o ../debug/libpmemobj/libpmemobj.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC libpmemobj.c
+cc -MD -c -o ../debug/libpmemobj/obj.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC obj.c
+cc -MD -c -o ../debug/libpmemobj/redo.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC redo.c
+cc -MD -c -o ../debug/libpmemobj/pmalloc.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC pmalloc.c
+cc -MD -c -o ../debug/libpmemobj/lane.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC lane.c
+cc -MD -c -o ../debug/libpmemobj/list.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC list.c
+cc -MD -c -o ../debug/libpmemobj/ctree.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ctree.c
+cc -MD -c -o ../debug/libpmemobj/bucket.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC bucket.c
+cc -MD -c -o ../debug/libpmemobj/heap.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC heap.c
+cc -MD -c -o ../debug/libpmemobj/cuckoo.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC cuckoo.c
+cc -MD -c -o ../debug/libpmemobj/sync.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC sync.c
+cc -MD -c -o ../debug/libpmemobj/tx.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC tx.c
+cc -MD -c -o ../debug/libpmemobj/memops.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC memops.c
+cc -MD -c -o ../debug/libpmemobj/memblock.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC memblock.c
+cc -MD -c -o ../debug/libpmemobj/pvector.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC pvector.c
+cc -MD -c -o ../debug/libpmemobj/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../debug/libpmemobj/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../debug/libpmemobj/set.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/set.c
+cc -MD -c -o ../debug/libpmemobj/set_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/set_linux.c
+cc -MD -c -o ../debug/libpmemobj/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+ld -o ../debug/libpmemobj/libpmemobj_unscoped.o -r ../debug/libpmemobj/libpmemobj.o ../debug/libpmemobj/obj.o ../debug/libpmemobj/redo.o ../debug/libpmemobj/pmalloc.o ../debug/libpmemobj/lane.o ../debug/libpmemobj/list.o ../debug/libpmemobj/ctree.o ../debug/libpmemobj/bucket.o ../debug/libpmemobj/heap.o ../debug/libpmemobj/cuckoo.o ../debug/libpmemobj/sync.o ../debug/libpmemobj/tx.o ../debug/libpmemobj/memops.o ../debug/libpmemobj/memblock.o ../debug/libpmemobj/pvector.o ../debug/libpmemobj/util.o ../debug/libpmemobj/util_linux.o ../debug/libpmemobj/set.o ../debug/libpmemobj/set_linux.o ../debug/libpmemobj/out.o 
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libpmemobj.map` ../debug/libpmemobj/libpmemobj_unscoped.o ../debug/libpmemobj/libpmemobj_all.o
+ar rv ../debug/libpmemobj/../libpmemobj.a ../debug/libpmemobj/libpmemobj_all.o
+ar: creating ../debug/libpmemobj/../libpmemobj.a
+a - ../debug/libpmemobj/libpmemobj_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../debug/libpmemobj/.. -shared -Wl,--version-script=libpmemobj.map,-soname,libpmemobj.so.1 -o ../debug/libpmemobj/../libpmemobj.so.1.0.0 ../debug/libpmemobj/libpmemobj.o ../debug/libpmemobj/obj.o ../debug/libpmemobj/redo.o ../debug/libpmemobj/pmalloc.o ../debug/libpmemobj/lane.o ../debug/libpmemobj/list.o ../debug/libpmemobj/ctree.o ../debug/libpmemobj/bucket.o ../debug/libpmemobj/heap.o ../debug/libpmemobj/cuckoo.o ../debug/libpmemobj/sync.o ../debug/libpmemobj/tx.o ../debug/libpmemobj/memops.o ../debug/libpmemobj/memblock.o ../debug/libpmemobj/pvector.o ../debug/libpmemobj/util.o ../debug/libpmemobj/util_linux.o ../debug/libpmemobj/set.o ../debug/libpmemobj/set_linux.o ../debug/libpmemobj/out.o  -pthread -lpmem
+ln -sf libpmemobj.so.1.0.0 ../debug/libpmemobj/../libpmemobj.so.1
+ln -sf libpmemobj.so.1 ../debug/libpmemobj/../libpmemobj.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmemobj'
+make -C libpmempool
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmempool'
+cc -MD -c -o ../nondebug/libpmempool/libpmempool.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC libpmempool.c
+cc -MD -c -o ../nondebug/libpmempool/check.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check.c
+cc -MD -c -o ../nondebug/libpmempool/check_util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_util.c
+cc -MD -c -o ../nondebug/libpmempool/check_backup.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_backup.c
+cc -MD -c -o ../nondebug/libpmempool/check_pool_hdr.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_pool_hdr.c
+cc -MD -c -o ../nondebug/libpmempool/check_log_blk.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_log_blk.c
+cc -MD -c -o ../nondebug/libpmempool/check_btt_info.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_btt_info.c
+cc -MD -c -o ../nondebug/libpmempool/check_btt_map_flog.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_btt_map_flog.c
+cc -MD -c -o ../nondebug/libpmempool/check_write.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_write.c
+cc -MD -c -o ../nondebug/libpmempool/pool.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC pool.c
+cc -MD -c -o ../nondebug/libpmempool/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+cc -MD -c -o ../nondebug/libpmempool/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../nondebug/libpmempool/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../nondebug/libpmempool/set.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC ../../src/../src/common/set.c
+cc -MD -c -o ../nondebug/libpmempool/set_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC ../../src/../src/common/set_linux.c
+objcopy --localize-hidden -Gpmemlog_convert2h -Gpmemlog_convert2le \
+../nondebug/libpmempool/../libpmemlog/libpmemlog_unscoped.o pmemlog_priv_funcs.o
+objcopy --localize-hidden -Gbtt_info_set -Gbtt_arena_datasize -Gbtt_flog_size -Gbtt_map_size -Gbtt_flog_get_valid -Gmap_entry_is_initial -Gbtt_info_convert2h -Gbtt_info_convert2le -Gbtt_flog_convert2h -Gbtt_flog_convert2le \
+../nondebug/libpmempool/../libpmemblk/libpmemblk_unscoped.o pmemblk_priv_funcs.o
+ld -o ../nondebug/libpmempool/libpmempool_unscoped.o -r ../nondebug/libpmempool/libpmempool.o ../nondebug/libpmempool/check.o ../nondebug/libpmempool/check_util.o ../nondebug/libpmempool/check_backup.o ../nondebug/libpmempool/check_pool_hdr.o ../nondebug/libpmempool/check_log_blk.o ../nondebug/libpmempool/check_btt_info.o ../nondebug/libpmempool/check_btt_map_flog.o ../nondebug/libpmempool/check_write.o ../nondebug/libpmempool/pool.o ../nondebug/libpmempool/out.o ../nondebug/libpmempool/util.o ../nondebug/libpmempool/util_linux.o ../nondebug/libpmempool/set.o ../nondebug/libpmempool/set_linux.o pmemlog_priv_funcs.o pmemblk_priv_funcs.o 
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libpmempool.map` ../nondebug/libpmempool/libpmempool_unscoped.o ../nondebug/libpmempool/libpmempool_all.o
+ar rv ../nondebug/libpmempool/../libpmempool.a ../nondebug/libpmempool/libpmempool_all.o
+ar: creating ../nondebug/libpmempool/../libpmempool.a
+a - ../nondebug/libpmempool/libpmempool_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../nondebug/libpmempool/.. -shared -Wl,--version-script=libpmempool.map,-soname,libpmempool.so.1 -o ../nondebug/libpmempool/../libpmempool.so.1.0.0 ../nondebug/libpmempool/libpmempool.o ../nondebug/libpmempool/check.o ../nondebug/libpmempool/check_util.o ../nondebug/libpmempool/check_backup.o ../nondebug/libpmempool/check_pool_hdr.o ../nondebug/libpmempool/check_log_blk.o ../nondebug/libpmempool/check_btt_info.o ../nondebug/libpmempool/check_btt_map_flog.o ../nondebug/libpmempool/check_write.o ../nondebug/libpmempool/pool.o ../nondebug/libpmempool/out.o ../nondebug/libpmempool/util.o ../nondebug/libpmempool/util_linux.o ../nondebug/libpmempool/set.o ../nondebug/libpmempool/set_linux.o pmemlog_priv_funcs.o pmemblk_priv_funcs.o  -lpmem
+ln -sf libpmempool.so.1.0.0 ../nondebug/libpmempool/../libpmempool.so.1
+ln -sf libpmempool.so.1 ../nondebug/libpmempool/../libpmempool.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmempool'
+make -C libpmempool DEBUG=1
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmempool'
+cc -MD -c -o ../debug/libpmempool/libpmempool.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC libpmempool.c
+cc -MD -c -o ../debug/libpmempool/check.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check.c
+cc -MD -c -o ../debug/libpmempool/check_util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_util.c
+cc -MD -c -o ../debug/libpmempool/check_backup.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_backup.c
+cc -MD -c -o ../debug/libpmempool/check_pool_hdr.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_pool_hdr.c
+cc -MD -c -o ../debug/libpmempool/check_log_blk.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_log_blk.c
+cc -MD -c -o ../debug/libpmempool/check_btt_info.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_btt_info.c
+cc -MD -c -o ../debug/libpmempool/check_btt_map_flog.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_btt_map_flog.c
+cc -MD -c -o ../debug/libpmempool/check_write.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC check_write.c
+cc -MD -c -o ../debug/libpmempool/pool.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC pool.c
+cc -MD -c -o ../debug/libpmempool/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+cc -MD -c -o ../debug/libpmempool/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../debug/libpmempool/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../debug/libpmempool/set.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC ../../src/../src/common/set.c
+cc -MD -c -o ../debug/libpmempool/set_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I../../src/../src/libpmemlog -I../../src/../src/libpmemblk -I../../src/../src/libpmemobj -I../include -I../common/ -fPIC ../../src/../src/common/set_linux.c
+ld -o ../debug/libpmempool/libpmempool_unscoped.o -r ../debug/libpmempool/libpmempool.o ../debug/libpmempool/check.o ../debug/libpmempool/check_util.o ../debug/libpmempool/check_backup.o ../debug/libpmempool/check_pool_hdr.o ../debug/libpmempool/check_log_blk.o ../debug/libpmempool/check_btt_info.o ../debug/libpmempool/check_btt_map_flog.o ../debug/libpmempool/check_write.o ../debug/libpmempool/pool.o ../debug/libpmempool/out.o ../debug/libpmempool/util.o ../debug/libpmempool/util_linux.o ../debug/libpmempool/set.o ../debug/libpmempool/set_linux.o pmemlog_priv_funcs.o pmemblk_priv_funcs.o 
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libpmempool.map` ../debug/libpmempool/libpmempool_unscoped.o ../debug/libpmempool/libpmempool_all.o
+ar rv ../debug/libpmempool/../libpmempool.a ../debug/libpmempool/libpmempool_all.o
+ar: creating ../debug/libpmempool/../libpmempool.a
+a - ../debug/libpmempool/libpmempool_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../debug/libpmempool/.. -shared -Wl,--version-script=libpmempool.map,-soname,libpmempool.so.1 -o ../debug/libpmempool/../libpmempool.so.1.0.0 ../debug/libpmempool/libpmempool.o ../debug/libpmempool/check.o ../debug/libpmempool/check_util.o ../debug/libpmempool/check_backup.o ../debug/libpmempool/check_pool_hdr.o ../debug/libpmempool/check_log_blk.o ../debug/libpmempool/check_btt_info.o ../debug/libpmempool/check_btt_map_flog.o ../debug/libpmempool/check_write.o ../debug/libpmempool/pool.o ../debug/libpmempool/out.o ../debug/libpmempool/util.o ../debug/libpmempool/util_linux.o ../debug/libpmempool/set.o ../debug/libpmempool/set_linux.o pmemlog_priv_funcs.o pmemblk_priv_funcs.o  -lpmem
+ln -sf libpmempool.so.1.0.0 ../debug/libpmempool/../libpmempool.so.1
+ln -sf libpmempool.so.1 ../debug/libpmempool/../libpmempool.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libpmempool'
+make -C libvmmalloc
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libvmmalloc'
+cc -MD -c -o ../nondebug/libvmmalloc/libvmmalloc.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../nondebug/jemalloc/include/jemalloc -I../libvmem -I../include -I../common/ -fPIC libvmmalloc.c
+cc -MD -c -o ../nondebug/libvmmalloc/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../nondebug/jemalloc/include/jemalloc -I../libvmem -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../nondebug/libvmmalloc/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../nondebug/jemalloc/include/jemalloc -I../libvmem -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../nondebug/libvmmalloc/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -O2 -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../nondebug/jemalloc/include/jemalloc -I../libvmem -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+ld -o ../nondebug/libvmmalloc/libvmmalloc_unscoped.o -r ../nondebug/libvmmalloc/libvmmalloc.o ../nondebug/libvmmalloc/util.o ../nondebug/libvmmalloc/util_linux.o ../nondebug/libvmmalloc/out.o ../nondebug/jemalloc/lib/libjemalloc_pic.a
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libvmmalloc.map` ../nondebug/libvmmalloc/libvmmalloc_unscoped.o ../nondebug/libvmmalloc/libvmmalloc_all.o
+ar rv ../nondebug/libvmmalloc/../libvmmalloc.a ../nondebug/libvmmalloc/libvmmalloc_all.o
+ar: creating ../nondebug/libvmmalloc/../libvmmalloc.a
+a - ../nondebug/libvmmalloc/libvmmalloc_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../nondebug/libvmmalloc/.. -shared -Wl,--version-script=libvmmalloc.map,-soname,libvmmalloc.so.1 -o ../nondebug/libvmmalloc/../libvmmalloc.so.1.0.0 ../nondebug/libvmmalloc/libvmmalloc.o ../nondebug/libvmmalloc/util.o ../nondebug/libvmmalloc/util_linux.o ../nondebug/libvmmalloc/out.o ../nondebug/jemalloc/lib/libjemalloc_pic.a -pthread
+ln -sf libvmmalloc.so.1.0.0 ../nondebug/libvmmalloc/../libvmmalloc.so.1
+ln -sf libvmmalloc.so.1 ../nondebug/libvmmalloc/../libvmmalloc.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libvmmalloc'
+make -C libvmmalloc DEBUG=1
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/libvmmalloc'
+cc -MD -c -o ../debug/libvmmalloc/libvmmalloc.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../debug/jemalloc/include/jemalloc -I../libvmem -I../include -I../common/ -fPIC libvmmalloc.c
+cc -MD -c -o ../debug/libvmmalloc/util.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../debug/jemalloc/include/jemalloc -I../libvmem -I../include -I../common/ -fPIC ../../src/../src/common/util.c
+cc -MD -c -o ../debug/libvmmalloc/util_linux.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../debug/jemalloc/include/jemalloc -I../libvmem -I../include -I../common/ -fPIC ../../src/../src/common/util_linux.c
+cc -MD -c -o ../debug/libvmmalloc/out.o -std=gnu99 -Wall -Werror -Wmissing-prototypes -Wpointer-arith -Wunused-macros -Wmissing-field-initializers -Wsign-conversion -Wsign-compare -Wconversion -pthread -fno-common -DSRCVERSION=\"1.1-rc3-8-gd607cf9\" -Og -fno-omit-frame-pointer -ggdb -DDEBUG  -Wno-error -I/home/snalli/Desktop/redis/deps/nvml/src/jemalloc/include/jemalloc -I../debug/jemalloc/include/jemalloc -I../libvmem -I../include -I../common/ -fPIC ../../src/../src/common/out.c
+ld -o ../debug/libvmmalloc/libvmmalloc_unscoped.o -r ../debug/libvmmalloc/libvmmalloc.o ../debug/libvmmalloc/util.o ../debug/libvmmalloc/util_linux.o ../debug/libvmmalloc/out.o ../debug/jemalloc/lib/libjemalloc_pic.a
+objcopy --localize-hidden `sed -n 's/^	*\([a-zA-Z0-9_]*\);$/-G \1/p' libvmmalloc.map` ../debug/libvmmalloc/libvmmalloc_unscoped.o ../debug/libvmmalloc/libvmmalloc_all.o
+ar rv ../debug/libvmmalloc/../libvmmalloc.a ../debug/libvmmalloc/libvmmalloc_all.o
+ar: creating ../debug/libvmmalloc/../libvmmalloc.a
+a - ../debug/libvmmalloc/libvmmalloc_all.o
+cc -Wl,-z,relro -Wl,--fatal-warnings -Wl,--warn-common  -L../debug/libvmmalloc/.. -shared -Wl,--version-script=libvmmalloc.map,-soname,libvmmalloc.so.1 -o ../debug/libvmmalloc/../libvmmalloc.so.1.0.0 ../debug/libvmmalloc/libvmmalloc.o ../debug/libvmmalloc/util.o ../debug/libvmmalloc/util_linux.o ../debug/libvmmalloc/out.o ../debug/jemalloc/lib/libjemalloc_pic.a -pthread
+ln -sf libvmmalloc.so.1.0.0 ../debug/libvmmalloc/../libvmmalloc.so.1
+ln -sf libvmmalloc.so.1 ../debug/libvmmalloc/../libvmmalloc.so
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/libvmmalloc'
+make -C librpmem
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/librpmem'
+NOTE: Skipping librpmem because libfabric is missing -- see src/librpmem/README for details.
+make[6]: Nothing to be done for 'all'.
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/librpmem'
+make -C librpmem DEBUG=1
+make[6]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/src/librpmem'
+NOTE: Skipping librpmem because libfabric is missing -- see src/librpmem/README for details.
+make[6]: Nothing to be done for 'all'.
+make[6]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src/librpmem'
+make[5]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/src'
+make -C doc all
+make[5]: Entering directory '/home/snalli/Desktop/redis/deps/nvml/doc'
+man ./pmempool.1 > pmempool.1.txt
+man ./pmempool-info.1 > pmempool-info.1.txt
+man ./pmempool-create.1 > pmempool-create.1.txt
+man ./pmempool-check.1 > pmempool-check.1.txt
+man ./pmempool-dump.1 > pmempool-dump.1.txt
+man ./pmempool-rm.1 > pmempool-rm.1.txt
+man ./pmempool-convert.1 > pmempool-convert.1.txt
+man ./libpmem.3 > libpmem.3.txt
+man ./libpmemblk.3 > libpmemblk.3.txt
+man ./libpmemlog.3 > libpmemlog.3.txt
+man ./libpmemobj.3 > libpmemobj.3.txt
+man ./libpmempool.3 > libpmempool.3.txt
+man ./libvmem.3 > libvmem.3.txt
+man ./libvmmalloc.3 > libvmmalloc.3.txt
+man ./rpmemd.1 > rpmemd.1.txt
+man ./librpmem.3 > librpmem.3.txt
+make[5]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml/doc'
+make[4]: Leaving directory '/home/snalli/Desktop/redis/deps/nvml'
+make[3]: Leaving directory '/home/snalli/Desktop/redis/deps'
+    [34mCC[0m [33madlist.o[0m
+    [34mCC[0m [33mquicklist.o[0m
+    [34mCC[0m [33mae.o[0m
+    [34mCC[0m [33manet.o[0m
+    [34mCC[0m [33mdict.o[0m
+    [34mCC[0m [33mserver.o[0m
+    [34mCC[0m [33msds.o[0m
+In file included from [01m[Kserver.h:33:0[m[K,
+                 from [01m[Ksds.c:42[m[K:
+[01m[Kfmacros.h:37:0:[m[K [01;35m[Kwarning: [m[K"_DEFAULT_SOURCE" redefined
+ #define _DEFAULT_SOURCE
+ 
+In file included from [01m[K/usr/include/stdio.h:27:0[m[K,
+                 from [01m[Ksds.c:33[m[K:
+[01m[K/usr/include/features.h:185:0:[m[K [01;36m[Knote: [m[Kthis is the location of the previous definition
+ # define _DEFAULT_SOURCE 1
+ 
+    [34mCC[0m [33mzmalloc.o[0m
+    [34mCC[0m [33mlzf_c.o[0m
+    [34mCC[0m [33mlzf_d.o[0m
+    [34mCC[0m [33mpqsort.o[0m
+    [34mCC[0m [33mzipmap.o[0m
+    [34mCC[0m [33msha1.o[0m
+    [34mCC[0m [33mziplist.o[0m
+    [34mCC[0m [33mrelease.o[0m
+    [34mCC[0m [33mnetworking.o[0m
+    [34mCC[0m [33mutil.o[0m
+    [34mCC[0m [33mobject.o[0m
+    [34mCC[0m [33mdb.o[0m
+    [34mCC[0m [33mreplication.o[0m
+    [34mCC[0m [33mrdb.o[0m
+    [34mCC[0m [33mt_string.o[0m
+    [34mCC[0m [33mt_list.o[0m
+    [34mCC[0m [33mt_set.o[0m
+    [34mCC[0m [33mt_zset.o[0m
+    [34mCC[0m [33mt_hash.o[0m
+    [34mCC[0m [33mconfig.o[0m
+[01m[Kconfig.c:[m[K In function ‘[01m[KloadServerConfigFromString[m[K’:
+[01m[Kconfig.c:390:22:[m[K [01;35m[Kwarning: [m[Kcomparison between signed and unsigned integer expressions [[01;35m[K-Wsign-compare[m[K]
+             if (size [01;35m[K<[m[K CONFIG_MIN_PM_FILE_SIZE) {
+                      [01;35m[K^[m[K
+    [34mCC[0m [33maof.o[0m
+    [34mCC[0m [33mpubsub.o[0m
+    [34mCC[0m [33mmulti.o[0m
+    [34mCC[0m [33mdebug.o[0m
+    [34mCC[0m [33msort.o[0m
+    [34mCC[0m [33mintset.o[0m
+    [34mCC[0m [33msyncio.o[0m
+    [34mCC[0m [33mcluster.o[0m
+    [34mCC[0m [33mcrc16.o[0m
+    [34mCC[0m [33mendianconv.o[0m
+    [34mCC[0m [33mslowlog.o[0m
+    [34mCC[0m [33mscripting.o[0m
+    [34mCC[0m [33mbio.o[0m
+    [34mCC[0m [33mrio.o[0m
+    [34mCC[0m [33mrand.o[0m
+    [34mCC[0m [33mmemtest.o[0m
+    [34mCC[0m [33mcrc64.o[0m
+    [34mCC[0m [33mbitops.o[0m
+    [34mCC[0m [33msentinel.o[0m
+    [34mCC[0m [33mnotify.o[0m
+    [34mCC[0m [33msetproctitle.o[0m
+    [34mCC[0m [33mblocked.o[0m
+    [34mCC[0m [33mhyperloglog.o[0m
+    [34mCC[0m [33mlatency.o[0m
+    [34mCC[0m [33msparkline.o[0m
+    [34mCC[0m [33mredis-check-rdb.o[0m
+    [34mCC[0m [33mgeo.o[0m
+    [34;1mLINK[0m [37;1mredis-server[0m
+dict.o: In function `dictRehash':
+/home/snalli/Desktop/redis/src/dict.c:272: undefined reference to `__pm_trace_print'
+dict.o: In function `dictAdd':
+/home/snalli/Desktop/redis/src/dict.c:332: undefined reference to `__pm_trace_print'
+/home/snalli/Desktop/redis/src/dict.c:332: undefined reference to `__pm_trace_print'
+dict.o: In function `dictAddPM':
+/home/snalli/Desktop/redis/src/dict.c:343: undefined reference to `__pm_trace_print'
+/home/snalli/Desktop/redis/src/dict.c:343: undefined reference to `__pm_trace_print'
+dict.o:/home/snalli/Desktop/redis/src/dict.c:387: more undefined references to `__pm_trace_print' follow
+collect2: error: ld returned 1 exit status
+Makefile:185: recipe for target 'redis-server' failed
+make[2]: *** [redis-server] Error 1
+make[2]: Leaving directory '/home/snalli/Desktop/redis/src'
+Makefile:257: recipe for target 'noopt' failed
+make[1]: *** [noopt] Error 2
+make[1]: Leaving directory '/home/snalli/Desktop/redis/src'
+Makefile:6: recipe for target 'noopt' failed
+make: *** [noopt] Error 2
+]777;notify;Command completed;./compile.sh ]0;snalli@adsl-sl01:~/Desktop/redis]7;file://adsl-sl01.cs.wisc.edu/home/snalli/Desktop/redis[0;31m[snalli@adsl-sl01 redis]$ [mexit
+exit
+
+Script done on Mon 09 Jan 2017 06:33:52 PM CST

@@ -1,0 +1,4 @@
+DIR=`pwd`
+export LD_PRELOAD=${DIR}/malloc/lib/libtcmalloc_minimal.so
+echo "LD_PRELOAD set to $LD_PRELOAD"
+echo "tcmalloc will now override libc's malloc in every program that you execute in this shell"

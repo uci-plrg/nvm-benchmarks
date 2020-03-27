@@ -1,0 +1,102 @@
+  STEPS TO RUN EVALUATION WITH GRAPHING
+
+1. In autorun_all.sh 
+    - set the autorun directories
+    - set #cpus to appropriate for machine
+    - set the loop to right number of runs and right stores
+    - use command line parameters to set which sequences and default vals
+2. (optional) in evaluation_harness.sh
+    - set default sizes
+    - enable/disable profiling and pin commands
+3. set paths in evaluation.c
+4. alter any controls needed in evaluation.c (see below)
+
+
+===============================================================================
+  EVALUATION SEQUENCES
+
+1. Value Size	      - varies size of values and holds all else constant
+2. Key Size	      - varies size of keys and holds all else constant
+3. Merge Freq	      - number of puts (puts only) in each commit
+4. Threaded	      - number of threads
+5. Working Set Size   - varies number of iterations and holds all else constant
+
+
+===============================================================================
+  EVALUATION INPUTS AND LIKELY RUN SCENARIOS
+
+- iterations 	      -- default 1000
+- merge_every	      -- default 8
+- key_size	      -- default 16
+- value_size	      -- default 1024
+- put_probability     -- default 0.1
+- update_probability  -- default 0.7
+- delete probability  -- default 0.01
+- num_cpus	      -- default 2
+- key value store     -- default kp
+- storage platform    -- default dram
+
+Vary what is included in main() to vary the test/evaluation
+
+1. single_worker_test is the only one which make sense on a single core. 
+   currently only runs latency evaluation, can be enabled to run a mixed
+   (workload) evaluation. 
+2. fixed workload takes a fixed number of operations and splits it over n 
+   threads. Percentage of puts/gets/dels/updates can be varied by the
+   use of fixed_percent_benchmark()
+3. ramp_up_threads allows n threads to run while the main thread sleeps for
+   a defined period of time.  Percentage of puts/gets/dels/updates can be 
+   varied by the use of rampup_percent_benchmark() . Numbers should be
+   roughly equivalent to fixed workload.
+4. more specific workloads can be created using the evaluation controls,
+   specified below.
+
+===============================================================================
+  WORKLOAD CHARACTERIZATION
+
+Given put_prob = 0.1, update_prob = 0.7, delete_prob = 0.01 We get:
+
+1% deletes
+89% gets (1 - 0.1 - 0.01)
+7% updates (0.1 * 0.7)
+3% puts (0.1 * (1- 0.7))
+	
+===============================================================================
+  EVALUATION CONTROLS 
+
+Alterable by changing evaluation.c
+
+- do_conlict_detection	        -- obselete?
+- use_durable_ldb		-- forces leveldb to sync
+- master_consistency_mode	-- obselete?
+- max_threads			-- maximum system threads
+- prepop_num			-- number of keys to prepopulate a store with
+- mult_factor			-- extra times to run updates and gets 
+- mt_sleep			-- time to sleep while ramp_up_threads runs
+- bench_extend			-- number of extra iterations run fixed wklds
+- use_other_timers		-- get backup timing information
+- use_nvm_local			-- do flushing in local store
+- use_nvm_master		-- do flushing in master store
+- use_random_values		-- use multiple values	
+- use_random_keys		-- use multiple keys, rather than incrementing
+- use rand			-- use random() rather than pre-creating ints
+- free_gotten_vals		-- free values after calling get()
+- use_get_workload		-- make background workloads 100% get
+- use_split_workloads		-- make all workloads partitioned by thread
+
+
+===============================================================================
+  REMAINING TODOS - IMMEDIATE
++ complete GC-specific evaluation
++ add command-line variance to probabilities
++ double check the size of random-int array and handle cycling
++ handle whether deletes are counted as puts
+
+  REMAINING TODOS - LESS URGENT
++ remove cassandra behavior
++ implement local_keyvalue_size
++ check reset_thpt and reset_counts correct
++ check all return values, mallocs, and parameters
++ check tombstone behavior
++ check kp_log behavior
++ check leveldb parameters 

@@ -1,0 +1,20 @@
+This directory contains C and C++ examples for pmemkv, the library
+providing key-value datastore optimized for persistent memory.
+For more information see libpmemkv(3).
+
+pmemkv_basic_c/pmemkv_basic.c -- contains basic example workflow
+		of C application
+
+pmemkv_basic_cpp/pmemkv_basic.cpp -- contains basic example workflow
+		of C++ application
+
+pmemkv_config_c/pmemkv_config.c -- contains example usage of
+		pmemkv config API. It requires to be built:
+		- 'rapidjson-devel' package to be installed in the OS and
+		- 'BUILD_JSON_CONFIG' CMake variable to be set to ON
+
+pmemkv_pmemobj_cpp/pmemkv_pmemobj_basic.cpp -- contains example usage
+		of pmemkv supporting multiple engines
+
+pmemkv_open_cpp/pmemkv_open_cpp -- contains example usage
+		of pmemkv for already existing pools (and poolsets)

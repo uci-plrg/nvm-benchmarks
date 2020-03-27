@@ -1,0 +1,1375 @@
+From time to time, experimental features may be added to Exim.
+While a feature  is experimental, there  will be a  build-time
+option whose name starts  "EXPERIMENTAL_" that must be  set in
+order to include the  feature. This file contains  information
+about experimental  features, all  of which  are unstable and
+liable to incompatible change.
+
+
+Brightmail AntiSpam (BMI) suppport
+--------------------------------------------------------------
+
+Brightmail  AntiSpam  is  a  commercial  package.  Please  see
+http://www.brightmail.com    for    more    information     on
+the product. For  the sake of  clarity, we'll refer  to it  as
+"BMI" from now on.
+
+
+0) BMI concept and implementation overview
+
+In  contrast  to   how  spam-scanning  with   SpamAssassin  is
+implemented  in  exiscan-acl,  BMI  is  more  suited  for  per
+-recipient  scanning of  messages. However,  each messages  is
+scanned  only  once,  but  multiple  "verdicts"  for  multiple
+recipients can be  returned from the  BMI server. The  exiscan
+implementation  passes  the  message to  the  BMI  server just
+before accepting it.  It then adds  the retrieved verdicts  to
+the messages header file in the spool. These verdicts can then
+be  queried  in  routers,  where  operation  is  per-recipient
+instead  of per-message.  To use  BMI, you  need to  take the
+following steps:
+
+  1) Compile Exim with BMI support
+  2) Set up main BMI options (top section of Exim config file)
+  3) Set up ACL control statement (ACL section of the config
+     file)
+  4) Set up your routers to use BMI verdicts (routers section
+     of the config file).
+  5) (Optional) Set up per-recipient opt-in information.
+
+These four steps are explained in more details below.
+
+1) Adding support for BMI at compile time
+
+  To compile with BMI support,  you need to link Exim  against
+  the   Brighmail  client   SDK,  consisting   of  a   library
+  (libbmiclient_single.so)  and  a  header  file  (bmi_api.h).
+  You'll also need to explicitly set a flag in the Makefile to
+  include BMI support in the Exim binary. Both can be achieved
+  with  these lines in Local/Makefile:
+
+  EXPERIMENTAL_BRIGHTMAIL=yes
+  CFLAGS=-I/path/to/the/dir/with/the/includefile
+  EXTRALIBS_EXIM=-L/path/to/the/dir/with/the/library -lbmiclient_single
+
+  If  you use  other CFLAGS  or EXTRALIBS_EXIM  settings then
+  merge the content of these lines with them.
+
+  Note for BMI6.x users: You'll also have to add -lxml2_single
+  to the EXTRALIBS_EXIM line. Users of 5.5x do not need to  do
+  this.
+
+  You    should     also    include     the    location     of
+  libbmiclient_single.so in your dynamic linker  configuration
+  file   (usually   /etc/ld.so.conf)   and   run    "ldconfig"
+  afterwards, or  else the  produced Exim  binary will  not be
+  able to find the library file.
+
+
+2) Setting up BMI support in the Exim main configuration
+
+  To enable BMI  support in the  main Exim configuration,  you
+  should set the path to the main BMI configuration file  with
+  the "bmi_config_file" option, like this:
+
+  bmi_config_file = /opt/brightmail/etc/brightmail.cfg
+
+  This must go into section 1 of Exim's configuration file (You
+  can  put it  right on  top). If  you omit  this option,  it
+  defaults to /opt/brightmail/etc/brightmail.cfg.
+
+  Note for BMI6.x users: This  file is in XML format  in V6.xx
+  and its  name is  /opt/brightmail/etc/bmiconfig.xml. So  BMI
+  6.x users MUST set the bmi_config_file option.
+
+
+3) Set up ACL control statement
+
+  To  optimize performance,  it makes  sense only  to process
+  messages coming from remote, untrusted sources with the  BMI
+  server.  To set  up a  messages for  processing by  the BMI
+  server, you MUST set the "bmi_run" control statement in  any
+  ACL for an incoming message.  You will typically do this  in
+  an "accept"  block in  the "acl_check_rcpt"  ACL. You should
+  use the "accept" block(s)  that accept messages from  remote
+  servers for your own domain(s). Here is an example that uses
+  the "accept" blocks from Exim's default configuration file:
+
+
+  accept  domains       = +local_domains
+          endpass
+          verify        = recipient
+          control       = bmi_run
+
+  accept  domains       = +relay_to_domains
+          endpass
+          verify        = recipient
+          control       = bmi_run
+
+  If bmi_run  is not  set in  any ACL  during reception of the
+  message, it will NOT be passed to the BMI server.
+
+
+4) Setting up routers to use BMI verdicts
+
+  When a message has been  run through the BMI server,  one or
+  more "verdicts" are  present. Different recipients  can have
+  different verdicts. Each  recipient is treated  individually
+  during routing, so you  can query the verdicts  by recipient
+  at  that stage.  From Exim's  view, a  verdict can  have the
+  following outcomes:
+
+  o deliver the message normally
+  o deliver the message to an alternate location
+  o do not deliver the message
+
+  To query  the verdict  for a  recipient, the  implementation
+  offers the following tools:
+
+
+  - Boolean router  preconditions. These  can be  used in  any
+    router. For a simple  implementation of BMI, these  may be
+    all  that  you  need.  The  following  preconditions   are
+    available:
+
+    o bmi_deliver_default
+
+      This  precondition  is  TRUE  if  the  verdict  for  the
+      recipient is  to deliver  the message  normally. If  the
+      message has not been  processed by the BMI  server, this
+      variable defaults to TRUE.
+
+    o bmi_deliver_alternate
+
+      This  precondition  is  TRUE  if  the  verdict  for  the
+      recipient  is to  deliver the  message to  an alternate
+      location.  You  can  get the  location  string  from the
+      $bmi_alt_location expansion variable if you need it. See
+      further below. If the message has not been processed  by
+      the BMI server, this variable defaults to FALSE.
+
+    o bmi_dont_deliver
+
+      This  precondition  is  TRUE  if  the  verdict  for  the
+      recipient  is  NOT  to   deliver  the  message  to   the
+      recipient. You will typically use this precondition in a
+      top-level blackhole router, like this:
+
+        # don't deliver messages handled by the BMI server
+        bmi_blackhole:
+          driver = redirect
+          bmi_dont_deliver
+          data = :blackhole:
+
+      This router should be on top of all others, so  messages
+      that should not be delivered do not reach other  routers
+      at all. If   the  message  has  not  been  processed  by
+      the  BMI server, this variable defaults to FALSE.
+
+
+  - A list router  precondition to query  if rules "fired"  on
+    the message for the recipient. Its name is "bmi_rule". You
+    use  it  by  passing it  a  colon-separated  list of  rule
+    numbers. You can use this condition to route messages that
+    matched specific rules. Here is an example:
+
+      # special router for BMI rule #5, #8 and #11
+      bmi_rule_redirect:
+        driver = redirect
+        bmi_rule = 5:8:11
+        data = postmaster@mydomain.com
+
+
+  - Expansion variables. Several  expansion variables are  set
+    during  routing.  You  can  use  them  in  custom   router
+    conditions,  for  example.  The  following  variables  are
+    available:
+
+    o $bmi_base64_verdict
+
+      This variable  will contain  the BASE64  encoded verdict
+      for the recipient being routed. You can use it to add  a
+      header to messages for tracking purposes, for example:
+
+      localuser:
+        driver = accept
+        check_local_user
+        headers_add = X-Brightmail-Verdict: $bmi_base64_verdict
+        transport = local_delivery
+
+      If there is no verdict available for the recipient being
+      routed, this variable contains the empty string.
+
+    o $bmi_base64_tracker_verdict
+
+      This variable  will contain  a BASE64  encoded subset of
+      the  verdict  information  concerning  the  "rules" that
+      fired  on the  message. You  can add  this string  to a
+      header, commonly named "X-Brightmail-Tracker". Example:
+
+      localuser:
+        driver = accept
+        check_local_user
+        headers_add = X-Brightmail-Tracker: $bmi_base64_tracker_verdict
+        transport = local_delivery
+
+      If there is no verdict available for the recipient being
+      routed, this variable contains the empty string.
+
+    o $bmi_alt_location
+
+      If  the  verdict  is  to  redirect  the  message  to  an
+      alternate  location,  this  variable  will  contain  the
+      alternate location string returned by the BMI server. In
+      its default configuration, this is a header-like  string
+      that can be added to the message with "headers_add".  If
+      there is  no verdict  available for  the recipient being
+      routed, or if the  message is to be  delivered normally,
+      this variable contains the empty string.
+
+    o $bmi_deliver
+
+      This is an additional integer variable that can be  used
+      to query if the message should be delivered at all.  You
+      should use router preconditions instead if possible.
+
+      $bmi_deliver is '0': the message should NOT be delivered.
+      $bmi_deliver is '1': the message should be delivered.
+
+
+  IMPORTANT NOTE: Verdict inheritance.
+  The  message  is passed  to  the BMI  server  during message
+  reception,  using the  target addresses  from the  RCPT TO:
+  commands in the SMTP transaction. If recipients get expanded
+  or re-written (for example by aliasing), the new address(es)
+  inherit the  verdict from  the original  address. This means
+  that verdicts also apply to all "child" addresses  generated
+  from top-level addresses that were sent to the BMI server.
+
+
+5) Using per-recipient opt-in information (Optional)
+
+  The  BMI server  features multiple  scanning "profiles"  for
+  individual recipients.  These are  usually stored  in a LDAP
+  server and are  queried by the  BMI server itself.  However,
+  you can also  pass opt-in data  for each recipient  from the
+  MTA to the  BMI server. This  is particularly useful  if you
+  already look  up recipient  data in  Exim anyway  (which can
+  also be  stored in  a SQL  database or  other source).  This
+  implementation enables you  to pass opt-in  data to the  BMI
+  server  in  the  RCPT   ACL.  This  works  by   setting  the
+  'bmi_optin' modifier in  a block of  that ACL. If  should be
+  set to a list  of comma-separated strings that  identify the
+  features which the BMI server should use for that particular
+  recipient. Ideally, you  would use the  'bmi_optin' modifier
+  in the same  ACL block where  you set the  'bmi_run' control
+  flag. Here is an example that will pull opt-in data for each
+  recipient      from       a      flat       file      called
+  '/etc/exim/bmi_optin_data'.
+
+  The file format:
+
+    user1@mydomain.com: <OPTIN STRING1>:<OPTIN STRING2>
+    user2@thatdomain.com: <OPTIN STRING3>
+
+
+  The example:
+
+    accept  domains       = +relay_to_domains
+            endpass
+            verify        = recipient
+            bmi_optin     = ${lookup{$local_part@$domain}lsearch{/etc/exim/bmi_optin_data}}
+            control       = bmi_run
+
+  Of course,  you can  also use  any other  lookup method that
+  Exim supports, including LDAP, Postgres, MySQL, Oracle etc.,
+  as long as  the result is  a list of  colon-separated opt-in
+  strings.
+
+  For a list of available opt-in strings, please contact  your
+  Brightmail representative.
+
+
+
+
+Sender Policy Framework (SPF) support
+--------------------------------------------------------------
+
+To learn  more  about  SPF, visit   http://www.openspf.org. This
+document does   not explain  the SPF  fundamentals, you should
+read and understand the implications of deploying SPF on  your
+system before doing so.
+
+SPF support is added via the libspf2 library. Visit
+
+  http://www.libspf2.org/
+
+to obtain  a copy,  then compile  and install  it. By default,
+this will  put headers  in /usr/local/include  and the  static
+library in /usr/local/lib.
+
+To compile Exim with SPF support, set these additional flags in
+Local/Makefile:
+
+EXPERIMENTAL_SPF=yes
+CFLAGS=-DSPF -I/usr/local/include
+EXTRALIBS_EXIM=-L/usr/local/lib -lspf2
+
+This assumes   that the   libspf2 files   are installed  in
+their default locations.
+
+You can now run SPF checks in incoming SMTP by using the "spf"
+ACL condition  in either  the MAIL,  RCPT or  DATA ACLs.  When
+using it in the RCPT ACL, you can make the checks dependent on
+the RCPT  address (or  domain), so  you can  check SPF records
+only  for   certain  target   domains.  This   gives  you  the
+possibility  to opt-out  certain customers  that do  not want
+their mail to be subject to SPF checking.
+
+The spf condition  takes a list  of strings on  its right-hand
+side. These strings describe the outcome of the SPF check  for
+which the spf condition should succeed. Valid strings are:
+
+  o pass      The SPF check passed, the sending host
+              is positively verified by SPF.
+  o fail      The SPF check failed, the sending host
+              is NOT allowed to send mail for the domain
+              in the envelope-from address.
+  o softfail  The SPF check failed, but the queried
+              domain can't absolutely confirm that this
+              is a forgery.
+  o none      The queried domain does not publish SPF
+              records.
+  o neutral   The SPF check returned a "neutral" state.
+              This means the queried domain has published
+              a SPF record, but wants to allow outside
+              servers to send mail under its domain as well.
+              This should be treated like "none".
+  o permerror This indicates a syntax error in the SPF
+              record of the queried domain. You may deny
+              messages when this occurs. (Changed in 4.83)
+  o temperror This indicates a temporary error during all
+              processing, including Exim's SPF processing.
+              You may defer messages when this occurs.
+              (Changed in 4.83)
+  o err_temp  Same as permerror, deprecated in 4.83, will be
+              removed in a future release.
+  o err_perm  Same as temperror, deprecated in 4.83, will be
+              removed in a future release.
+
+You can prefix each string with an exclamation mark to  invert
+its meaning,  for example  "!fail" will  match all  results but
+"fail".  The  string  list is  evaluated  left-to-right,  in a
+short-circuit fashion.  When a  string matches  the outcome of
+the SPF check, the condition  succeeds. If none of the  listed
+strings matches the  outcome of the  SPF check, the  condition
+fails.
+
+Here is an example to fail forgery attempts from domains that
+publish SPF records:
+
+/* -----------------
+deny message = $sender_host_address is not allowed to send mail from ${if def:sender_address_domain {$sender_address_domain}{$sender_helo_name}}.  \
+              Please see http://www.openspf.org/Why?scope=${if def:sender_address_domain {mfrom}{helo}};identity=${if def:sender_address_domain {$sender_address}{$sender_helo_name}};ip=$sender_host_address
+     spf = fail
+--------------------- */
+
+You can also give special treatment to specific domains:
+
+/* -----------------
+deny message = AOL sender, but not from AOL-approved relay.
+     sender_domains = aol.com
+     spf = fail:neutral
+--------------------- */
+
+Explanation: AOL  publishes SPF  records, but  is liberal  and
+still allows  non-approved relays  to send  mail from aol.com.
+This will result in a "neutral" state, while mail from genuine
+AOL servers  will result  in "pass".  The example  above takes
+this into account and  treats "neutral" like "fail",  but only
+for aol.com. Please note that this violates the SPF draft.
+
+When the spf condition has run, it sets up several expansion
+variables.
+
+  $spf_header_comment
+  This contains a human-readable string describing the outcome
+  of the SPF check. You can add it to a custom header or use
+  it for logging purposes.
+
+  $spf_received
+  This contains a complete Received-SPF: header that can be
+  added to the message. Please note that according to the SPF
+  draft, this header must be added at the top of the header
+  list. Please see section 10 on how you can do this.
+
+  Note: in case of "Best-guess" (see below), the convention is
+  to put this string in a header called X-SPF-Guess: instead.
+
+  $spf_result
+  This contains the outcome of the SPF check in string form,
+  one of pass, fail, softfail, none, neutral, permerror or
+  temperror.
+
+  $spf_smtp_comment
+  This contains a string that can be used in a SMTP response
+  to the calling party. Useful for "fail".
+
+In addition to SPF, you can also perform checks for so-called
+"Best-guess".  Strictly speaking, "Best-guess" is not standard
+SPF, but it is supported by the same framework that enables SPF
+capability.  Refer to http://www.openspf.org/FAQ/Best_guess_record
+for a description of what it means.
+
+To access this feature, simply use the spf_guess condition in place
+of the spf one.  For example:
+
+/* -----------------
+deny message = $sender_host_address doesn't look trustworthy to me
+     spf_guess = fail
+--------------------- */
+
+In case you decide to reject messages based on this check, you
+should note that although it uses the same framework, "Best-guess"
+is NOT SPF, and therefore you should not mention SPF at all in your
+reject message.
+
+When the spf_guess condition has run, it sets up the same expansion
+variables as when spf condition is run, described above.
+
+Additionally, since Best-guess is not standardized, you may redefine
+what "Best-guess" means to you by redefining spf_guess variable in
+global config.  For example, the following:
+
+/* -----------------
+spf_guess = v=spf1 a/16 mx/16 ptr ?all
+--------------------- */
+
+would relax host matching rules to a broader network range.
+
+
+SRS (Sender Rewriting Scheme) Support
+--------------------------------------------------------------
+
+Exiscan  currently  includes SRS  support  via Miles  Wilton's
+libsrs_alt library. The current version of the supported
+library is 0.5.
+
+In order to  use SRS, you  must get a  copy of libsrs_alt from
+
+http://srs.mirtol.com/
+
+Unpack the tarball, then refer to MTAs/README.EXIM
+to proceed. You need to set
+
+EXPERIMENTAL_SRS=yes
+
+in your Local/Makefile.
+
+
+DCC Support
+--------------------------------------------------------------
+
+*) Building exim
+
+In order to build exim with DCC support add
+
+EXPERIMENTAL_DCC=yes
+
+to your Makefile. (Re-)build/install exim. exim -d should show
+EXPERIMENTAL_DCC under "Support for".
+
+
+*) Configuration
+
+In the main section of exim.cf add at least
+  dccifd_address = /usr/local/dcc/var/dccifd
+or
+  dccifd_address = <ip> <port>
+
+In the DATA ACL you can use the new condition
+        dcc = *
+
+After that "$dcc_header" contains the X-DCC-Header.
+
+Return values are:
+  fail    for overall "R", "G" from dccifd
+  defer   for overall "T" from dccifd
+  accept  for overall "A", "S" from dccifd
+
+dcc = */defer_ok works as for spamd.
+
+The "$dcc_result" variable contains the overall result from DCC
+answer.  There will an X-DCC: header added to the mail.
+
+Usually you'll use
+  defer   !dcc = *
+to greylist with DCC.
+
+If you set, in the main section,
+  dcc_direct_add_header = true
+then the dcc header will be added "in deep" and if the spool
+file was already written it gets removed. This forces Exim to
+write it again if needed.  This helps to get the DCC Header
+through to eg. SpamAssassin.
+
+If you want to pass even more headers in the middle of the
+DATA stage you can set
+  $acl_m_dcc_add_header
+to tell the DCC routines to add more information; eg, you might set
+this to some results from ClamAV.  Be careful.  Header syntax is
+not checked and is added "as is".
+
+In case you've troubles with sites sending the same queue items from several
+hosts and fail to get through greylisting you can use
+$acl_m_dcc_override_client_ip
+
+Setting $acl_m_dcc_override_client_ip to an IP address overrides the default
+of $sender_host_address. eg. use the following ACL in DATA stage:
+
+  warn    set acl_m_dcc_override_client_ip = \
+    ${lookup{$sender_helo_name}nwildlsearch{/etc/mail/multipleip_sites}{$value}{}}
+          condition = ${if def:acl_m_dcc_override_client_ip}
+          log_message = dbg: acl_m_dcc_override_client_ip set to \
+                        $acl_m_dcc_override_client_ip
+
+Then set something like
+# cat /etc/mail/multipleip_sites
+mout-xforward.gmx.net           82.165.159.12
+mout.gmx.net                    212.227.15.16
+
+Use a reasonable IP. eg. one the sending cluster acutally uses.
+
+DMARC Support
+--------------------------------------------------------------
+
+DMARC combines feedback from SPF, DKIM, and header From: in order
+to attempt to provide better indicators of the authenticity of an
+email.  This document does not explain the fundamentals, you
+should read and understand how it works by visiting the website at
+http://www.dmarc.org/.
+
+DMARC support is added via the libopendmarc library.  Visit:
+
+  http://sourceforge.net/projects/opendmarc/
+
+to obtain a copy, or find it in your favorite rpm package
+repository.  If building from source, this description assumes
+that headers will be in /usr/local/include, and that the libraries
+are in /usr/local/lib.
+
+1. To compile Exim with DMARC support, you must first enable SPF.
+Please read the above section on enabling the EXPERIMENTAL_SPF
+feature.  You must also have DKIM support, so you cannot set the
+DISABLE_DKIM feature.  Once both of those conditions have been met
+you can enable DMARC in Local/Makefile:
+
+EXPERIMENTAL_DMARC=yes
+LDFLAGS += -lopendmarc
+# CFLAGS += -I/usr/local/include
+# LDFLAGS += -L/usr/local/lib
+
+The first line sets the feature to include the correct code, and
+the second line says to link the libopendmarc libraries into the
+exim binary.  The commented out lines should be uncommented if you
+built opendmarc from source and installed in the default location.
+Adjust the paths if you installed them elsewhere, but you do not
+need to uncomment them if an rpm (or you) installed them in the
+package controlled locations (/usr/include and /usr/lib).
+
+
+2. Use the following global settings to configure DMARC:
+
+Required:
+dmarc_tld_file      Defines the location of a text file of valid
+                    top level domains the opendmarc library uses
+                    during domain parsing. Maintained by Mozilla,
+                    the most current version can be downloaded
+                    from a link at http://publicsuffix.org/list/.
+
+Optional:
+dmarc_history_file  Defines the location of a file to log results
+                    of dmarc verification on inbound emails. The
+                    contents are importable by the opendmarc tools
+                    which will manage the data, send out DMARC
+                    reports, and expire the data. Make sure the
+                    directory of this file is writable by the user
+                    exim runs as.
+
+dmarc_forensic_sender The email address to use when sending a
+                    forensic report detailing alignment failures
+                    if a sender domain's dmarc record specifies it
+                    and you have configured Exim to send them.
+                    Default: do-not-reply@$default_hostname
+
+
+3. By default, the DMARC processing will run for any remote,
+non-authenticated user.  It makes sense to only verify DMARC
+status of messages coming from remote, untrusted sources.  You can
+use standard conditions such as hosts, senders, etc, to decide that
+DMARC verification should *not* be performed for them and disable
+DMARC with a control setting:
+
+  control = dmarc_disable_verify
+
+A DMARC record can also specify a "forensic address", which gives
+exim an email address to submit reports about failed alignment.
+Exim does not do this by default because in certain conditions it
+results in unintended information leakage (what lists a user might
+be subscribed to, etc).  You must configure exim to submit forensic
+reports to the owner of the domain.  If the DMARC record contains a
+forensic address and you specify the control statement below, then
+exim will send these forensic emails.  It's also advised that you
+configure a dmarc_forensic_sender because the default sender address
+construction might be inadequate.
+
+  control = dmarc_enable_forensic
+
+(AGAIN: You can choose not to send these forensic reports by simply
+not putting the dmarc_enable_forensic control line at any point in
+your exim config.  If you don't tell it to send them, it will not
+send them.)
+
+There are no options to either control.  Both must appear before
+the DATA acl.
+
+
+4. You can now run DMARC checks in incoming SMTP by using the
+"dmarc_status" ACL condition in the DATA ACL.  You are required to
+call the spf condition first in the ACLs, then the "dmarc_status"
+condition.  Putting this condition in the ACLs is required in order
+for a DMARC check to actually occur.  All of the variables are set
+up before the DATA ACL, but there is no actual DMARC check that
+occurs until a "dmarc_status" condition is encountered in the ACLs.
+
+The dmarc_status condition takes a list of strings on its
+right-hand side.  These strings describe recommended action based
+on the DMARC check.  To understand what the policy recommendations
+mean, refer to the DMARC website above.  Valid strings are:
+
+  o accept      The DMARC check passed and the library recommends
+                accepting the email.
+  o reject      The DMARC check failed and the library recommends
+                rejecting the email.
+  o quarantine  The DMARC check failed and the library recommends
+                keeping it for further inspection.
+  o none        The DMARC check passed and the library recommends
+                no specific action, neutral.
+  o norecord    No policy section in the DMARC record for this
+                sender domain.
+  o nofrom      Unable to determine the domain of the sender.
+  o temperror   Library error or dns error.
+  o off         The DMARC check was disabled for this email.
+
+You can prefix each string with an exclamation mark to invert its
+meaning, for example "!accept" will match all results but
+"accept".  The string list is evaluated left-to-right in a
+short-circuit fashion.  When a string matches the outcome of the
+DMARC check, the condition succeeds.  If none of the listed
+strings matches the outcome of the DMARC check, the condition
+fails.
+
+Of course, you can also use any other lookup method that Exim
+supports, including LDAP, Postgres, MySQL, etc, as long as the
+result is a list of colon-separated strings.
+
+Several expansion variables are set before the DATA ACL is
+processed, and you can use them in this ACL.  The following
+expansion variables are available:
+
+  o $dmarc_status
+    This is a one word status indicating what the DMARC library
+    thinks of the email.  It is a combination of the results of
+    DMARC record lookup and the SPF/DKIM/DMARC processing results
+    (if a DMARC record was found).  The actual policy declared
+    in the DMARC record is in a separate expansion variable.
+
+  o $dmarc_status_text
+    This is a slightly longer, human readable status.
+
+  o $dmarc_used_domain
+    This is the domain which DMARC used to look up the DMARC
+    policy record.
+
+  o $dmarc_domain_policy
+    This is the policy declared in the DMARC record.  Valid values
+    are "none", "reject" and "quarantine".  It is blank when there
+    is any error, including no DMARC record.
+
+  o $dmarc_ar_header
+    This is the entire Authentication-Results header which you can
+    add using an add_header modifier.
+
+
+5. How to enable DMARC advanced operation:
+By default, Exim's DMARC configuration is intended to be
+non-intrusive and conservative.  To facilitate this, Exim will not
+create any type of logging files without explicit configuration by
+you, the admin.  Nor will Exim send out any emails/reports about
+DMARC issues without explicit configuration by you, the admin (other
+than typical bounce messages that may come about due to ACL
+processing or failure delivery issues).
+
+In order to log statistics suitable to be imported by the opendmarc
+tools, you need to:
+a. Configure the global setting dmarc_history_file.
+b. Configure cron jobs to call the appropriate opendmarc history
+   import scripts and truncating the dmarc_history_file.
+
+In order to send forensic reports, you need to:
+a. Configure the global setting dmarc_forensic_sender.
+b. Configure, somewhere before the DATA ACL, the control option to
+   enable sending DMARC forensic reports.
+
+
+6. Example usage:
+(RCPT ACL)
+  warn    domains        = +local_domains
+          hosts          = +local_hosts
+          control        = dmarc_disable_verify
+
+  warn    !domains       = +screwed_up_dmarc_records
+          control        = dmarc_enable_forensic
+
+  warn    condition      = (lookup if destined to mailing list)
+          set acl_m_mailing_list = 1
+
+(DATA ACL)
+  warn    dmarc_status   = accept : none : off
+          !authenticated = *
+          log_message    = DMARC DEBUG: $dmarc_status $dmarc_used_domain
+          add_header     = $dmarc_ar_header
+
+  warn    dmarc_status   = !accept
+          !authenticated = *
+          log_message    = DMARC DEBUG: '$dmarc_status' for $dmarc_used_domain
+
+  warn    dmarc_status   = quarantine
+          !authenticated = *
+          set $acl_m_quarantine = 1
+          # Do something in a transport with this flag variable
+
+  deny    condition      = ${if eq{$dmarc_domain_policy}{reject}}
+          condition      = ${if eq{$acl_m_mailing_list}{1}}
+          message        = Messages from $dmarc_used_domain break mailing lists
+
+  deny    dmarc_status   = reject
+          !authenticated = *
+          message        = Message from $dmarc_used_domain failed sender's DMARC policy, REJECT
+
+
+
+Event Actions
+--------------------------------------------------------------
+
+(Renamed from TPDA, Transport post-delivery actions)
+
+An arbitrary per-transport string can be expanded upon various transport events.
+Additionally a main-section configuration option can be expanded on some
+per-message events.
+This feature may be used, for example, to write exim internal log information
+(not available otherwise) into a database.
+
+In order to use the feature, you must compile with
+
+EXPERIMENTAL_EVENT=yes
+
+in your Local/Makefile
+
+and define one or both of
+- the event_action option in the transport
+- the event_action main option
+to be expanded when the event fires.
+
+A new variable, $event_name, is set to the event type when the
+expansion is done.  The current list of events is:
+
+ msg:complete		after  main	  per message
+ msg:delivery		after  transport  per recipient
+ msg:host:defer		after  transport  per attempt
+ msg:fail:delivery	after  main	  per recipient
+ msg:fail:internal	after  main	  per recipient
+ tcp:connect		before transport  per connection
+ tcp:close		after  transport  per connection
+ tls:cert		before both	  per certificate in verification chain
+ smtp:connect		after  transport  per connection
+
+The expansion is called for all event types, and should use the $event_name
+variable to decide when to act.  The value of the variable is a colon-separated
+list, defining a position in the tree of possible events; it may be used as
+a list or just matched on as a whole.  There will be no whitespace.
+
+
+There is an auxilary variable, $event_data, for which the
+content is event_dependent:
+
+	msg:delivery		smtp confirmation mssage
+	msg:host:defer		error string
+	tls:cert		verification chain depth
+	smtp:connect		smtp banner
+
+The msg:host:defer event populates one extra variable, $event_defer_errno.
+
+The following variables are likely to be useful depending on the event type:
+
+	router_name, transport_name
+	local_part, domain
+	host, host_address, host_port
+	tls_out_peercert
+	lookup_dnssec_authenticated, tls_out_dane
+	sending_ip_address, sending_port
+	message_exim_id, verify_mode
+
+
+An example might look like:
+
+event_action = ${if eq {msg:delivery}{$event_name} \
+{${lookup pgsql {SELECT * FROM record_Delivery( \
+    '${quote_pgsql:$sender_address_domain}',\
+    '${quote_pgsql:${lc:$sender_address_local_part}}', \
+    '${quote_pgsql:$domain}', \
+    '${quote_pgsql:${lc:$local_part}}', \
+    '${quote_pgsql:$host_address}', \
+    '${quote_pgsql:${lc:$host}}', \
+    '${quote_pgsql:$message_exim_id}')}} \
+} {}}
+
+The string is expanded when each of the supported events occur
+and any side-effects of the expansion will happen.
+Note that for complex operations an ACL expansion can be used.
+
+
+The expansion of the event_action option should normally
+return an empty string.  Should it return anything else the
+following will be forced:
+
+	msg:delivery	(ignored)
+	msg:host:defer	(ignored)
+	msg:fail:delivery (ignored)
+	tcp:connect	do not connect
+	tcp:close	(ignored)
+	tls:cert	refuse verification
+	smtp:connect	close connection
+
+No other use is made of the result string.
+
+
+Known issues:
+- the tls:cert event is only called for the cert chain elements
+  received over the wire, with GnuTLS.  OpenSSL gives the entire
+  chain including those loaded locally.
+
+
+Redis Lookup
+--------------------------------------------------------------
+
+Redis is open source advanced key-value data store. This document
+does not explain the fundamentals, you should read and understand how
+it works by visiting the website at http://www.redis.io/.
+
+Redis lookup support is added via the hiredis library.  Visit:
+
+  https://github.com/redis/hiredis
+
+to obtain a copy, or find it in your operating systems package repository.
+If building from source, this description assumes that headers will be in
+/usr/local/include, and that the libraries are in /usr/local/lib.
+
+1. In order to build exim with Redis lookup support add
+
+EXPERIMENTAL_REDIS=yes
+
+to your Local/Makefile. (Re-)build/install exim. exim -d should show
+Experimental_Redis in the line "Support for:".
+
+EXPERIMENTAL_REDIS=yes
+LDFLAGS += -lhiredis
+# CFLAGS += -I/usr/local/include
+# LDFLAGS += -L/usr/local/lib
+
+The first line sets the feature to include the correct code, and
+the second line says to link the hiredis libraries into the
+exim binary.  The commented out lines should be uncommented if you
+built hiredis from source and installed in the default location.
+Adjust the paths if you installed them elsewhere, but you do not
+need to uncomment them if an rpm (or you) installed them in the
+package controlled locations (/usr/include and /usr/lib).
+
+
+2. Use the following global settings to configure Redis lookup support:
+
+Required:
+redis_servers       This option provides a list of Redis servers
+                    and associated connection data, to be used in
+                    conjunction with redis lookups. The option is
+                    only available if Exim is configured with Redis
+                    support.
+
+For example:
+
+redis_servers = 127.0.0.1/10/ - using database 10 with no password
+redis_servers = 127.0.0.1//password - to make use of the default database of 0 with a password
+redis_servers = 127.0.0.1// - for default database of 0 with no password
+
+3. Once you have the Redis servers defined you can then make use of the
+experimental Redis lookup by specifying ${lookup redis{}} in a lookup query.
+
+4. Example usage:
+
+(Host List)
+hostlist relay_from_ips = <\n ${lookup redis{SMEMBERS relay_from_ips}}
+
+Where relay_from_ips is a Redis set which contains entries such as "192.168.0.0/24" "10.0.0.0/8" and so on.
+The result set is returned as
+192.168.0.0/24
+10.0.0.0/8
+..
+.
+
+(Domain list)
+domainlist virtual_domains = ${lookup redis {HGET $domain domain}}
+
+Where $domain is a hash which includes the key 'domain' and the value '$domain'.
+
+(Adding or updating an existing key)
+set acl_c_spammer = ${if eq{${lookup redis{SPAMMER_SET}}}{OK}}
+
+Where SPAMMER_SET is a macro and it is defined as
+
+"SET SPAMMER <some_value>"
+
+(Getting a value from Redis)
+
+set acl_c_spam_host = ${lookup redis{GET...}}
+
+
+Proxy Protocol Support
+--------------------------------------------------------------
+
+Exim now has Experimental "Proxy Protocol" support.  It was built on
+specifications from:
+http://haproxy.1wt.eu/download/1.5/doc/proxy-protocol.txt
+Above URL revised May 2014 to change version 2 spec:
+http://git.1wt.eu/web?p=haproxy.git;a=commitdiff;h=afb768340c9d7e50d8e
+
+The purpose of this function is so that an application load balancer,
+such as HAProxy, can sit in front of several Exim servers and Exim
+will log the IP that is connecting to the proxy server instead of
+the IP of the proxy server when it connects to Exim.  It resets the
+$sender_address_host and $sender_address_port to the IP:port of the
+connection to the proxy.  It also re-queries the DNS information for
+this new IP address so that the original sender's hostname and IP
+get logged in the Exim logfile.  There is no logging if a host passes or
+fails Proxy Protocol negotiation, but it can easily be determined and
+recorded in an ACL (example is below).
+
+1. To compile Exim with Proxy Protocol support, put this in
+Local/Makefile:
+
+EXPERIMENTAL_PROXY=yes
+
+2. Global configuration settings:
+
+proxy_required_hosts = HOSTLIST
+
+The proxy_required_hosts option will require any IP in that hostlist
+to use Proxy Protocol. The specification of Proxy Protocol is very
+strict, and if proxy negotiation fails, Exim will not allow any SMTP
+command other than QUIT. (See end of this section for an example.)
+The option is expanded when used, so it can be a hostlist as well as
+string of IP addresses.  Since it is expanded, specifying an alternate
+separator is supported for ease of use with IPv6 addresses.
+
+To log the IP of the proxy in the incoming logline, add:
+  log_selector = +proxy
+
+A default incoming logline (wrapped for appearance) will look like this:
+
+  2013-11-04 09:25:06 1VdNti-0001OY-1V <= me@example.net
+  H=mail.example.net [1.2.3.4] P=esmtp S=433
+
+With the log selector enabled, an email that was proxied through a
+Proxy Protocol server at 192.168.1.2 will look like this:
+
+  2013-11-04 09:25:06 1VdNti-0001OY-1V <= me@example.net
+  H=mail.example.net [1.2.3.4] P=esmtp PRX=192.168.1.2 S=433
+
+3. In the ACL's the following expansion variables are available.
+
+proxy_host_address   The (internal) src IP of the proxy server
+                     making the connection to the Exim server.
+proxy_host_port      The (internal) src port the proxy server is
+                     using to connect to the Exim server.
+proxy_target_address The dest (public) IP of the remote host to
+                     the proxy server.
+proxy_target_port    The dest port the remote host is using to
+                     connect to the proxy server.
+proxy_session        Boolean, yes/no, the connected host is required
+                     to use Proxy Protocol.
+
+There is no expansion for a failed proxy session, however you can detect
+it by checking if $proxy_session is true but $proxy_host is empty.  As
+an example, in my connect ACL, I have:
+
+  warn    condition      = ${if and{ {bool{$proxy_session}} \
+                                     {eq{$proxy_host_address}{}} } }
+          log_message    = Failed required proxy protocol negotiation \
+                           from $sender_host_name [$sender_host_address]
+
+  warn    condition      = ${if and{ {bool{$proxy_session}} \
+                                     {!eq{$proxy_host_address}{}} } }
+          # But don't log health probes from the proxy itself
+          condition      = ${if eq{$proxy_host_address}{$sender_host_address} \
+                                {false}{true}}
+          log_message    = Successfully proxied from $sender_host_name \
+                           [$sender_host_address] through proxy protocol \
+                           host $proxy_host_address
+
+  # Possibly more clear
+  warn logwrite = Remote Source Address: $sender_host_address:$sender_host_port
+       logwrite = Proxy Target Address: $proxy_target_address:$proxy_target_port
+       logwrite = Proxy Internal Address: $proxy_host_address:$proxy_host_port
+       logwrite = Internal Server Address: $received_ip_address:$received_port
+
+
+4. Recommended ACL additions:
+   - Since the real connections are all coming from your proxy, and the
+     per host connection tracking is done before Proxy Protocol is
+     evaluated, smtp_accept_max_per_host must be set high enough to
+     handle all of the parallel volume you expect per inbound proxy.
+   - With the smtp_accept_max_per_host set so high, you lose the ability
+     to protect your server from massive numbers of inbound connections
+     from one IP.  In order to prevent your server from being DOS'd, you
+     need to add a per connection ratelimit to your connect ACL.  I
+     suggest something like this:
+
+  # Set max number of connections per host
+  LIMIT   = 5
+  # Or do some kind of IP lookup in a flat file or database
+  # LIMIT = ${lookup{$sender_host_address}iplsearch{/etc/exim/proxy_limits}}
+
+  defer   message        = Too many connections from this IP right now
+          ratelimit      = LIMIT / 5s / per_conn / strict
+
+
+5. Runtime issues to be aware of:
+   - The proxy has 3 seconds (hard-coded in the source code) to send the
+     required Proxy Protocol header after it connects.  If it does not,
+     the response to any commands will be:
+     "503 Command refused, required Proxy negotiation failed"
+   - If the incoming connection is configured in Exim to be a Proxy
+     Protocol host, but the proxy is not sending the header, the banner
+     does not get sent until the timeout occurs.  If the sending host
+     sent any input (before the banner), this causes a standard Exim
+     synchronization error (i.e. trying to pipeline before PIPELINING
+     was advertised).
+   - This is not advised, but is mentioned for completeness if you have
+     a specific internal configuration that you want this:  If the Exim
+     server only has an internal IP address and no other machines in your
+     organization will connect to it to try to send email, you may
+     simply set the hostlist to "*", however, this will prevent local
+     mail programs from working because that would require mail from
+     localhost to use Proxy Protocol.  Again, not advised!
+
+6. Example of a refused connection because the Proxy Protocol header was
+not sent from a host configured to use Proxy Protocol.  In the example,
+the 3 second timeout occurred (when a Proxy Protocol banner should have
+been sent), the banner was displayed to the user, but all commands are
+rejected except for QUIT:
+
+# nc mail.example.net 25
+220-mail.example.net, ESMTP Exim 4.82+proxy, Mon, 04 Nov 2013 10:45:59
+220 -0800 RFC's enforced
+EHLO localhost
+503 Command refused, required Proxy negotiation failed
+QUIT
+221 mail.example.net closing connection
+
+
+
+
+SOCKS
+------------------------------------------------------------
+Support for proxying outbound SMTP via a Socks 5 proxy
+(RFC 1928) is included if Exim is compiled with
+EXPERIMENTAL_SOCKS defined.
+
+If an smtp transport has a nonempty socks_proxy option
+defined, this is active.  The option is expanded and
+should be a list (colon-separated by default) of
+proxy specifiers.  Each proxy specifier is a list
+(space-separated by default) where the initial element
+is an IP address and any subsequent elements are options.
+
+Options are a string <name>=<value>.
+These options are currently defined:
+- "auth", with possible values "none" and "name".
+  Using "name" selects username/password authentication
+  per RFC 1929. Default is "none".
+- "name" sets the authentication username. Default is empty.
+- "pass" sets the authentication password. Default is empty.
+- "port" sets the tcp port number for the proxy. Default is 1080.
+- "tmo" sets a connection timeout in seconds for this proxy. Default is 5.
+
+Proxies from the list are tried in order until
+one responds.  The timeout for the overall connection
+applies to the set of proxied attempts.
+
+If events are used, the remote IP/port during a
+tcp:connect event will be that of the proxy.
+
+
+
+
+DANE
+------------------------------------------------------------
+DNS-based Authentication of Named Entities, as applied
+to SMTP over TLS, provides assurance to a client that
+it is actually talking to the server it wants to rather
+than some attacker operating a Man In The Middle (MITM)
+operation.  The latter can terminate the TLS connection
+you make, and make another one to the server (so both
+you and the server still think you have an encrypted
+connection) and, if one of the "well known" set of
+Certificate Authorities has been suborned - something
+which *has* been seen already (2014), a verifiable
+certificate (if you're using normal root CAs, eg. the
+Mozilla set, as your trust anchors).
+
+What DANE does is replace the CAs with the DNS as the
+trust anchor.  The assurance is limited to a) the possibility
+that the DNS has been suborned, b) mistakes made by the
+admins of the target server.   The attack surface presented
+by (a) is thought to be smaller than that of the set
+of root CAs.
+
+It also allows the server to declare (implicitly) that
+connections to it should use TLS.  An MITM could simply
+fail to pass on a server's STARTTLS.
+
+DANE scales better than having to maintain (and
+side-channel communicate) copies of server certificates
+for every possible target server.  It also scales
+(slightly) better than having to maintain on an SMTP
+client a copy of the standard CAs bundle.  It also
+means not having to pay a CA for certificates.
+
+DANE requires a server operator to do three things:
+1) run DNSSEC.  This provides assurance to clients
+that DNS lookups they do for the server have not
+been tampered with.  The domain MX record applying
+to this server, its A record, its TLSA record and
+any associated CNAME records must all be covered by
+DNSSEC.
+2) add TLSA DNS records.  These say what the server
+certificate for a TLS connection should be.
+3) offer a server certificate, or certificate chain,
+in TLS connections which is traceable to the one
+defined by (one of?) the TSLA records
+
+There are no changes to Exim specific to server-side
+operation of DANE.
+
+The TLSA record for the server may have "certificate
+usage" of DANE-TA(2) or DANE-EE(3).  The latter specifies
+the End Entity directly, i.e. the certificate involved
+is that of the server (and should be the sole one transmitted
+during the TLS handshake); this is appropriate for a
+single system, using a self-signed certificate.
+  DANE-TA usage is effectively declaring a specific CA
+to be used; this might be a private CA or a public,
+well-known one.  A private CA at simplest is just
+a self-signed certificate which is used to sign
+cerver certificates, but running one securely does
+require careful arrangement.  If a private CA is used
+then either all clients must be primed with it, or
+(probably simpler) the server TLS handshake must transmit
+the entire certificate chain from CA to server-certificate.
+If a public CA is used then all clients must be primed with it
+(losing one advantage of DANE) - but the attack surface is
+reduced from all public CAs to that single CA.
+DANE-TA is commonly used for several services and/or
+servers, each having a TLSA query-domain CNAME record,
+all of which point to a single TLSA record.
+
+The TLSA record should have a Selector field of SPKI(1)
+and a Matching Type field of SHA2-512(2).
+
+At the time of writing, https://www.huque.com/bin/gen_tlsa
+is useful for quickly generating TLSA records; and commands like
+
+  openssl x509 -in -pubkey -noout <certificate.pem \
+  | openssl rsa -outform der -pubin 2>/dev/null \
+  | openssl sha512 \
+  | awk '{print $2}'
+
+are workable for 4th-field hashes.
+
+For use with the DANE-TA model, server certificates
+must have a correct name (SubjectName or SubjectAltName).
+
+The use of OCSP-stapling should be considered, allowing
+for fast revocation of certificates (which would otherwise
+be limited by the DNS TTL on the TLSA records).  However,
+this is likely to only be usable with DANE-TA.  NOTE: the
+default of requesting OCSP for all hosts is modified iff
+DANE is in use, to:
+
+  hosts_request_ocsp = ${if or { {= {0}{$tls_out_tlsa_usage}} \
+				 {= {4}{$tls_out_tlsa_usage}} } \
+                         {*}{}}
+
+The (new) variable $tls_out_tlsa_usage is a bitfield with
+numbered bits set for TLSA record usage codes.
+The zero above means DANE was not in use,
+the four means that only DANE-TA usage TLSA records were
+found. If the definition of hosts_request_ocsp includes the
+string "tls_out_tlsa_usage", they are re-expanded in time to
+control the OCSP request.
+
+This modification of hosts_request_ocsp is only done if
+it has the default value of "*".  Admins who change it, and
+those who use hosts_require_ocsp, should consider the interaction
+with DANE in their OCSP settings.
+
+
+For client-side DANE there are two new smtp transport options,
+hosts_try_dane and hosts_require_dane.  They do the obvious thing.
+[ should they be domain-based rather than host-based? ]
+
+DANE will only be usable if the target host has DNSSEC-secured
+MX, A and TLSA records.
+
+A TLSA lookup will be done if either of the above options match
+and the host-lookup succeded using dnssec.
+If a TLSA lookup is done and succeeds, a DANE-verified TLS connection
+will be required for the host.
+
+(TODO: specify when fallback happens vs. when the host is not used)
+
+If DANE is requested and useable (see above) the following transport
+options are ignored:
+  hosts_require_tls
+  tls_verify_hosts
+  tls_try_verify_hosts
+  tls_verify_certificates
+  tls_crl
+  tls_verify_cert_hostnames
+
+If DANE is not usable, whether requested or not, and CA-anchored
+verification evaluation is wanted, the above variables should be set
+appropriately.
+
+Currently dnssec_request_domains must be active (need to think about that)
+and dnssec_require_domains is ignored.
+
+If verification was successful using DANE then the "CV" item
+in the delivery log line will show as "CV=dane".
+
+There is a new variable $tls_out_dane which will have "yes" if
+verification succeeded using DANE and "no" otherwise (only useful
+in combination with EXPERIMENTAL_EVENT), and a new variable
+$tls_out_tlsa_usage (detailed above).
+
+
+
+INTERNATIONAL
+------------------------------------------------------------
+SMTPUTF8
+Internationalised mail name handling.
+RFCs 6530, 6533, 5890
+
+Compile with EXPERIMENTAL_INTERNATIONAL and libidn.
+
+New main config option smtputf8_advertise_hosts, default '*',
+a host list.  If this matches the sending host and
+accept_8bitmime is true (the default) then the ESMTP option
+SMTPUTF8 will be advertised.
+
+If the sender specifies the SMTPUTF8 option on a MAIL command
+international handling for the message is enabled and
+the expansion variable $message_smtputf8 will have value TRUE.
+
+The option allow_utf8_domains is set to true for this
+message. All DNS lookups are converted to a-label form
+whatever the setting of allow_utf8_domains.
+
+Both localparts and domain are maintained as the original
+utf8 form internally; any matching or regex use will
+require appropriate care.  Filenames created, eg. by
+the appendfile transport, will have utf8 name.
+
+Helo names sent by the smtp transport will have any utf8
+components expanded to a-label form.
+
+Any certificate name checks will be done using the a-label
+form of the name.
+
+Log lines and Received-by: header lines will aquire a "utf8"
+prefix on the protocol element, eg. utf8esmtp.
+
+New expansion operators:
+	${utf8_domain_to_alabel:str}
+	${utf8_domain_from_alabel:str}
+	${utf8_localpart_to_alabel:str}
+	${utf8_localpart_from_alabel:str}
+
+New "control = utf8_downconvert" ACL modifier,
+sets a flag requiring that addresses are converted to
+a-label form before smtp delivery, for use in a
+Message Submission Agent context.  Can also be
+phrased as "control = utf8_downconvert/1" and is
+mandatory.  The flag defaults to zero and can be cleared
+by "control = utf8_downconvert/0".  The value "-1"
+may also be used, to use a-label for only if the
+destination host does not support SMTPUTF8.
+
+If mua_wrapper is set, the utf8_downconvert control
+defaults to -1 (convert if needed).
+
+
+There is no explicit support for VRFY and EXPN.
+Configurations supporting these should inspect
+$smtp_command_argument for an SMTPUTF8 argument.
+
+There is no support for LMTP on Unix sockets.
+Using the "lmtp" protocol option on an smtp transport,
+for LMTP over TCP, should work as expected.
+
+Known issues:
+ - DSN unitext handling is not present
+ - no provision for converting logging from or to UTF-8
+
+----
+IMAP folder names
+
+New expansion operator:
+
+${imapfolder {<string>} {<sep>} {<specials>}}
+
+The string is converted from the charset specified by the headers charset 
+command (in a filter file) or headers_charset global option, to the
+modified UTF-7 encoding specified by RFC 2060, with the following
+exception: All occurences of <sep> (which has to be a single character)
+are replaced with periods ("."), and all periods and slashes that aren't
+<sep> and are not in the <specials> string are BASE64 encoded.
+
+The third argument can be omitted, defaulting to an empty string.
+The second argument can be omitted, defaulting to "/".
+
+This is the encoding used by Courier for Maildir names on disk, and followed
+by many other IMAP servers.
+
+   Example 1: ${imapfolder {Foo/Bar}}       yields "Foo.Bar".
+   Example 2: ${imapfolder {Foo/Bar}{.}{/}} yields "Foo&AC8-Bar".
+   Example 3: ${imapfolder {Räksmörgås}}    yields "R&AOQ-ksm&APY-rg&AOU-s".
+
+Note that the source charset setting is vital, and also that characters
+must be representable in UTF-16.
+
+
+
+
+--------------------------------------------------------------
+End of file
+--------------------------------------------------------------

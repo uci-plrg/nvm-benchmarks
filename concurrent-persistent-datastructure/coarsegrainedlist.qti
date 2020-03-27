@@ -1,0 +1,331 @@
+QtiPlot 0.9.8 project file
+<scripting-lang>	muParser
+<windows>	6
+<table>
+Table1	30	3	7/4/17 11:15 AM
+geometry	0	0	409	249	
+header	#threads[X]	mnemosyene-fg[Y]	mnemosyene-cg[Y]
+ColWidth	100	145	100	
+<com>
+</com>
+ColType	0;0/13	0;0/13	0;0/13
+ReadOnlyColumn	0	0	0
+HiddenColumn	0	0	0
+Comments				
+WindowLabel		2
+<data>
+0	10	0.00063762	0.00068424
+1	20	0.0015201	0.00138732
+2	30	0.00294524	0.00188718
+3	40	0.00259856	0.00221486
+4	50	0.0030472	0.00238154
+</data>
+</table>
+<table>
+Table2	30	3	7/4/17 11:19 AM
+geometry	550	2	461	249	
+header	#threads[X]	nvml-fg[Y]	nvml-cg[Y]
+ColWidth	100	145	100	
+<com>
+</com>
+ColType	0;0/13	0;0/13	0;0/13
+ReadOnlyColumn	0	0	0
+HiddenColumn	0	0	0
+Comments				
+WindowLabel		2
+<data>
+0	10	1.92115808	3.07222208
+1	20	3.4651769	4.32937864
+2	30	5.34391166	6.18119456
+3	40	6.83836904	6.92437034
+4	50	8.54479058	9.07889016
+</data>
+</table>
+<multiLayer>
+NVML	1	1	7/4/17 11:21 AM
+geometry	1010	-3	285	290	
+WindowLabel		2
+Margins	5	5	5	5
+Spacing	5	5
+LayerCanvasSize	400	300
+Alignement	0	0
+<AlignPolicy>0</AlignPolicy>
+<CommonAxes>0</CommonAxes>
+<graph>
+ggeometry	4	4	272	233
+<PageGeometry>0.0144404	0.0165289	0.981949	0.96281</PageGeometry>
+PlotTitle	nvml list	#000000	4228
+<Antialiasing>0</Antialiasing>
+<Autoscaling>1</Autoscaling>
+<ScaleFonts>1</ScaleFonts>
+<GridOnTop>0</GridOnTop>
+<MissingDataGap>1</MissingDataGap>
+Background	#ffffff	0
+Margin	0
+Border	0	#000000
+grid	0	0	0	0	#0000ff	0	0.5	#a0a0a4	2	0.4	#0000ff	0	0.5	#a0a0a4	2	0.4	0	0	2	0	0
+EnabledAxes	1	1	1	1	
+AxesTitles	#threads	avg time(s)		 	
+AxesTitleColors	#000000	#000000	#000000	#000000	
+AxesTitleAlignment	5124	5124	5124	5124
+AxesTitleDistance	2	2	2	2
+InvertedTitle	0	0	0	0
+TitleFont	Ubuntu	8	75	0	0	0
+ScaleFont0	Ubuntu	6	75	0	0	0
+ScaleFont1	Ubuntu	6	75	0	0	0
+ScaleFont2	Ubuntu	6	75	0	0	0
+ScaleFont3	Ubuntu	6	75	0	0	0
+AxisFont0	Ubuntu	6	50	0	0	0
+AxisFont1	Ubuntu	6	50	0	0	0
+AxisFont2	Ubuntu	6	50	0	0	0
+AxisFont3	Ubuntu	6	50	0	0	0
+AxesColors	#000000	#000000	#000000	#000000
+AxesNumberColors	#3c3c3c	#3c3c3c	#3c3c3c	#3c3c3c
+AxesBaseline	0	0	0	0	
+CanvasBackground	#ffffff	0
+curve	Table2_#threads	Table2_nvml-cg	2	1	#000000	0	1	7	1	#000000	#000000	0	#000000	14	1	2	0	0	29	1
+curve	Table2_#threads	Table2_nvml-fg	2	1	#ff0000	0	1	7	2	#ff0000	#ff0000	0	#000000	14	1	2	0	0	29	1
+scale	0	1	10	0	10	5	0	0
+scale	1	1	10	0	10	5	0	0
+scale	2	0	60	0	7	5	0	0
+scale	3	0	60	0	7	5	0	0
+LabelsFormat	0	6	0	6	0	6	0	6
+AxisType	0	0	0	0	
+MajorTicks	1	1	1	1
+MinorTicks	1	1	1	1
+TicksLength	5	9
+DrawAxesBackbone	1	1	1	1	1
+AxesLineWidth	1
+LabelsRotation	0	0	0	0
+LabelsPrefix				
+LabelsSuffix				
+TickLabelsSpace	4	4	4	4
+ShowTicksPolicy	0	0	0	0
+EnabledTickLabels	1	1	1	1
+<Legend>
+<Frame>1</Frame>
+<Color>#000000</Color>
+<FrameWidth>1</FrameWidth>
+<LineStyle>0</LineStyle>
+<x>1.5037593984962</x>
+<y>9.6989966555184</y>
+<right>16.390977443609</right>
+<bottom>8.82608695652174</bottom>
+<attachTo>1</attachTo>
+<onTop>1</onTop>
+<visible>1</visible>
+<Text>
+\l(1)%(1)
+\l(2)%(2)
+</Text>
+<Font>Ubuntu	6	50	0	0	0</Font>
+<TextColor>#000000</TextColor>
+<Background>#ffffff</Background>
+<Alpha>0</Alpha>
+<Angle>0</Angle>
+<AutoUpdate>1</AutoUpdate>
+<TeXOutput>0</TeXOutput>
+</Legend>
+</graph>
+<LinkXAxes>0</LinkXAxes>
+<ScaleLayers>1</ScaleLayers>
+</multiLayer>
+<multiLayer>
+Mnemosyene	1	1	7/4/17 11:22 AM
+geometry	-4	238	336	278	
+WindowLabel		0
+Margins	5	5	5	5
+Spacing	5	5
+LayerCanvasSize	400	300
+Alignement	0	0
+<AlignPolicy>0</AlignPolicy>
+<CommonAxes>0</CommonAxes>
+<graph>
+ggeometry	5	4	319	220
+<PageGeometry>0.0152439	0.0173913	0.972561	0.956522</PageGeometry>
+PlotTitle	Mnemosyene list	#000000	4228
+<Antialiasing>0</Antialiasing>
+<Autoscaling>1</Autoscaling>
+<ScaleFonts>1</ScaleFonts>
+<GridOnTop>0</GridOnTop>
+<MissingDataGap>1</MissingDataGap>
+Background	#ffffff	0
+Margin	0
+Border	0	#000000
+grid	0	0	0	0	#0000ff	0	0.5	#a0a0a4	2	0.4	#0000ff	0	0.5	#a0a0a4	2	0.4	0	0	2	0	0
+EnabledAxes	1	1	1	1	
+AxesTitles	#threads	avg time(s)		 	
+AxesTitleColors	#000000	#000000	#000000	#000000	
+AxesTitleAlignment	5124	5124	5124	5124
+AxesTitleDistance	2	2	2	2
+InvertedTitle	0	0	0	0
+TitleFont	Ubuntu	7	75	0	0	0
+ScaleFont0	Ubuntu	6	75	0	0	0
+ScaleFont1	Ubuntu	6	75	0	0	0
+ScaleFont2	Ubuntu	6	75	0	0	0
+ScaleFont3	Ubuntu	6	75	0	0	0
+AxisFont0	Ubuntu	6	50	0	0	0
+AxisFont1	Ubuntu	6	50	0	0	0
+AxisFont2	Ubuntu	6	50	0	0	0
+AxisFont3	Ubuntu	6	50	0	0	0
+AxesColors	#000000	#000000	#000000	#000000
+AxesNumberColors	#3c3c3c	#3c3c3c	#3c3c3c	#3c3c3c
+AxesBaseline	0	0	0	0	
+CanvasBackground	#ffffff	0
+curve	Table1_#threads	Table1_mnemosyene-cg	2	1	#000000	0	1	7	1	#000000	#000000	0	#000000	14	1	2	0	0	29	1
+curve	Table1_#threads	Table1_mnemosyene-fg	2	1	#ff0000	0	1	7	2	#ff0000	#ff0000	0	#000000	14	1	2	0	0	29	1
+scale	0	0.0005	0.0035	0	7	5	0	0
+scale	1	0.0005	0.0035	0	7	5	0	0
+scale	2	0	60	0	7	5	0	0
+scale	3	0	60	0	7	5	0	0
+LabelsFormat	0	6	0	6	0	6	0	6
+AxisType	0	0	0	0	
+MajorTicks	1	1	1	1
+MinorTicks	1	1	1	1
+TicksLength	5	9
+DrawAxesBackbone	1	1	1	1	1
+AxesLineWidth	1
+LabelsRotation	0	0	0	0
+LabelsPrefix				
+LabelsSuffix				
+TickLabelsSpace	4	4	4	4
+ShowTicksPolicy	0	0	0	0
+EnabledTickLabels	1	1	1	1
+<Legend>
+<Frame>1</Frame>
+<Color>#000000</Color>
+<FrameWidth>1</FrameWidth>
+<LineStyle>0</LineStyle>
+<x>1.5037593984962</x>
+<y>0.0033996655518395</y>
+<right>16.390977443609</right>
+<bottom>0.00310869565217391</bottom>
+<attachTo>1</attachTo>
+<onTop>1</onTop>
+<visible>1</visible>
+<Text>
+\l(1)%(1)
+\l(2)%(2)
+</Text>
+<Font>Ubuntu	6	50	0	0	0</Font>
+<TextColor>#000000</TextColor>
+<Background>#ffffff</Background>
+<Alpha>0</Alpha>
+<Angle>0</Angle>
+<AutoUpdate>1</AutoUpdate>
+<TeXOutput>0</TeXOutput>
+</Legend>
+</graph>
+<LinkXAxes>0</LinkXAxes>
+<ScaleLayers>1</ScaleLayers>
+</multiLayer>
+<table>
+Table3	30	3	7/4/17 11:22 AM
+geometry	373	265	461	249	
+header	#threads[X]	volatile-fg[Y]	volatile-cg[Y]
+ColWidth	100	145	100	
+<com>
+</com>
+ColType	0;0/13	0;0/13	0;0/13
+ReadOnlyColumn	0	0	0
+HiddenColumn	0	0	0
+Comments				
+WindowLabel		2
+<data>
+0	10	0.00108572	0.00116024
+1	20	0.00184862	0.00194496
+2	30	0.00360076	0.00284556
+3	40	0.0050605	0.0030697
+4	50	0.00414404	0.0034846
+</data>
+</table>
+<multiLayer>
+volatile	1	1	7/4/17 11:24 AM
+geometry	854	287	349	277	active
+WindowLabel		2
+Margins	5	5	5	5
+Spacing	5	5
+LayerCanvasSize	400	300
+Alignement	0	0
+<AlignPolicy>0</AlignPolicy>
+<CommonAxes>0</CommonAxes>
+<graph>
+ggeometry	5	4	332	218
+<PageGeometry>0.0146628	0.0174672	0.973607	0.951965</PageGeometry>
+PlotTitle	volatile list	#000000	4228
+<Antialiasing>0</Antialiasing>
+<Autoscaling>1</Autoscaling>
+<ScaleFonts>1</ScaleFonts>
+<GridOnTop>0</GridOnTop>
+<MissingDataGap>1</MissingDataGap>
+Background	#ffffff	0
+Margin	0
+Border	0	#000000
+grid	0	0	0	0	#0000ff	0	0.5	#a0a0a4	2	0.4	#0000ff	0	0.5	#a0a0a4	2	0.4	0	0	2	0	0
+EnabledAxes	1	1	1	1	
+AxesTitles	#threads	time(s)		 	
+AxesTitleColors	#000000	#000000	#000000	#000000	
+AxesTitleAlignment	5124	5124	5124	5124
+AxesTitleDistance	2	2	2	2
+InvertedTitle	0	0	0	0
+TitleFont	Ubuntu	7	75	0	0	0
+ScaleFont0	Ubuntu	6	75	0	0	0
+ScaleFont1	Ubuntu	6	75	0	0	0
+ScaleFont2	Ubuntu	6	75	0	0	0
+ScaleFont3	Ubuntu	6	75	0	0	0
+AxisFont0	Ubuntu	6	50	0	0	0
+AxisFont1	Ubuntu	6	50	0	0	0
+AxisFont2	Ubuntu	6	50	0	0	0
+AxisFont3	Ubuntu	6	50	0	0	0
+AxesColors	#000000	#000000	#000000	#000000
+AxesNumberColors	#3c3c3c	#3c3c3c	#3c3c3c	#3c3c3c
+AxesBaseline	0	0	0	0	
+CanvasBackground	#ffffff	0
+curve	Table3_#threads	Table3_volatile-cg	2	1	#000000	0	1	7	1	#000000	#000000	0	#000000	14	1	2	0	0	29	1
+curve	Table3_#threads	Table3_volatile-fg	2	1	#ff0000	0	1	7	2	#ff0000	#ff0000	0	#000000	14	1	2	0	0	29	1
+scale	0	0.001	0.006	0	6	5	0	0
+scale	1	0.001	0.006	0	6	5	0	0
+scale	2	0	60	0	7	5	0	0
+scale	3	0	60	0	7	5	0	0
+LabelsFormat	0	6	0	6	0	6	0	6
+AxisType	0	0	0	0	
+MajorTicks	1	1	1	1
+MinorTicks	1	1	1	1
+TicksLength	5	9
+DrawAxesBackbone	1	1	1	1	1
+AxesLineWidth	1
+LabelsRotation	0	0	0	0
+LabelsPrefix				
+LabelsSuffix				
+TickLabelsSpace	4	4	4	4
+ShowTicksPolicy	0	0	0	0
+EnabledTickLabels	1	1	1	1
+<Legend>
+<Frame>1</Frame>
+<Color>#000000</Color>
+<FrameWidth>1</FrameWidth>
+<LineStyle>0</LineStyle>
+<x>1.5037593984962</x>
+<y>0.0058327759197324</y>
+<right>16.390977443609</right>
+<bottom>0.00534782608695652</bottom>
+<attachTo>1</attachTo>
+<onTop>1</onTop>
+<visible>1</visible>
+<Text>
+\l(1)%(1)
+\l(2)%(2)
+</Text>
+<Font>Ubuntu	6	50	0	0	0</Font>
+<TextColor>#000000</TextColor>
+<Background>#ffffff</Background>
+<Alpha>0</Alpha>
+<Angle>0</Angle>
+<AutoUpdate>1</AutoUpdate>
+<TeXOutput>0</TeXOutput>
+</Legend>
+</graph>
+<LinkXAxes>0</LinkXAxes>
+<ScaleLayers>1</ScaleLayers>
+</multiLayer>
+<open>1</open>

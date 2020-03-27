@@ -1,0 +1,128 @@
+IDIR 	= ../include
+ODIR	= obj
+LDIR	= ../lib
+SHAREDLIBVER	= 1.0.1
+SHAREDLIBNAME	= libkp_kvstore.so.$(SHAREDLIBVER)
+STATICLIBNAME	= libkp_kvstore.a
+VECTOR_DIR	= vector-cdds
+INCL = -I./ -I$(VECTOR_DIR)/ -Ihash_table/ -I../include -Ileveldb/include
+
+CC 	= gcc
+LEVELDBLIBS = -lleveldb
+CFLAGS 	= $(INCL) -D_GNU_SOURCE -g -Wall -fPIC -O2
+  # -pg enables profiling with gprof(1)
+  # -D_GNU_SOURCE is needed for CPU_SET macros in evaluation.c, and also
+  #   needed for lock debugging
+  # -fPIC: position-independent-code, needed for shared library...
+LIBS	= -L$(HOME)/lib/ -L/usr/local/lib/ -L./leveldb/lib/ -lpthread -lrt -lm
+  # -lrt is for scheduler/timing stuff in evaluation.c
+
+default: test_local_master evaluation
+lib: kp_kvstore-static kp_kvstore-shared
+all: test_local_master evaluation telescope telescope2 test_leveldb test_flush test_recovery
+
+#################################################
+DEPS 	= ./kp_kvstore_internal.h $(IDIR)/kp_kv_local.h $(IDIR)/kp_kv_master.h ./kp_macros.h ./recovery.h kp_common.h
+
+$(ODIR)/%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+#	cp $@ $(LDIR)
+
+$(ODIR)/hash_table.o: hash_table/hash.c hash_table/hash.h hash_table/bitrotate.h hash_table/xalloc-oversized.h ./kp_macros.h ./recovery.h kp_common.h
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+$(ODIR)/vector.o: $(VECTOR_DIR)/vector.c $(VECTOR_DIR)/vector.h recovery.h
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+$(ODIR)/vector64.o: $(VECTOR_DIR)/vector64.c $(VECTOR_DIR)/vector64.h recovery.h
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+_OBJ 	= kp_kvstore.o kp_kv_local.o kp_kv_master.o vector.o vector64.o hash_table.o recovery.o kp_common.o
+OBJ 	= $(patsubst %,$(ODIR)/%,$(_OBJ))
+
+# This test file is old and probably not worth using anymore:
+#dummytest: dummy_code.c $(OBJ)
+#	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+test_local_master: test_local_master.c $(OBJ)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+#################################################
+
+# This LEVELDB* stuff builds leveldb_client.o:
+LEVELDB_DEPS 	= ./kp_kvstore_internal.h kp_macros.h leveldb_client.h
+$(ODIR)/%.o: %.c $(LEVELDB_DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+_LEVELDB_OBJ	= leveldb_client.o
+LEVELDB_OBJ		= $(patsubst %,$(ODIR)/%,$(_LEVELDB_OBJ))
+
+# This is kind of a mess...
+.PHONY: clean leveldb_lib leveldb_clean
+LEVELDBDIR	= leveldb
+
+# This target should create libleveldb.so.1[.0.1] in $LDIR.
+leveldb_lib:
+	make -C $(LEVELDBDIR) shared_lib
+
+leveldb_clean:
+	make -C $(LEVELDBDIR) clean
+
+test_leveldb: test_leveldb.c leveldb_lib $(LEVELDB_OBJ)
+	gcc -o $@ test_leveldb.c $(LEVELDB_OBJ) $(CFLAGS) $(LIBS) $(LEVELDBLIBS)
+
+#################################################
+_EVOBJ	= $(_OBJ) evaluation.o
+EVOBJ 	= $(patsubst %,$(ODIR)/%,$(_EVOBJ))
+
+evaluation: $(EVOBJ) leveldb_lib $(LEVELDB_OBJ)
+	$(CC) -o $@ $(EVOBJ) $(LEVELDB_OBJ) $(CFLAGS) $(LIBS) $(LEVELDBLIBS)
+
+#################################################
+_OBJT 	= telescope.o
+OBJT 	= $(patsubst %,$(ODIR)/%,$(_OBJT))
+
+telescope: $(OBJT)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+_OBJT2 	= telescope2.o
+OBJT2 	= $(patsubst %,$(ODIR)/%,$(_OBJT2))
+
+telescope2: $(OBJT2)
+	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+_OBJFLUSH	= flush.o kp_timing.o
+OBJFLUSH	= $(patsubst %,$(ODIR)/%,$(_OBJFLUSH))
+
+#-lrt is needed for clock_gettime():
+test_flush: test_flush.c $(OBJFLUSH)
+	$(CC) -o $@ $^ -g -Wall -O2 -lrt
+	$(CC) -o test_flush2 test_flush2.c -g -Wall -O2 -lrt
+test_flush_assembly: test_flush.c
+	$(CC) -S -o flush.s flush.c -g -Wall -O2 -lrt
+	$(CC) -S -o test_flush.s test_flush.c -g -Wall -O2 -lrt
+
+_OBJRECOVERY	= recovery.o
+OBJRECOVERY		= $(patsubst %,$(ODIR)/%,$(_OBJRECOVERY))
+
+test_recovery: test_recovery.c $(OBJRECOVERY) $(ODIR)/vector.o
+	$(CC) -o $@ $^ -g -Wall -O2 -I$(VECTOR_DIR)/
+
+#################################################
+_LIBOBJ 	= $(_OBJ)
+LIBOBJ 	= $(patsubst %,$(ODIR)/%,$(_LIBOBJ))
+
+# todo: remove dummy_code.o from _OBJ
+# http://www.adp-gmbh.ch/cpp/gcc/create_lib.html
+kp_kvstore-static: $(LIBOBJ)
+	ar rcs $(ODIR)/$(STATICLIBNAME) $(LIBOBJ)
+	cp $(ODIR)/$(STATICLIBNAME) $(LDIR)
+
+kp_kvstore-shared: $(LIBOBJ)
+	$(CC) -shared -Wl,-soname,libkp_kvstore.so.1 \
+		-o $(SHAREDLIBNAME) $(LIBOBJ) -lc
+	cp $(SHAREDLIBNAME) $(LDIR)
+
+#################################################
+clean: leveldb_clean
+	rm -f $(ODIR)/*.o $(ODIR)/*.a *~ core $(INCDIR)/*~ $(SHAREDLIBNAME) $(STATICLIBNAME) $(LDIR)/$(SHAREDLIBNAME) $(LDIR)/$(STATICLIBNAME) dummytest evaluation telescope telescope2 test_local_master gmon.out test_leveldb test_flush test_flush2 test_recovery
+

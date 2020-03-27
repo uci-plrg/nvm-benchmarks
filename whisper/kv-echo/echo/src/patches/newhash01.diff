@@ -1,0 +1,49 @@
+Index: kp_kvstore.c
+===================================================================
+--- kp_kvstore.c	(revision 535)
++++ kp_kvstore.c	(working copy)
+@@ -209,7 +209,7 @@
+  * stackoverflow.com for much more information. MD5, SHA, etc. are other
+  * potential good bets?
+  */
+-size_t kp_ht_hasher(const void *entry_ptr, size_t table_size)
++size_t kp_ht_hasher_sdbm(const void *entry_ptr, size_t table_size)
+ {
+ 	int c;
+ 	const char *key;
+@@ -238,6 +238,35 @@
+ 	return (size_t)hash;
+ }
+ 
++size_t kp_ht_hasher_djb2(const void *entry_ptr, size_t table_size)
++{
++	int c;
++	const char *key;
++	unsigned long hash;
++	kp_ht_entry *entry = (kp_ht_entry *)entry_ptr;
++
++	if (!entry) {
++		kp_error("entry is NULL! Returning 0 (all NULL pointers will "
++				"hash to this slot)\n");
++		return 0;
++	}
++
++	//kp_debug("hashing entry: key=%s, vt=%p\n", entry->key, entry->vt);
++	key = entry->key;  //"unsigned char *key" on hash function web page...
++	hash = 5381;
++
++	while ( (c = *key++) ) {
++		hash = ((hash << 5) + hash) + c;  /* hash * 33 + c */
++	}
++
++	hash = hash % table_size;  //don't forget this!
++	//kp_debug("returning hash=%u for entry->key=%s\n", (size_t)hash, entry->key);
++	return (size_t)hash;
++}
++
++//Hash_hasher kp_ht_hasher = kp_ht_hasher_sdbm;
++Hash_hasher kp_ht_hasher = kp_ht_hasher_djb2;
++
+ /* Simple string-comparison comparator. Returns true if the keys that
+  * are stored in each entry match; returns false if they do not, or if
+  * either or both pointers are NULL.

@@ -1,0 +1,24 @@
+coverage:
+  status:
+    project:
+      posix:
+        threshold: 0.2
+        paths:
+          - src/libpmemfile-posix/
+      preload:
+        threshold: 0.2
+        paths:
+          - src/libpmemfile/
+      antool:
+        paths:
+          - src/tools/antool/
+      other:
+        paths:
+          - src/tools/mkfs.pmemfile.c
+          - src/tools/pmemfile-cat.c
+          - src/tools/pmemfile-mount.c
+  ignore:
+    - utils/
+    - tests/
+    - src/valgrind/
+    - src/libpmemfile/sys_util.h

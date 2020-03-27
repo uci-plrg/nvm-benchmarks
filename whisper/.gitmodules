@@ -1,0 +1,28 @@
+[submodule "nstore"]
+	path = nstore
+	url = https://github.com/snalli/nstore
+	branch = placement_new_on_psegments
+[submodule "mnemosyne-gcc"]
+	path = mnemosyne-gcc
+	url = https://github.com/snalli/mnemosyne-gcc
+	branch = master
+[submodule "nvml"]
+	path = nvml
+	url = https://github.com/snalli/nvml
+	branch = master
+[submodule "redis"]
+	path = redis
+	url = https://github.com/snalli/redis
+	branch = 3.2-nvml
+[submodule "PMFS-new"]
+	path = PMFS-new
+	url = https://github.com/snalli/PMFS-new
+	branch = master
+[submodule "kv-echo"]
+	path = kv-echo
+	url = https://github.com/snalli/echo
+	branch = bailey
+[submodule "eliza"]
+	path = eliza
+	url = https://github.com/snalli/eliza
+	branch = master

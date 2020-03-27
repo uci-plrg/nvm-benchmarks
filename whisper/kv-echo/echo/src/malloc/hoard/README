@@ -1,0 +1,8 @@
+http://www.hoard.org/
+
+UNIX
+
+In UNIX, you can use the LD_PRELOAD variable to use Hoard instead of the system allocator for any program not linked with the "static option" (that's most programs). Below are settings for Linux and Solaris.
+
+Linux:
+LD_PRELOAD="/path/libhoard.so"
