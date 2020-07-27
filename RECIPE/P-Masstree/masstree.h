@@ -7,7 +7,7 @@
 #include <math.h>
 #include <iostream>
 #include <mutex>
-#include <atomic>
+//#include <atomic>
 #include <assert.h>
 #ifdef LOCK_INIT
 #include "tbb/concurrent_vector.h"

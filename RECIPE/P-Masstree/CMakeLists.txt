@@ -30,10 +30,7 @@ else()
     message(FATAL_ERROR "Cannot find any flush instructions (clflush, clflushopt, clwb)")
 endif()
 
-find_library(JemallocLib jemalloc)
-find_library(TbbLib tbb)
-
 set(P_MASS_TEST example.cpp)
 add_executable(example ${P_MASS_TEST})
 
-target_link_libraries(example ${JemallocLib} ${TbbLib} atomic boost_system boost_thread)
+target_link_libraries(example pthread)
