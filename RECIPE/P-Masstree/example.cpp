@@ -82,6 +82,15 @@ void run(char **argv) {
                 }
             }
         };
+
+        std::vector<std::thread> thread_group;
+
+        for (int i = 0; i < num_thread; i++)
+            thread_group.push_back(std::thread{func});
+
+        for (int i = 0; i < num_thread; i++)
+            thread_group[i].join();
+            
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::system_clock::now() - starttime);
         printf("Throughput: lookup,%ld,%f ops/us\n", n, (n * 1.0) / duration.count());
