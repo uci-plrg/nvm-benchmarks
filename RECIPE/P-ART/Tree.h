@@ -69,7 +69,7 @@ namespace ART_ROWEX {
 
         ~Tree();
 
-        ThreadInfo getThreadInfo();
+        ThreadInfo getThreadInfo(uint64_t id);
 
         void *lookup(const Key *k, ThreadInfo &threadEpocheInfo) const;
 

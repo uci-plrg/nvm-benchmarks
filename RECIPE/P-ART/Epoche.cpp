@@ -6,7 +6,9 @@
 
 #include <assert.h>
 #include <iostream>
+#include <limits>
 #include "Epoche.h"
+
 using namespace ART;
 
 
@@ -144,8 +146,8 @@ inline void Epoche::showDeleteRatio() {
     }
 }
 
-inline ThreadInfo::ThreadInfo(Epoche &epoche)
-        : epoche(epoche), deletionList(epoche.deletionLists.local()) { }
+inline ThreadInfo::ThreadInfo(Epoche &epoche, uint64_t id)
+        : epoche(epoche), deletionList(epoche.getDeletionList(id)) { }
 
 inline DeletionList &ThreadInfo::getDeletionList() const {
     return deletionList;

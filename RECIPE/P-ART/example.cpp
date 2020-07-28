@@ -1,15 +1,23 @@
 #include <iostream>
 #include <chrono>
 #include <random>
-#include "tbb/tbb.h"
-
+#include <thread>
 using namespace std;
 
 #include "Tree.h"
 
+
+typedef struct thread_data {
+    uint32_t id;
+    ART_ROWEX::Tree *tree;
+} thread_data_t;
+
+
 void loadKey(TID tid, Key &key) {
     return ;
 }
+
+int num_thread;
 
 void run(char **argv) {
     std::cout << "Simple Example of P-ART" << std::endl;
@@ -25,21 +33,37 @@ void run(char **argv) {
         keys[i] = i + 1;
     }
 
-    int num_thread = atoi(argv[2]);
-    tbb::task_scheduler_init init(num_thread);
-
+    num_thread = atoi(argv[2]);
+    
     printf("operation,n,ops/s\n");
     ART_ROWEX::Tree tree(loadKey);
+    thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
+
+    std::atomic<int> next_thread_id;
     {
         // Build tree
         auto starttime = std::chrono::system_clock::now();
-        tbb::parallel_for(tbb::blocked_range<uint64_t>(0, n), [&](const tbb::blocked_range<uint64_t> &range) {
-            auto t = tree.getThreadInfo();
-            for (uint64_t i = range.begin(); i != range.end(); i++) {
+        next_thread_id.store(0);
+        auto func = [&]() {
+            int thread_id = next_thread_id.fetch_add(1);
+            tds[thread_id].id = thread_id;
+            tds[thread_id].tree = &tree;
+
+            uint64_t start_key = n / num_thread * (uint64_t)thread_id;
+            uint64_t end_key = start_key + n / num_thread;
+            auto t = tree.getThreadInfo(thread_id);
+            for (uint64_t i = start_key; i < end_key; i++) {
                 Keys[i] = Keys[i]->make_leaf(keys[i], sizeof(uint64_t), keys[i]);
                 tree.insert(Keys[i], t);
             }
-        });
+        };
+        std::vector<std::thread> thread_group;
+
+        for (int i = 0; i < num_thread; i++)
+            thread_group.push_back(std::thread{func});
+
+        for (int i = 0; i < num_thread; i++)
+            thread_group[i].join();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::system_clock::now() - starttime);
         printf("Throughput: insert,%ld,%f ops/us\n", n, (n * 1.0) / duration.count());
@@ -49,16 +73,32 @@ void run(char **argv) {
     {
         // Lookup
         auto starttime = std::chrono::system_clock::now();
-        tbb::parallel_for(tbb::blocked_range<uint64_t>(0, n), [&](const tbb::blocked_range<uint64_t> &range) {
-            auto t = tree.getThreadInfo();
-            for (uint64_t i = range.begin(); i != range.end(); i++) {
+        next_thread_id.store(0);
+        auto func = [&]() {
+            int thread_id = next_thread_id.fetch_add(1);
+            tds[thread_id].id = thread_id;
+            tds[thread_id].tree = &tree;
+
+            uint64_t start_key = n / num_thread * (uint64_t)thread_id;
+            uint64_t end_key = start_key + n / num_thread;
+            auto t = tree.getThreadInfo(thread_id);
+            for (uint64_t i = start_key; i < end_key; i++) {
                 uint64_t *val = reinterpret_cast<uint64_t *> (tree.lookup(Keys[i], t));
                 if (*val != keys[i]) {
                     std::cout << "wrong value read: " << *val << " expected:" << keys[i] << std::endl;
                     throw;
                 }
             }
-        });
+        };
+
+        std::vector<std::thread> thread_group;
+
+        for (int i = 0; i < num_thread; i++)
+            thread_group.push_back(std::thread{func});
+
+        for (int i = 0; i < num_thread; i++)
+            thread_group[i].join();
+
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::system_clock::now() - starttime);
         printf("Throughput: lookup,%ld,%f ops/us\n", n, (n * 1.0) / duration.count());

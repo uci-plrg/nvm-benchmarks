@@ -3,9 +3,9 @@
 
 #include <atomic>
 #include <array>
-#include "tbb/enumerable_thread_specific.h"
-#include "tbb/combinable.h"
 
+
+#define NUMBER_OF_THREAD 10
 namespace ART {
 
     struct LabelDelete {
@@ -50,7 +50,7 @@ namespace ART {
         DeletionList & getDeletionList() const;
     public:
 
-        ThreadInfo(Epoche &epoche);
+        ThreadInfo(Epoche &epoche, uint64_t id);
 
         ThreadInfo(const ThreadInfo &ti) : epoche(ti.epoche), deletionList(ti.deletionList) {
         }
@@ -64,7 +64,7 @@ namespace ART {
         friend class ThreadInfo;
         std::atomic<uint64_t> currentEpoche{0};
 
-        tbb::enumerable_thread_specific<DeletionList> deletionLists;
+        DeletionList deletionLists [NUMBER_OF_THREAD];
 
         size_t startGCThreshhold;
 
@@ -79,7 +79,9 @@ namespace ART {
         void markNodeForDeletion(void *n, ThreadInfo &epocheInfo);
 
         void exitEpocheAndCleanup(ThreadInfo &info);
-
+        DeletionList &getDeletionList(uint64_t id){
+            return deletionLists[id];
+        }
         void showDeleteRatio();
 
     };

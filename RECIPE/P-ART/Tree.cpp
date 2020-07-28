@@ -28,8 +28,8 @@ namespace ART_ROWEX {
         N::deleteNode(root);
     }
 
-    ThreadInfo Tree::getThreadInfo() {
-        return ThreadInfo(this->epoche);
+    ThreadInfo Tree::getThreadInfo(uint64_t id) {
+        return ThreadInfo(this->epoche, id);
     }
 
     void *Tree::lookup(const Key *k, ThreadInfo &threadEpocheInfo) const {
@@ -532,19 +532,19 @@ namespace ART_ROWEX {
                                                                         Prefix &nonMatchingPrefix,
                                                                         LoadKeyFunction loadKey) {
         Prefix p = n->getPrefi();
-	//art_cout << __func__ << ":Actual=" << p.prefixCount + level << ",Expected=" << n->getLevel() << std::endl;
+	    //art_cout << __func__ << ":Actual=" << p.prefixCount + level << ",Expected=" << n->getLevel() << std::endl;
         if (p.prefixCount + level != n->getLevel()) {
             // Intermediate or inconsistent state from path compression "split" or "merge" is detected
             // Inconsistent path compressed prefix should be recovered in here
             bool needRecover = false;
             auto v = n->getVersion();
-	    art_cout << __func__ << " INCORRECT LEVEL ENCOUNTERED " << std::endl;
+	        art_cout << __func__ << " INCORRECT LEVEL ENCOUNTERED " << std::endl;
             n->lockVersionOrRestart(v, needRecover);
             if (!needRecover) {
                 // Inconsistent state due to prior system crash is suspected --> Do recovery
                 // TODO: recovery algorithm will be added
                 // 1) Picking up arbitrary two leaf nodes and then 2) rebuilding correct compressed prefix
-		art_cout << __func__ << " PERFORMING RECOVERY" << std::endl;
+		        art_cout << __func__ << " PERFORMING RECOVERY" << std::endl;
                 uint32_t discrimination = (n->getLevel() > level ? n->getLevel() - level : level - n->getLevel());
                 Key *kr = N::getAnyChildTid(n);
                 p.prefixCount = discrimination;

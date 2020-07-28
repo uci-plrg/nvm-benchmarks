@@ -7,16 +7,13 @@ if( NOT CMAKE_BUILD_TYPE )
 else()
     message(STATUS "Build type is set to ${CMAKE_BUILD_TYPE}")
 endif()
-set(CMAKE_C_COMPILER "/scratch/nvm/benchmarks/gcc")
-set(CMAKE_CXX_COMPILER "/scratch/nvm/benchmarks/g++")
+#set(CMAKE_C_COMPILER "/scratch/nvm/benchmarks/gcc")
+#set(CMAKE_CXX_COMPILER "/scratch/nvm/benchmarks/g++")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -march=native -mrtm -mcx16 -mavx -mavx2 -mbmi2 -mlzcnt -Wno-deprecated-declarations -Wall -Wextra -fno-builtin-malloc -fno-builtin-calloc -fno-builtin-realloc -fno-builtin-free -faligned-new=64 -DNDEBUG")
 
 execute_process(COMMAND cat /proc/cpuinfo COMMAND grep clflush OUTPUT_VARIABLE ENABLE_CLFLUSH)
 execute_process(COMMAND cat /proc/cpuinfo COMMAND grep clflushopt OUTPUT_VARIABLE ENABLE_CLFLUSHOPT)
 execute_process(COMMAND cat /proc/cpuinfo COMMAND grep clwb OUTPUT_VARIABLE ENABLE_CLWB)
-
-#set(ENABLE_CLWB "clwb :|")
-#set(ENABLE_CLFLUSHOPT "clflushopt :|")
 
 if(ENABLE_CLWB)
     add_definitions(-DCLWB)
@@ -34,15 +31,11 @@ else()
     message(FATAL_ERROR "Cannot find any flush instructions (clflush, clflushopt, clwb)")
 endif()
 
-find_library(JemallocLib jemalloc)
-find_library(TbbLib tbb)
-
 set(INDEX_FILES Tree.cpp)
 
 add_library(Indexes ${INDEX_FILES})
-target_link_libraries(Indexes ${JemallocLib} ${TbbLib})
 
 set(P_ART_TEST example.cpp)
 add_executable(example ${P_ART_TEST})
 
-target_link_libraries(example Indexes atomic boost_system boost_thread)
+target_link_libraries(example Indexes pthread)
