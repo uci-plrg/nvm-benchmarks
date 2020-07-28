@@ -2,7 +2,7 @@
 .DEFAULT_GOAL := all
 #CXX=/scratch/nvm/benchmarks/g++
 CXX=g++
-LIBS=-lrt -lm -lpthread
+LIBS=-lpthread
 INCLUDES=-I./include
 CFLAGS=-O0 -std=c++11 -g
 
