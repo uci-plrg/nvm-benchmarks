@@ -33,16 +33,12 @@ endif()
 ## Basic configurations
 add_definitions(-DBWTREE_NODEBUG)
 
-find_library(JemallocLib jemalloc)
-find_library(TbbLib tbb)
-find_package (Threads)
-
 set(INDEX_FILES src/bwtree.cpp)
 
 add_library(Indexes ${INDEX_FILES})
-target_link_libraries(Indexes ${TbbLib} ${JemallocLib} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(Indexes pthread)
 
 set(P_BW_TEST example.cpp)
 add_executable(example ${P_BW_TEST})
 
-target_link_libraries(example Indexes atomic boost_system boost_thread)
+target_link_libraries(example Indexes atomic pthread)

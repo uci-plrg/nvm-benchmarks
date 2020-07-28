@@ -1,8 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include <random>
-#include "tbb/tbb.h"
-
+#include <atomic>
 using namespace std;
 
 #include "src/bwtree.h"
