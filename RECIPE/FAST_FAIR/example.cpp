@@ -43,7 +43,7 @@ void run(char **argv) {
             uint64_t end_key = start_key + n / num_thread;
 
             for (uint64_t i = start_key; i < end_key; i++) {
-                tds[thread_id].fair->btree_insert((char *) keys[i], (char *) keys[i]);
+                tds[thread_id].fair->btree_insert( keys[i], (char *) keys[i]);
             }
         };
 
