@@ -59,7 +59,7 @@ template<typename ValueType, template <typename> typename KeyExtractor> struct H
 	 * @param key the key to lookup
 	 * @return the looked up value. The result is valid, if a matching record was found.
 	 */
-	inline idx::contenthelpers::OptionalValue<ValueType> lookup(KeyType const &key) const;
+	inline idx::contenthelpers::OptionalValue<ValueType> lookup(KeyType const &key, uint64_t threadID) const;
 
 	/**
 	 * Scans a given number of values and returns the value at the end of the scan operation
@@ -77,9 +77,9 @@ template<typename ValueType, template <typename> typename KeyExtractor> struct H
 	 * @param value the value to insert.
 	 * @return true if the value can be inserted, false if the index already contains a value for the corresponding key
 	 */
-	inline bool insert(ValueType const & value);
+	inline bool insert(ValueType const & value, uint64_t threadID);
 private:
-	inline bool insertGuarded(ValueType const & value);
+	inline bool insertGuarded(ValueType const & value, uint64_t threadID);
 
 public:
 	/**
@@ -90,14 +90,14 @@ public:
 	 * @param newValue the value to upsert.
 	 * @return the value of a previously contained value for the same key or an invalid result otherwise
 	 */
-	inline idx::contenthelpers::OptionalValue<ValueType> upsert(ValueType newValue);
+	inline idx::contenthelpers::OptionalValue<ValueType> upsert(ValueType newValue, uint64_t threadID);
 
 private:
 	inline idx::contenthelpers::OptionalValue<bool> insertNewValue(
-		InsertStackType & insertStack, hot::commons::DiscriminativeBit const & newBit, ValueType const & value
+		InsertStackType & insertStack, hot::commons::DiscriminativeBit const & newBit, ValueType const & value, uint64_t threadID
 	);
 	inline idx::contenthelpers::OptionalValue<bool> insertForStackRange(
-		InsertStackType & insertStack, const HOTRowexFirstInsertLevel<InsertStackEntryType> & insertLevel, unsigned int numberLockedEntries, ValueType const & valueToInsert
+		InsertStackType & insertStack, const HOTRowexFirstInsertLevel<InsertStackEntryType> & insertLevel, unsigned int numberLockedEntries, ValueType const & valueToInsert, uint64_t threadID
 	);
 	static inline void leafNodePushDown(
 		InsertStackEntryType & leafEntry, hot::commons::InsertInformation const & insertInformation, HOTRowexChildPointer const & valueToInsert

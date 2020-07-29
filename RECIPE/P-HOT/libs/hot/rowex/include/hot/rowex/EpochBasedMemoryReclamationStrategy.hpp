@@ -6,10 +6,8 @@
 #include <array>
 #include <thread>
 
-#include <tbb/enumerable_thread_specific.h>
-
 #include "hot/rowex/ThreadSpecificEpochBasedReclamationInformation.hpp"
-
+#define NUMBER_OF_THREAD 10
 
 namespace hot { namespace rowex {
 
@@ -18,10 +16,10 @@ class EpochBasedMemoryReclamationStrategy {
 	static uint32_t PREVIOUS_EPOCH[3];
 
 	std::atomic<uint32_t> mCurrentEpoch;
-	tbb::enumerable_thread_specific<ThreadSpecificEpochBasedReclamationInformation, tbb::cache_aligned_allocator<ThreadSpecificEpochBasedReclamationInformation>, tbb::ets_key_per_instance> mThreadSpecificInformations;
+	ThreadSpecificEpochBasedReclamationInformation mThreadSpecificInformations [NUMBER_OF_THREAD];
 
 private:
-	EpochBasedMemoryReclamationStrategy() : mCurrentEpoch(0), mThreadSpecificInformations() {
+	EpochBasedMemoryReclamationStrategy() : mCurrentEpoch(0) {
 	}
 
 public:
@@ -31,29 +29,33 @@ public:
 		return &instance;
 	}
 
-	void enterCriticalSection() {
-		ThreadSpecificEpochBasedReclamationInformation & currentMemoryInformation = mThreadSpecificInformations.local();
+	void enterCriticalSection(uint64_t threadID) {
+		ThreadSpecificEpochBasedReclamationInformation & currentMemoryInformation = mThreadSpecificInformations[threadID];
 		uint32_t currentEpoch = mCurrentEpoch.load(std::memory_order_acquire);
 		currentMemoryInformation.enter(currentEpoch);
-		if(currentMemoryInformation.doesThreadWantToAdvanceEpoch() && canAdvance(currentEpoch)) {
+		if(currentMemoryInformation.doesThreadWantToAdvanceEpoch() && canAdvance(currentEpoch, threadID)) {
 			mCurrentEpoch.compare_exchange_strong(currentEpoch, NEXT_EPOCH[currentEpoch]);
 		}
 	}
 
-	bool canAdvance(uint32_t currentEpoch) {
+	bool canAdvance(uint32_t currentEpoch, uint64_t id) {
 		uint32_t previousEpoch = PREVIOUS_EPOCH[currentEpoch];
-		return !std::any_of(mThreadSpecificInformations.begin(), mThreadSpecificInformations.end(), [previousEpoch](ThreadSpecificEpochBasedReclamationInformation const & threadInformation) {
-			return (threadInformation.getLocalEpoch() == previousEpoch);
-		});
+		for (int i=0; i < NUMBER_OF_THREAD; i++){
+			if(mThreadSpecificInformations[i].getLocalEpoch() == previousEpoch){
+				return false;
+			}
+		}
+		return true;
+		
 	}
 
-	void leaveCriticialSection() {
-		ThreadSpecificEpochBasedReclamationInformation & currentMemoryInformation = mThreadSpecificInformations.local();
+	void leaveCriticialSection(uint64_t threadID) {
+		ThreadSpecificEpochBasedReclamationInformation & currentMemoryInformation = mThreadSpecificInformations[threadID];
 		currentMemoryInformation.leave();
 	}
 
-	void scheduleForDeletion(HOTRowexChildPointer const & childPointer) {
-		mThreadSpecificInformations.local().scheduleForDeletion(childPointer);
+	void scheduleForDeletion(HOTRowexChildPointer const & childPointer, uint64_t threadID) {
+		mThreadSpecificInformations[threadID].scheduleForDeletion(childPointer);
 	}
 };
 

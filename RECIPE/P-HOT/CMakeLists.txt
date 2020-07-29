@@ -64,11 +64,8 @@ include_directories(libs/hot/commons/include libs/hot/rowex/include
     libs/idx/benchmark-helpers/include libs/idx/map-helpers/include
     libs/idx/content-helpers/include libs/idx/utils/include libs/profile-lib/include)
 
-find_library(JemallocLib jemalloc)
-find_library(TbbLib tbb)
-find_package (Threads)
 
 set(P_HOT_TEST example.cpp)
 add_executable(example ${P_HOT_TEST})
 
-target_link_libraries(example atomic boost_system boost_thread ${TbbLib} ${JemallocLib} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(example atomic pthread)

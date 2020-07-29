@@ -61,9 +61,9 @@ public:
 		return getNode()->tryLock();
 	}
 
-	template<typename MemoryReclamationStrategy> void markAsObsolete(MemoryReclamationStrategy & memoryReclamation) {
+	template<typename MemoryReclamationStrategy> void markAsObsolete(MemoryReclamationStrategy & memoryReclamation, uint64_t threadID) {
 		getNode()->markAsObsolete();
-		memoryReclamation.scheduleForDeletion(mChildPointer);
+		memoryReclamation.scheduleForDeletion(mChildPointer, threadID);
 	}
 
 	void unlock() {

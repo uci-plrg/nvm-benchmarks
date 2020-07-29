@@ -7,14 +7,16 @@ namespace hot { namespace rowex {
 
 class MemoryGuard {
 	EpochBasedMemoryReclamationStrategy* mMemoryReclamation;
-
+	uint64_t threadID;
 public:
-	MemoryGuard(EpochBasedMemoryReclamationStrategy* memoryReclamation) : mMemoryReclamation(memoryReclamation) {
-		mMemoryReclamation->enterCriticalSection();
+	MemoryGuard(EpochBasedMemoryReclamationStrategy* memoryReclamation, uint64_t _threadID) : 
+						mMemoryReclamation(memoryReclamation),
+						threadID(_threadID) {
+		mMemoryReclamation->enterCriticalSection(threadID);
 	}
 
 	~MemoryGuard() {
-		mMemoryReclamation->leaveCriticialSection();
+		mMemoryReclamation->leaveCriticialSection(threadID);
 	}
 
 	MemoryGuard(MemoryGuard const & other) = delete;

@@ -1,7 +1,6 @@
 #include <iostream>
 #include <chrono>
 #include <random>
-#include "tbb/tbb.h"
 
 using namespace std;
 
@@ -24,6 +23,12 @@ class IntKeyExtractor {
     }
 };
 
+typedef struct thread_data {
+    uint32_t id;
+    hot::rowex::HOTRowex<IntKeyVal *, IntKeyExtractor> *hot;
+} thread_data_t;
+
+
 void run(char **argv) {
     std::cout << "Simple Example of P-HOT" << std::endl;
 
@@ -36,26 +41,43 @@ void run(char **argv) {
     }
 
     int num_thread = atoi(argv[2]);
-    tbb::task_scheduler_init init(num_thread);
-
+    
     printf("operation,n,ops/s\n");
     hot::rowex::HOTRowex<IntKeyVal *, IntKeyExtractor> mTrie;
+    thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
 
+    std::atomic<int> next_thread_id;
     {
         // Build tree
         auto starttime = std::chrono::system_clock::now();
-        tbb::parallel_for(tbb::blocked_range<uint64_t>(0, n), [&](const tbb::blocked_range<uint64_t> &range) {
-            for (uint64_t i = range.begin(); i != range.end(); i++) {
+
+        next_thread_id.store(0);
+        auto func = [&]() {
+            int thread_id = next_thread_id.fetch_add(1);
+            tds[thread_id].id = thread_id;
+            tds[thread_id].hot = &mTrie;
+
+            uint64_t start_key = n / num_thread * (uint64_t)thread_id;
+            uint64_t end_key = start_key + n / num_thread;
+            for (uint64_t i = start_key; i < end_key; i++) {
                 IntKeyVal *key;
                 posix_memalign((void **)&key, 64, sizeof(IntKeyVal));
                 key->key = keys[i];
                 key->value = keys[i];
-                if (!(mTrie.insert(key))) {
+                if (!(mTrie.insert(key, thread_id))) {
                     fprintf(stderr, "[HOT] insert faile\n");
                     exit(1);
                 }
             }
-        });
+        };
+        std::vector<std::thread> thread_group;
+
+        for (int i = 0; i < num_thread; i++)
+            thread_group.push_back(std::thread{func});
+
+        for (int i = 0; i < num_thread; i++)
+            thread_group[i].join();
+
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::system_clock::now() - starttime);
         printf("Throughput: insert,%ld,%f ops/us\n", n, (n * 1.0) / duration.count());
@@ -65,16 +87,32 @@ void run(char **argv) {
     {
         // Lookup
         auto starttime = std::chrono::system_clock::now();
-        tbb::parallel_for(tbb::blocked_range<uint64_t>(0, n), [&](const tbb::blocked_range<uint64_t> &range) {
-            for (uint64_t i = range.begin(); i != range.end(); i++) {
-                idx::contenthelpers::OptionalValue<IntKeyVal *> result = mTrie.lookup(keys[i]);
+        next_thread_id.store(0);
+        auto func = [&]() {
+            int thread_id = next_thread_id.fetch_add(1);
+            tds[thread_id].id = thread_id;
+            tds[thread_id].hot = &mTrie;
+
+            uint64_t start_key = n / num_thread * (uint64_t)thread_id;
+            uint64_t end_key = start_key + n / num_thread;
+            for (uint64_t i = start_key; i < end_key; i++) {
+                idx::contenthelpers::OptionalValue<IntKeyVal *> result = mTrie.lookup(keys[i], thread_id);
                 if (!result.mIsValid || result.mValue->value != keys[i]) {
                     printf("mIsValid = %d\n", result.mIsValid);
                     printf("Return value = %lu, Correct value = %lu\n", result.mValue->value, keys[i]);
                     exit(1);
                 }
             }
-        });
+        };
+        
+        std::vector<std::thread> thread_group;
+
+        for (int i = 0; i < num_thread; i++)
+            thread_group.push_back(std::thread{func});
+
+        for (int i = 0; i < num_thread; i++)
+            thread_group[i].join();
+        
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::system_clock::now() - starttime);
         printf("Throughput: lookup,%ld,%f ops/us\n", n, (n * 1.0) / duration.count());

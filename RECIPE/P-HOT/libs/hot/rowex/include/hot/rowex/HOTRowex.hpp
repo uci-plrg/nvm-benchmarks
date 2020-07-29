@@ -58,8 +58,8 @@ template<typename ValueType, template <typename> typename KeyExtractor> HOTRowex
 	mRoot.deleteSubtree();
 }
 
-template<typename ValueType, template <typename> typename KeyExtractor> inline idx::contenthelpers::OptionalValue<ValueType> HOTRowex<ValueType, KeyExtractor>::lookup(HOTRowex<ValueType, KeyExtractor>::KeyType const &key) const {
-	MemoryGuard memoryGuard(mMemoryReclamation);
+template<typename ValueType, template <typename> typename KeyExtractor> inline idx::contenthelpers::OptionalValue<ValueType> HOTRowex<ValueType, KeyExtractor>::lookup(HOTRowex<ValueType, KeyExtractor>::KeyType const &key, uint64_t threadID) const {
+	MemoryGuard memoryGuard(mMemoryReclamation, threadID);
 	auto const & fixedSizeKey = idx::contenthelpers::toFixSizedKey(idx::contenthelpers::toBigEndianByteOrder(key));
 	uint8_t const* byteKey = idx::contenthelpers::interpretAsByteArray(fixedSizeKey);
 
@@ -81,12 +81,12 @@ template<typename ValueType, template <typename> typename KeyExtractor> inline i
 
 
 template<typename ValueType, template <typename> typename KeyExtractor>
-inline bool HOTRowex<ValueType, KeyExtractor>::insert(ValueType const & value) {
-	MemoryGuard guard(mMemoryReclamation);
-	return insertGuarded(value);
+inline bool HOTRowex<ValueType, KeyExtractor>::insert(ValueType const & value, uint64_t threadID) {
+	MemoryGuard guard(mMemoryReclamation, threadID);
+	return insertGuarded(value, threadID);
 }
 
-template<typename ValueType, template <typename> typename KeyExtractor> inline bool HOTRowex<ValueType, KeyExtractor>::insertGuarded(ValueType const & value) {
+template<typename ValueType, template <typename> typename KeyExtractor> inline bool HOTRowex<ValueType, KeyExtractor>::insertGuarded(ValueType const & value, uint64_t threadID) {
 	idx::contenthelpers::OptionalValue<bool> insertionResult;
 
 	auto const & fixedSizeKey = idx::contenthelpers::toFixSizedKey(idx::contenthelpers::toBigEndianByteOrder(extractKey(value)));
@@ -101,7 +101,7 @@ template<typename ValueType, template <typename> typename KeyExtractor> inline b
 			idx::contenthelpers::OptionalValue<hot::commons::DiscriminativeBit> const &mismatchingBit = insertStack.getMismatchingBit(
 				keyBytes);
 			if (mismatchingBit.mIsValid) {
-				insertionResult = insertNewValue(insertStack, mismatchingBit.mValue, value);
+				insertionResult = insertNewValue(insertStack, mismatchingBit.mValue, value, threadID);
 			} else {
 				insertionResult = {true, false };
 			}
@@ -131,8 +131,8 @@ template<typename ValueType, template <typename> typename KeyExtractor> inline b
 	return insertionResult.mValue;
 }
 
-template<typename ValueType, template <typename> typename KeyExtractor> inline idx::contenthelpers::OptionalValue<ValueType> HOTRowex<ValueType, KeyExtractor>::upsert(ValueType newValue) {
-	MemoryGuard guard(mMemoryReclamation);
+template<typename ValueType, template <typename> typename KeyExtractor> inline idx::contenthelpers::OptionalValue<ValueType> HOTRowex<ValueType, KeyExtractor>::upsert(ValueType newValue, uint64_t threadID) {
+	MemoryGuard guard(mMemoryReclamation, threadID);
 	KeyType newKey = extractKey(newValue);
 	auto const & fixedSizeKey = idx::contenthelpers::toFixSizedKey(idx::contenthelpers::toBigEndianByteOrder(extractKey(newValue)));
 	uint8_t const* keyBytes = idx::contenthelpers::interpretAsByteArray(fixedSizeKey);
@@ -169,7 +169,7 @@ template<typename ValueType, template <typename> typename KeyExtractor> inline i
 				upsertCompleted = mRoot.compareAndSwap(currentRoot, HOTRowexChildPointer(idx::contenthelpers::valueToTid(newValue)));
 				upsertResult = { true, existingValue };
 			} else {
-				insertGuarded(newValue);
+				insertGuarded(newValue, threadID);
 			}
 		} else {
 			HOTRowexChildPointer newRootPointer(idx::contenthelpers::valueToTid(newValue));
@@ -181,16 +181,16 @@ template<typename ValueType, template <typename> typename KeyExtractor> inline i
 }
 
 template<typename ValueType, template <typename> typename KeyExtractor>
-inline idx::contenthelpers::OptionalValue<bool> HOTRowex<ValueType, KeyExtractor>::insertNewValue(typename HOTRowex<ValueType, KeyExtractor>::InsertStackType & insertStack, hot::commons::DiscriminativeBit const & newBit, ValueType const & value) {
+inline idx::contenthelpers::OptionalValue<bool> HOTRowex<ValueType, KeyExtractor>::insertNewValue(typename HOTRowex<ValueType, KeyExtractor>::InsertStackType & insertStack, hot::commons::DiscriminativeBit const & newBit, ValueType const & value, uint64_t threadID) {
 	const HOTRowexFirstInsertLevel<InsertStackEntryType> & insertLevel = insertStack.determineInsertLevel(newBit);
 	unsigned int numberLockedEntries = insertStack.tryLock(&mRoot, insertLevel);
 	bool aquiredLocks = numberLockedEntries > 0;
-	return (aquiredLocks) ? insertForStackRange(insertStack, insertLevel, numberLockedEntries, value)
+	return (aquiredLocks) ? insertForStackRange(insertStack, insertLevel, numberLockedEntries, value, threadID)
         : idx::contenthelpers::OptionalValue<bool> { };
 };
 
 template<typename ValueType, template <typename> typename KeyExtractor>
-inline idx::contenthelpers::OptionalValue<bool> HOTRowex<ValueType, KeyExtractor>::insertForStackRange(typename HOTRowex<ValueType, KeyExtractor>::InsertStackType & insertStack, const HOTRowexFirstInsertLevel<InsertStackEntryType> & insertLevel, unsigned int numberLockedEntries, ValueType const & valueToInsert) {
+inline idx::contenthelpers::OptionalValue<bool> HOTRowex<ValueType, KeyExtractor>::insertForStackRange(typename HOTRowex<ValueType, KeyExtractor>::InsertStackType & insertStack, const HOTRowexFirstInsertLevel<InsertStackEntryType> & insertLevel, unsigned int numberLockedEntries, ValueType const & valueToInsert, uint64_t threadID) {
 	InsertStackEntryType * firstStackEntry = insertLevel.mFirstEntry;
 	InsertStackEntryType * currentStackEntry = firstStackEntry;
 	HOTRowexChildPointer childPointerToValue(idx::contenthelpers::valueToTid(valueToInsert));
@@ -200,7 +200,7 @@ inline idx::contenthelpers::OptionalValue<bool> HOTRowex<ValueType, KeyExtractor
 		//std::cout << "Leaf HOTRowexNode pushdown " << valueToInsert << " with " << numberLockedEntries << "locked entries " <<std::endl;
 	} else if (!currentStackEntry->getChildPointer().getNode()->isFull()) {
 		normalInsert(*currentStackEntry, insertLevel.mInsertInformation, childPointerToValue);
-		currentStackEntry->markAsObsolete(*mMemoryReclamation);
+		currentStackEntry->markAsObsolete(*mMemoryReclamation, threadID);
 		//std::cout << "Normal Insert: " << valueToInsert << std::endl;
 	} else {
 		//initial parent pull up or create new bi node with sibling
@@ -208,7 +208,7 @@ inline idx::contenthelpers::OptionalValue<bool> HOTRowex<ValueType, KeyExtractor
 		hot::commons::BiNode<HOTRowexChildPointer> currentSplitEntries;
 		if((insertLevel.mInsertInformation.mKeyInformation.mAbsoluteBitIndex > currentStackEntry->mSearchResultForInsert.mMostSignificantBitIndex)) {
 			currentSplitEntries = split(*currentStackEntry, insertLevel.mInsertInformation, childPointerToValue);
-			currentStackEntry->markAsObsolete(*mMemoryReclamation);
+			currentStackEntry->markAsObsolete(*mMemoryReclamation, threadID);
 			//std::cout << "Initial split: " << valueToInsert << std::endl;
 		} else {
 			currentSplitEntries = hot::commons::BiNode<HOTRowexChildPointer>::createFromExistingAndNewEntry(insertLevel.mInsertInformation.mKeyInformation, currentStackEntry->getChildPointer(), childPointerToValue);
@@ -221,14 +221,14 @@ inline idx::contenthelpers::OptionalValue<bool> HOTRowex<ValueType, KeyExtractor
 			currentStackEntry = nextStackEntry;
 			nextStackEntry = currentStackEntry - 1;
 			currentSplitEntries = integrateAndSplit(*currentStackEntry, currentSplitEntries);
-			currentStackEntry->markAsObsolete(*mMemoryReclamation);
+			currentStackEntry->markAsObsolete(*mMemoryReclamation, threadID);
 			//std::cout << "Recusive splits: " << valueToInsert << std::endl;
 		}
 
 		//normal parent pull up
 		if(nextStackEntry >= insertStack.getRawStack() && currentSplitEntries.mHeight == nextStackEntry->getChildPointer().getHeight()) {
 			finalParentPullUp(*nextStackEntry, currentSplitEntries);
-			nextStackEntry->markAsObsolete(*mMemoryReclamation);
+			nextStackEntry->markAsObsolete(*mMemoryReclamation, threadID);
 			//std::cout << "Final parent pullup: " << valueToInsert << std::endl;
 		} //Either hasSpaceAboveForIntermediateNode or requires a new root node
 		else {
