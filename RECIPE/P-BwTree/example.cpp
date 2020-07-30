@@ -8,6 +8,10 @@ using namespace std;
 
 using namespace wangziqi2013::bwtree;
 
+extern "C" {
+    void restart();
+}
+
 /*
  * class KeyComparator - Test whether BwTree supports context
  *                       sensitive key comparator
@@ -78,6 +82,8 @@ class KeyEqualityChecker {
   //KeyEqualityChecker(const KeyEqualityChecker &p_key_eq_obj) = delete;
 };
 
+BwTree<uint64_t, uint64_t, KeyComparator, KeyEqualityChecker> *tree = NULL;
+
 void run(char **argv) {
     std::cout << "Simple Example of P-BwTree" << std::endl;
 
@@ -92,26 +98,28 @@ void run(char **argv) {
     int num_thread = atoi(argv[2]);
 
     printf("operation,n,ops/s\n");
-    auto t = new BwTree<uint64_t, uint64_t, KeyComparator, KeyEqualityChecker> {true, KeyComparator{1}, KeyEqualityChecker{1}};
-    t->UpdateThreadLocal(1);
-    t->AssignGCID(0);
+    if(tree == NULL){
+        tree = new BwTree<uint64_t, uint64_t, KeyComparator, KeyEqualityChecker> {true, KeyComparator{1}, KeyEqualityChecker{1}};
+        tree->UpdateThreadLocal(1);
+        tree->AssignGCID(0);
+    }
     std::atomic<int> next_thread_id;
 
     {
         // Build tree
         auto starttime = std::chrono::system_clock::now();
         next_thread_id.store(0);
-        t->UpdateThreadLocal(num_thread);
+        tree->UpdateThreadLocal(num_thread);
         auto func = [&]() {
             int thread_id = next_thread_id.fetch_add(1);
             uint64_t start_key = n / num_thread * (uint64_t)thread_id;
             uint64_t end_key = start_key + n / num_thread;
 
-            t->AssignGCID(thread_id);
+            tree->AssignGCID(thread_id);
             for (uint64_t i = start_key; i < end_key; i++) {
-                t->Insert(keys[i], keys[i]);
+                tree->Insert(keys[i], keys[i]);
             }
-            t->UnregisterThread(thread_id);
+            tree->UnregisterThread(thread_id);
         };
 
         std::vector<std::thread> thread_group;
@@ -121,7 +129,7 @@ void run(char **argv) {
 
         for (int i = 0; i < num_thread; i++)
             thread_group[i].join();
-        t->UpdateThreadLocal(1);
+        tree->UpdateThreadLocal(1);
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::system_clock::now() - starttime);
         printf("Throughput: load, %f ,ops/us\n", (n * 1.0) / duration.count());
@@ -131,7 +139,7 @@ void run(char **argv) {
         // Run
         auto starttime = std::chrono::system_clock::now();
         next_thread_id.store(0);
-        t->UpdateThreadLocal(num_thread);
+        tree->UpdateThreadLocal(num_thread);
         auto func = [&]() {
             std::vector<uint64_t> v{};
             v.reserve(1);
@@ -139,15 +147,15 @@ void run(char **argv) {
             uint64_t start_key = n / num_thread * (uint64_t)thread_id;
             uint64_t end_key = start_key + n / num_thread;
 
-            t->AssignGCID(thread_id);
+            tree->AssignGCID(thread_id);
             for (uint64_t i = start_key; i < end_key; i++) {
                 v.clear();
-                t->GetValue(keys[i], v);
+                tree->GetValue(keys[i], v);
                 if (v[0] != keys[i]) {
                     std::cout << "[BwTree] wrong value read: " << v[0] << " expected:" << keys[i] << std::endl;
                 }
             }
-            t->UnregisterThread(thread_id);
+            tree->UnregisterThread(thread_id);
         };
 
         std::vector<std::thread> thread_group;
@@ -157,7 +165,7 @@ void run(char **argv) {
 
         for (int i = 0; i < num_thread; i++)
             thread_group[i].join();
-        t->UpdateThreadLocal(1);
+        tree->UpdateThreadLocal(1);
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::system_clock::now() - starttime);
         printf("Throughput: run, %f ,ops/us\n", (n * 1.0) / duration.count());
@@ -166,12 +174,18 @@ void run(char **argv) {
     delete[] keys;
 }
 
+char ** argvptr;
+
 int main(int argc, char **argv) {
     if (argc != 3) {
         printf("usage: %s [n] [nthreads]\nn: number of keys (integer)\nnthreads: number of threads (integer)\n", argv[0]);
         return 1;
     }
-
+    argvptr = argv;
     run(argv);
     return 0;
+}
+
+void restart(){
+    run(argvptr);
 }

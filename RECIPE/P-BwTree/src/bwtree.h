@@ -263,7 +263,7 @@ static inline void clflush(char *data, int len, bool front, bool back)
 class BwTreeBase {
   // This is the presumed size of cache line
   //static constexpr size_t CACHE_LINE_SIZE = 64;
-  
+  public:
   // This is the mask we used for address alignment (AND with this)
   static constexpr size_t CACHE_LINE_MASK = ~(CACHE_LINE_SIZE - 1);
   
@@ -376,7 +376,7 @@ class BwTreeBase {
                 "class PaddedGCMetadata size does"
                 " not conform to the alignment!");
  
- private: 
+ public: 
   // This is used as the garbage collection ID, and is maintained in a per
   // thread level
   // This is initialized to -1 in order to distinguish between registered 
