@@ -92,7 +92,8 @@ inline void Epoche::exitEpocheAndCleanup(ThreadInfo &epocheInfo) {
         deletionList.localEpoche.store(std::numeric_limits<uint64_t>::max());
 
         uint64_t oldestEpoche = std::numeric_limits<uint64_t>::max();
-        for (auto &epoche : deletionLists) {
+        for (uint i=0; i< number_of_threads; i++) {
+            auto &epoche = deletionLists[i];    
             auto e = epoche.localEpoche.load();
             if (e < oldestEpoche) {
                 oldestEpoche = e;
@@ -119,13 +120,15 @@ inline void Epoche::exitEpocheAndCleanup(ThreadInfo &epocheInfo) {
 
 inline Epoche::~Epoche() {
     uint64_t oldestEpoche = std::numeric_limits<uint64_t>::max();
-    for (auto &epoche : deletionLists) {
+    for (uint i=0; i< number_of_threads; i++) {
+        auto &epoche = deletionLists[i];
         auto e = epoche.localEpoche.load();
         if (e < oldestEpoche) {
             oldestEpoche = e;
         }
     }
-    for (auto &d : deletionLists) {
+    for (uint i=0; i< number_of_threads; i++) {
+        auto &d = deletionLists[i];
         LabelDelete *cur = d.head(), *next, *prev = nullptr;
         while (cur != nullptr) {
             next = cur->next;
@@ -138,10 +141,12 @@ inline Epoche::~Epoche() {
             cur = next;
         }
     }
+    delete [] deletionLists;
 }
 
 inline void Epoche::showDeleteRatio() {
-    for (auto &d : deletionLists) {
+    for (uint i=0; i< number_of_threads; i++) {
+        auto &d = deletionLists[i];
         std::cout << "deleted " << d.deleted << " of " << d.added << std::endl;
     }
 }

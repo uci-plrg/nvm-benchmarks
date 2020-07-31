@@ -6,6 +6,9 @@ using namespace std;
 
 #include "Tree.h"
 
+extern "C" {
+  void restart();
+}
 
 typedef struct thread_data {
     uint32_t id;
@@ -17,7 +20,7 @@ void loadKey(TID tid, Key &key) {
     return ;
 }
 
-int num_thread;
+ART_ROWEX::Tree *tree = NULL;
 
 void run(char **argv) {
     std::cout << "Simple Example of P-ART" << std::endl;
@@ -33,10 +36,12 @@ void run(char **argv) {
         keys[i] = i + 1;
     }
 
-    num_thread = atoi(argv[2]);
+    int num_thread = atoi(argv[2]);
     
     printf("operation,n,ops/s\n");
-    ART_ROWEX::Tree tree(loadKey);
+    if(tree == NULL){
+        tree = new ART_ROWEX::Tree(loadKey, num_thread);
+    }
     thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
 
     std::atomic<int> next_thread_id;
@@ -47,14 +52,14 @@ void run(char **argv) {
         auto func = [&]() {
             int thread_id = next_thread_id.fetch_add(1);
             tds[thread_id].id = thread_id;
-            tds[thread_id].tree = &tree;
+            tds[thread_id].tree = tree;
 
             uint64_t start_key = n / num_thread * (uint64_t)thread_id;
             uint64_t end_key = start_key + n / num_thread;
-            auto t = tree.getThreadInfo(thread_id);
+            auto t = tree->getThreadInfo(thread_id);
             for (uint64_t i = start_key; i < end_key; i++) {
                 Keys[i] = Keys[i]->make_leaf(keys[i], sizeof(uint64_t), keys[i]);
-                tree.insert(Keys[i], t);
+                tree->insert(Keys[i], t);
             }
         };
         std::vector<std::thread> thread_group;
@@ -77,13 +82,13 @@ void run(char **argv) {
         auto func = [&]() {
             int thread_id = next_thread_id.fetch_add(1);
             tds[thread_id].id = thread_id;
-            tds[thread_id].tree = &tree;
+            tds[thread_id].tree = tree;
 
             uint64_t start_key = n / num_thread * (uint64_t)thread_id;
             uint64_t end_key = start_key + n / num_thread;
-            auto t = tree.getThreadInfo(thread_id);
+            auto t = tree->getThreadInfo(thread_id);
             for (uint64_t i = start_key; i < end_key; i++) {
-                uint64_t *val = reinterpret_cast<uint64_t *> (tree.lookup(Keys[i], t));
+                uint64_t *val = reinterpret_cast<uint64_t *> (tree->lookup(Keys[i], t));
                 if (*val != keys[i]) {
                     std::cout << "wrong value read: " << *val << " expected:" << keys[i] << std::endl;
                     throw;
@@ -108,12 +113,21 @@ void run(char **argv) {
     delete[] keys;
 }
 
+char ** argvptr;
+
 int main(int argc, char **argv) {
     if (argc != 3) {
         printf("usage: %s [n] [nthreads]\nn: number of keys (integer)\nnthreads: number of threads (integer)\n", argv[0]);
         return 1;
     }
-
+    argvptr = argv;
     run(argv);
+    if(tree != NULL){
+        delete tree;
+    }
     return 0;
+}
+
+void restart() {
+  run(argvptr);
 }

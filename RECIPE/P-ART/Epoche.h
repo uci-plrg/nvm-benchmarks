@@ -5,7 +5,6 @@
 #include <array>
 
 
-#define NUMBER_OF_THREAD 10
 namespace ART {
 
     struct LabelDelete {
@@ -63,14 +62,19 @@ namespace ART {
     class Epoche {
         friend class ThreadInfo;
         std::atomic<uint64_t> currentEpoche{0};
-
-        DeletionList deletionLists [NUMBER_OF_THREAD];
-
         size_t startGCThreshhold;
-
+        DeletionList *deletionLists;
+        uint number_of_threads;
 
     public:
-        Epoche(size_t startGCThreshhold) : startGCThreshhold(startGCThreshhold) { }
+        Epoche(size_t startGCThreshhold, uint thread_num):
+                startGCThreshhold(startGCThreshhold),
+                number_of_threads(thread_num) 
+        {
+            deletionLists = new DeletionList[number_of_threads];
+        }
+
+        Epoche(Epoche &e): startGCThreshhold(e.startGCThreshhold), number_of_threads(e.number_of_threads) {}
 
         ~Epoche();
 

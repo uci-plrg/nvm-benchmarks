@@ -1,4 +1,4 @@
 #!/bin/bash
-source ../../run
+source ../../../run
 $@
 

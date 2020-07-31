@@ -19,7 +19,7 @@
 
 namespace ART_ROWEX {
 
-    Tree::Tree(LoadKeyFunction loadKey) : root(new N256(0, {})), loadKey(loadKey) {
+    Tree::Tree(LoadKeyFunction loadKey, uint threads_num) : root(new N256(0, {})), loadKey(loadKey), epoche(256, threads_num) {
         N::clflush((char *)root, sizeof(N256), true, true);
     }
 

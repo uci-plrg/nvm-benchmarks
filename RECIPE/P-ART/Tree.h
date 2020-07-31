@@ -21,7 +21,7 @@ namespace ART_ROWEX {
 
         LoadKeyFunction loadKey;
 
-        Epoche epoche{256};
+        Epoche epoche;
 
     public:
         enum class CheckPrefixResult : uint8_t {
@@ -61,11 +61,11 @@ namespace ART_ROWEX {
 
     public:
 
-        Tree(LoadKeyFunction loadKey);
+        Tree(LoadKeyFunction loadKey, uint number_of_threads);
 
         Tree(const Tree &) = delete;
 
-        Tree(Tree &&t) : root(t.root), loadKey(t.loadKey) { }
+        Tree(Tree &&t) : root(t.root), loadKey(t.loadKey), epoche(t.epoche) { }
 
         ~Tree();
 
