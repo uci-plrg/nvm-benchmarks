@@ -28,6 +28,8 @@
  *
  */
 
+#define BUGFIX 1
+
 #include <math.h>
 #include <stdlib.h>
 #include <malloc.h>
@@ -167,6 +169,10 @@ clht_create(uint64_t num_buckets)
     w->version_min = 0;
     w->ht_oldest = w->ht;
 
+#ifdef BUGFIX
+    clflush(w, sizeof(clht_t), true);
+#endif
+    
     return w;
 }
 
@@ -215,7 +221,10 @@ clht_hashtable_create(uint64_t num_buckets)
 
     hashtable->table_new = NULL;
     hashtable->table_prev = NULL;
-
+#ifdef BUGFIX
+    clflush(hashtable, sizeof(clht_hashtable_t), false);
+    clflush(hashtable->table, num_buckets * (sizeof(bucket_t)), false);
+#endif
     return hashtable;
 }
 
