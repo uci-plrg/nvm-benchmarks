@@ -11,10 +11,6 @@ using namespace std;
 #include "clht.h"
 #include "ssmem.h"
 
-extern "C" {
-  void restart();
-}
-
 typedef struct thread_data {
     uint32_t id;
     clht_t *ht;
@@ -49,6 +45,12 @@ void barrier_cross(barrier_t *b) {
 barrier_t barrier;
 clht_t *hashtable = NULL;
 
+extern "C" {
+void * getRegionFromID(uint ID);
+void setRegionFromID(uint ID, void *ptr);
+}
+
+
 void run(char **argv) {
     std::cout << "Simple Example of P-CLHT" << std::endl;
 
@@ -64,9 +66,12 @@ void run(char **argv) {
 
     printf("operation,n,ops/s\n");
 
-    if (hashtable == NULL)
+    if (getRegionFromID(0) == NULL) {
       hashtable = clht_create(512);
-
+      setRegionFromID(0, hashtable);
+    } else
+      hashtable = (clht_t*) getRegionFromID(0);
+      
     barrier_init(&barrier, num_thread);
 
     thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
@@ -157,8 +162,4 @@ int main(int argc, char **argv) {
     argvptr = argv;
     run(argv);
     return 0;
-}
-
-void restart() {
-  run(argvptr);
 }
