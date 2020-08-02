@@ -18,11 +18,11 @@ PathHashing::~PathHashing(void) {
 }
 
 PathHashing::PathHashing(size_t _levels, size_t _reserved_levels) 
-  : levels{_levels},
-  reserved_levels{_reserved_levels},
-  addr_capacity{pow(2, levels-1)},
-  total_capacity{pow(2, levels) - pow(2, levels - reserved_levels)},
-  size{0},
+  : levels(_levels),
+  reserved_levels(_reserved_levels),
+  addr_capacity(pow(2, levels-1)),
+  total_capacity(pow(2, levels) - pow(2, levels - reserved_levels)),
+  size(0),
   table{new Node[total_capacity]}
 {
   locksize = 256;

@@ -6,10 +6,17 @@
 
 using namespace std;
 
+extern "C" {
+    void * getRegionFromID(uint ID);
+    void setRegionFromID(uint ID, void *ptr);
+}
+
 typedef struct thread_data {
     uint32_t id;
     CCEH *hashtable;
 } thread_data_t;
+
+CCEH* hashTable = NULL;
 
 void run(char **argv) {
     std::cout << "Simple Example of Fast & Fair" << std::endl;
@@ -25,9 +32,12 @@ void run(char **argv) {
     int num_thread = atoi(argv[2]);
 
     printf("operation,n,ops/s\n");
-
-    CCEH hashTable(2);
-
+    if(getRegionFromID(0) == NULL){
+        hashTable = new CCEH(2);
+        setRegionFromID(0, hashTable);
+    } else {
+        hashTable = (CCEH*) getRegionFromID(0);
+    }
     thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
 
     std::atomic<int> next_thread_id;
@@ -39,7 +49,7 @@ void run(char **argv) {
         auto func = [&]() {
             int thread_id = next_thread_id.fetch_add(1);
             tds[thread_id].id = thread_id;
-            tds[thread_id].hashtable = &hashTable;
+            tds[thread_id].hashtable = hashTable;
 
             uint64_t start_key = n / num_thread * (uint64_t)thread_id;
             uint64_t end_key = start_key + n / num_thread;
@@ -69,7 +79,7 @@ void run(char **argv) {
         auto func = [&]() {
             int thread_id = next_thread_id.fetch_add(1);
             tds[thread_id].id = thread_id;
-            tds[thread_id].hashtable = &hashTable;
+            tds[thread_id].hashtable = hashTable;
 
             uint64_t start_key = n / num_thread * (uint64_t)thread_id;
             uint64_t end_key = start_key + n / num_thread;

@@ -1,4 +1,5 @@
-CXX := g++
+#CXX := g++
+CXX := /scratch/nvm/benchmarks/g++
 CFLAGS := -std=c++17 -I. -lpthread -O3
 LIBS=-lpthread
 OUTPUT=example
