@@ -1,7 +1,7 @@
 .PHONY: all clean
 .DEFAULT_GOAL := all
-#CXX=/scratch/nvm/benchmarks/g++
-CXX=g++
+CXX=/scratch/nvm/benchmarks/g++
+#CXX=g++
 LIBS=-lpthread
 INCLUDES=-I./include
 CFLAGS=-O0 -std=c++11 -g
