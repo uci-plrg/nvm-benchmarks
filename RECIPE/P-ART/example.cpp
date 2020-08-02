@@ -3,11 +3,13 @@
 #include <random>
 #include <thread>
 using namespace std;
-
+#include "caheop.h"
 #include "Tree.h"
 
+
 extern "C" {
-  void restart();
+    void * getRegionFromID(uint ID);
+    void setRegionFromID(uint ID, void *ptr);
 }
 
 typedef struct thread_data {
@@ -24,7 +26,6 @@ ART_ROWEX::Tree *tree = NULL;
 
 void run(char **argv) {
     std::cout << "Simple Example of P-ART" << std::endl;
-
     uint64_t n = std::atoll(argv[1]);
     uint64_t *keys = new uint64_t[n];
     std::vector<Key *> Keys;
@@ -39,8 +40,11 @@ void run(char **argv) {
     int num_thread = atoi(argv[2]);
     
     printf("operation,n,ops/s\n");
-    if(tree == NULL){
+    if(getRegionFromID(0) == NULL){
         tree = new ART_ROWEX::Tree(loadKey, num_thread);
+        setRegionFromID(0, tree);
+    } else {
+        tree = (ART_ROWEX::Tree*)getRegionFromID(0);
     }
     thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
 
@@ -113,14 +117,12 @@ void run(char **argv) {
     delete[] keys;
 }
 
-char ** argvptr;
 
 int main(int argc, char **argv) {
     if (argc != 3) {
         printf("usage: %s [n] [nthreads]\nn: number of keys (integer)\nnthreads: number of threads (integer)\n", argv[0]);
         return 1;
     }
-    argvptr = argv;
     run(argv);
     if(tree != NULL){
         delete tree;
@@ -128,6 +130,3 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-void restart() {
-  run(argvptr);
-}

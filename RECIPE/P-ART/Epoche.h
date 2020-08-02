@@ -3,7 +3,7 @@
 
 #include <atomic>
 #include <array>
-
+#define BUGFIX 1
 
 namespace ART {
 
@@ -20,7 +20,8 @@ namespace ART {
         std::size_t deletitionListCount = 0;
 
     public:
-        std::atomic<uint64_t> localEpoche;
+
+        std::atomic<uint64_t> localEpoche{0};
         size_t thresholdCounter{0};
 
         ~DeletionList();
