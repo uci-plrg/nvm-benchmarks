@@ -9,11 +9,16 @@ using namespace std;
 
 #include "masstree.h"
 
+extern "C" {
+    void restart();
+}
+
 typedef struct thread_data {
     uint32_t id;
     masstree::masstree *tree;
 } thread_data_t;
 
+masstree::masstree *tree = NULL;
 
 void run(char **argv) {
     std::cout << "Simple Example of P-Masstree" << std::endl;
@@ -29,9 +34,10 @@ void run(char **argv) {
     int num_thread = atoi(argv[2]);
 
     printf("operation,n,ops/s\n");
-    masstree::leafnode *init_root = new masstree::leafnode(0);
-    masstree::masstree *tree = new masstree::masstree(init_root);
-
+    if(tree == NULL){
+        masstree::leafnode *init_root = new masstree::leafnode(0);
+        tree = new masstree::masstree(init_root);
+    }
     thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
     std::atomic<int> next_thread_id;
     {
@@ -100,12 +106,21 @@ void run(char **argv) {
     delete[] keys;
 }
 
+char ** argvptr;
+
 int main(int argc, char **argv) {
     if (argc != 3) {
         printf("usage: %s [n] [nthreads]\nn: number of keys (integer)\nnthreads: number of threads (integer)\n", argv[0]);
         return 1;
     }
-
+    argvptr = argv;
     run(argv);
+    if(tree != NULL) {
+        delete tree;
+    }
     return 0;
+}
+
+void restart(){
+    run(argvptr);
 }
