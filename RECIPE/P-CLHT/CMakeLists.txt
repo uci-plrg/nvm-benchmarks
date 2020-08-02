@@ -36,7 +36,7 @@ include_directories(include external/include)
 
 find_package (Threads)
 
-set(P_CLHT_TEST example.cpp src/clht_lb_res.c src/clht_gc.c
+set(P_CLHT_TEST example.cpp src/clht_lf_res.c src/clht_gc.c
     external/sspfd/sspfd.c external/ssmem/src/ssmem.c)
 add_executable(example ${P_CLHT_TEST})
 
