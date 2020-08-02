@@ -10,10 +10,13 @@ using namespace std;
 
 #include "clht.h"
 #include "ssmem.h"
+#define NUM_THREAD 1
 
 typedef struct thread_data {
     uint32_t id;
     clht_t *ht;
+    uint64_t *keys;
+    uint64_t n;
 } thread_data_t;
 
 typedef struct barrier {
@@ -53,7 +56,7 @@ void setRegionFromID(uint ID, void *ptr);
 
 void run(char **argv) {
     std::cout << "Simple Example of P-CLHT" << std::endl;
-
+    thread_data_t *tds = (thread_data_t *) malloc(NUM_THREAD * sizeof(thread_data_t));
     uint64_t n = std::atoll(argv[1]);
     uint64_t *keys = new uint64_t[n];
 
@@ -61,8 +64,6 @@ void run(char **argv) {
     for (uint64_t i = 0; i < n; i++) {
         keys[i] = i + 1;
     }
-
-    int num_thread = atoi(argv[2]);
 
     printf("operation,n,ops/s\n");
 
@@ -72,9 +73,8 @@ void run(char **argv) {
     } else
       hashtable = (clht_t*) getRegionFromID(0);
       
-    barrier_init(&barrier, num_thread);
+    barrier_init(&barrier, NUM_THREAD);
 
-    thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
 
     std::atomic<int> next_thread_id;
 
@@ -82,29 +82,34 @@ void run(char **argv) {
         // Load
         auto starttime = std::chrono::system_clock::now();
         next_thread_id.store(0);
-        auto func = [&]() {
-            int thread_id = next_thread_id.fetch_add(1);
-            tds[thread_id].id = thread_id;
-            tds[thread_id].ht = hashtable;
+        auto func = [](void * arg) -> void * {
+            thread_data_t *tds = (thread_data_t *) arg;
 
-            uint64_t start_key = n / num_thread * (uint64_t)thread_id;
-            uint64_t end_key = start_key + n / num_thread;
+            uint64_t start_key = tds->n / NUM_THREAD * (uint64_t)tds->id;
+            uint64_t end_key = start_key + tds->n / NUM_THREAD;
 
-            clht_gc_thread_init(tds[thread_id].ht, tds[thread_id].id);
+            clht_gc_thread_init(tds->ht, tds->id);
             barrier_cross(&barrier);
 
             for (uint64_t i = start_key; i < end_key; i++) {
-                clht_put(tds[thread_id].ht, keys[i], keys[i]);
+                clht_put(tds->ht, tds->keys[i], tds->keys[i]);
             }
+            return NULL;
         };
 
-        std::vector<std::thread> thread_group;
+        pthread_t threads[NUM_THREAD];
 
-        for (int i = 0; i < num_thread; i++)
-            thread_group.push_back(std::thread{func});
+        for (int i = 0; i < NUM_THREAD; i++){
+            //Initializing tds first...
+            tds[i].id = next_thread_id.fetch_add(1);
+            tds[i].ht = hashtable;
+            tds[i].keys = keys;
+            tds[i].n = n;
+            pthread_create(&threads[i], NULL, func, &tds[i]);
+        }
 
-        for (int i = 0; i < num_thread; i++)
-            thread_group[i].join();
+        for (int i = 0; i < NUM_THREAD; i++)
+            pthread_join(threads[i], NULL); 
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::system_clock::now() - starttime);
         printf("Throughput: load, %f ,ops/us\n", (n * 1.0) / duration.count());
@@ -121,8 +126,8 @@ void run(char **argv) {
             tds[thread_id].id = thread_id;
             tds[thread_id].ht = hashtable;
 
-            uint64_t start_key = n / num_thread * (uint64_t)thread_id;
-            uint64_t end_key = start_key + n / num_thread;
+            uint64_t start_key = n / NUM_THREAD * (uint64_t)thread_id;
+            uint64_t end_key = start_key + n / NUM_THREAD;
 
             clht_gc_thread_init(tds[thread_id].ht, tds[thread_id].id);
             barrier_cross(&barrier);
@@ -138,10 +143,10 @@ void run(char **argv) {
 
         std::vector<std::thread> thread_group;
 
-        for (int i = 0; i < num_thread; i++)
+        for (int i = 0; i < NUM_THREAD; i++)
             thread_group.push_back(std::thread{func});
 
-        for (int i = 0; i < num_thread; i++)
+        for (int i = 0; i < NUM_THREAD; i++)
             thread_group[i].join();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::system_clock::now() - starttime);
@@ -155,8 +160,8 @@ void run(char **argv) {
 char ** argvptr;
 
 int main(int argc, char **argv) {
-    if (argc != 3) {
-        printf("usage: %s [n] [nthreads]\nn: number of keys (integer)\nnthreads: number of threads (integer)\n", argv[0]);
+    if (argc != 2) {
+        printf("usage: %s [n]\nn: number of keys (integer)\n", argv[0]);
         return 1;
     }
     argvptr = argv;
