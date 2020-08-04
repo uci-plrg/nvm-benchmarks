@@ -49,6 +49,10 @@ namespace ART_ROWEX {
         N(NTypes type, uint32_t level, const uint8_t *prefix, uint32_t prefixLength) : level(level) {
             setType(type);
             setPrefix(prefix, prefixLength, false);
+#ifdef BUGFIX
+        typeVersionLockObsolete.store(0b100);
+        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);
+#endif
 #ifdef LOCK_INIT
             lock_initializer.push_back(this);
 #endif
@@ -56,6 +60,10 @@ namespace ART_ROWEX {
 
         N(NTypes type, uint32_t level, const Prefix &prefi) : prefix(prefi), level(level) {
             setType(type);
+#ifdef BUGFIX
+        typeVersionLockObsolete.store(0b100);
+        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);
+#endif
 #ifdef LOCK_INIT
             lock_initializer.push_back(this);
 #endif
@@ -110,6 +118,9 @@ namespace ART_ROWEX {
          */
         void writeUnlockObsolete() {
             typeVersionLockObsolete.fetch_add(0b11);
+#ifdef BUGFIX
+        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);
+#endif
         }
 
         static N *getChild(const uint8_t k, N *node);

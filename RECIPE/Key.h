@@ -5,15 +5,15 @@
 #include <cstring>
 #include <memory>
 #include <assert.h>
-
+#include "P-ART/cacheops.h"
 typedef struct Key {
     uint64_t value;
     size_t key_len;
     uint8_t fkey[];
 
-    inline Key *make_leaf(char *key, size_t key_len, uint64_t value);
+    static inline Key *make_leaf(char *key, size_t key_len, uint64_t value);
 
-    inline Key *make_leaf(uint64_t key, size_t key_len, uint64_t value);
+    static inline Key *make_leaf(uint64_t key, size_t key_len, uint64_t value);
 
     inline size_t getKeyLen() const;
 } Key;
@@ -27,7 +27,9 @@ inline Key *Key::make_leaf(char *key, size_t key_len, uint64_t value)
     k->value = value;
     k->key_len = key_len;
     memcpy(k->fkey, key, key_len);
-
+#ifdef BUGFIX
+    clflush((char*)k, sizeof(Key) + key_len, false, true);
+#endif
     return k;
 }
 
@@ -40,7 +42,9 @@ inline Key *Key::make_leaf(uint64_t key, size_t key_len, uint64_t value)
     k->value = value;
     k->key_len = key_len;
     reinterpret_cast<uint64_t *> (&k->fkey[0])[0] = __builtin_bswap64(key);
-
+#ifdef BUGFIX
+    clflush((char*)k, sizeof(Key) + key_len, false, true);
+#endif
     return k;
 }
 

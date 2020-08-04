@@ -61,7 +61,7 @@ void run(char **argv) {
             uint64_t end_key = start_key + n / num_thread;
             auto t = tree->getThreadInfo(thread_id);
             for (uint64_t i = start_key; i < end_key; i++) {
-                Keys[i] = Keys[i]->make_leaf(keys[i], sizeof(uint64_t), keys[i]);
+                Keys[i] = Key::make_leaf(keys[i], sizeof(uint64_t), keys[i]);
                 tree->insert(Keys[i], t);
             }
         };
@@ -123,9 +123,6 @@ int main(int argc, char **argv) {
         return 1;
     }
     run(argv);
-    if(tree != NULL){
-        delete tree;
-    }
     return 0;
 }
 

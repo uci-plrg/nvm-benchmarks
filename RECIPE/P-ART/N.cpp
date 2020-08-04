@@ -67,6 +67,9 @@ namespace ART_ROWEX {
 #endif
     void N::setType(NTypes type) {
         typeVersionLockObsolete.fetch_add(convertTypeToVersion(type));
+#ifdef BUGFIX
+        clflush((char *)&typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);
+#endif
     }
 
     uint64_t N::convertTypeToVersion(NTypes type) {
@@ -94,6 +97,9 @@ namespace ART_ROWEX {
                 return;
             }
         } while (!typeVersionLockObsolete.compare_exchange_weak(version, version + 0b10));
+#ifdef BUGFIX
+        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);
+#endif
     }
 
     void N::lockVersionOrRestart(uint64_t &version, bool &needRestart) {
@@ -102,6 +108,9 @@ namespace ART_ROWEX {
             return;
         }
         if (typeVersionLockObsolete.compare_exchange_strong(version, version + 0b10)) {
+#ifdef BUGFIX
+        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);
+#endif
             version = version + 0b10;
         } else {
             needRestart = true;
