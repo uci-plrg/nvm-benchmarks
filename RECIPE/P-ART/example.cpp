@@ -22,14 +22,11 @@ void loadKey(TID tid, Key &key) {
 }
 
 ART_ROWEX::Tree *tree = NULL;
-
+Key ** Keys = NULL;
 void run(char **argv) {
     std::cout << "Simple Example of P-ART" << std::endl;
     uint64_t n = std::atoll(argv[1]);
     uint64_t *keys = new uint64_t[n];
-    std::vector<Key *> Keys;
-
-    Keys.reserve(n);
 
     // Generate keys
     for (uint64_t i = 0; i < n; i++) {
@@ -41,9 +38,12 @@ void run(char **argv) {
     printf("operation,n,ops/s\n");
     if(getRegionFromID(0) == NULL){
         tree = new ART_ROWEX::Tree(loadKey, num_thread);
+        Keys = new Key*[n];
         setRegionFromID(0, tree);
+        setRegionFromID(1, Keys);
     } else {
         tree = (ART_ROWEX::Tree*)getRegionFromID(0);
+        Keys = (Key **) getRegionFromID(1);
     }
     thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
 
