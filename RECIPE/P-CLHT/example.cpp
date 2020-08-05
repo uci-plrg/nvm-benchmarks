@@ -70,12 +70,10 @@ void run(char **argv) {
     if (getRegionFromID(0) == NULL) {
         hashtable = clht_create(512);
         setRegionFromID(0, hashtable);
-        counters = (uint64_t *)calloc(n, sizeof(uint64_t));
-        // Retry if hashtable and counters are in the same cacheline 
-        while(CACHEID(hashtable) == CACHEID(counters)){
-            free(counters);
-            counters = (uint64_t *)calloc(n, sizeof(uint64_t));
-        }
+        //Make sure counters and hashtable aren't in the same line:
+        // 64 bytes + n*sizeof(uint64_t) + 64 bytes.
+        counters = (uint64_t *)calloc(n + 16, sizeof(uint64_t));
+        counters = &counters[8];
         setRegionFromID(1, counters);
     } else {
         hashtable = (clht_t*) getRegionFromID(0);
