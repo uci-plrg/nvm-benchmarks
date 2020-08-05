@@ -8,11 +8,15 @@ using namespace std;
 
 #include "clht.h"
 #include "ssmem.h"
+#include "../cacheops.h"
+
+#define CACHEID(address) (((uintptr_t)address) & ~(64 - 1))
 
 extern "C" {
     void * getRegionFromID(uint ID);
     void setRegionFromID(uint ID, void *ptr);
 }
+
 
 typedef struct thread_data {
     uint32_t id;
@@ -67,6 +71,11 @@ void run(char **argv) {
         hashtable = clht_create(512);
         setRegionFromID(0, hashtable);
         counters = (uint64_t *)calloc(n, sizeof(uint64_t));
+        // Retry if hashtable and counters are in the same cacheline 
+        while(CACHEID(hashtable) == CACHEID(counters)){
+            free(counters);
+            counters = (uint64_t *)calloc(n, sizeof(uint64_t));
+        }
         setRegionFromID(1, counters);
     } else {
         hashtable = (clht_t*) getRegionFromID(0);
@@ -96,18 +105,21 @@ void run(char **argv) {
 
             clht_gc_thread_init(tds->ht, tds->id);
             barrier_cross(&barrier);
+            uint64_t index = start_key;
             // First read to see the actual values made out to the memory
-            for (; start_key < start_key + counters[tds->id]; start_key++) {
-                    uintptr_t val = clht_get(tds->ht->ht, tds->keys[start_key]);
-                    if (val != tds->keys[start_key]) {
-                        std::cout << "[CLHT] wrong key read: " << val << "expected: " << tds->keys[start_key] << std::endl;
-                        exit(1);
+            for (; index < start_key + counters[tds->id]; index++) {
+                    uintptr_t val = clht_get(tds->ht->ht, tds->keys[index]);
+                    if (val != tds->keys[index]) {
+                        std::cout << "[CLHT] wrong key read: " << val << "expected: " << tds->keys[index] << std::endl;
+                        //This write did not make out to the memory. So, we need to start inserting from here ... 
+                        break;
                     }
             }
             // Now resuming adding keys to the tree.
-            for (uint64_t i = start_key; i < end_key; i++) {
+            for (uint64_t i = index; i < end_key; i++) {
                 clht_put(tds->ht, tds->keys[i], tds->keys[i]);
                 counters[tds->id]++;
+                clflush((char*)&counters[tds->id], sizeof(counters[tds->id]), false, true);
             }
             return NULL;
         };
