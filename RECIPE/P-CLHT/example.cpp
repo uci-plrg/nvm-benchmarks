@@ -50,7 +50,7 @@ void barrier_cross(barrier_t *b) {
 
 barrier_t barrier;
 clht_t *hashtable = NULL;
-
+uint64_t *counters = NULL;
 
 void run(char **argv) {
     std::cout << "Simple Example of P-CLHT" << std::endl;
@@ -64,11 +64,14 @@ void run(char **argv) {
     }
     // Retreiving data structure from persistent memory.
     if (getRegionFromID(0) == NULL) {
-      hashtable = clht_create(512);
-      setRegionFromID(0, hashtable);
-    } else
-      hashtable = (clht_t*) getRegionFromID(0);
-      
+        hashtable = clht_create(512);
+        setRegionFromID(0, hashtable);
+        counters = (uint64_t *)calloc(n, sizeof(uint64_t));
+        setRegionFromID(1, counters);
+    } else {
+        hashtable = (clht_t*) getRegionFromID(0);
+        counters = (uint64_t *) getRegionFromID(1);
+    }  
     barrier_init(&barrier, num_thread);
     std::atomic<int> next_thread_id;
     next_thread_id.store(0);
@@ -93,9 +96,18 @@ void run(char **argv) {
 
             clht_gc_thread_init(tds->ht, tds->id);
             barrier_cross(&barrier);
-
+            // First read to see the actual values made out to the memory
+            for (; start_key < start_key + counters[tds->id]; start_key++) {
+                    uintptr_t val = clht_get(tds->ht->ht, tds->keys[start_key]);
+                    if (val != tds->keys[start_key]) {
+                        std::cout << "[CLHT] wrong key read: " << val << "expected: " << tds->keys[start_key] << std::endl;
+                        exit(1);
+                    }
+            }
+            // Now resuming adding keys to the tree.
             for (uint64_t i = start_key; i < end_key; i++) {
                 clht_put(tds->ht, tds->keys[i], tds->keys[i]);
+                counters[tds->id]++;
             }
             return NULL;
         };
@@ -114,43 +126,6 @@ void run(char **argv) {
         delete [] threads;
     }
 
-    barrier.crossing = 0;
-
-    {
-        // Run
-        auto starttime = std::chrono::system_clock::now();
-        auto func = [](void * arg) -> void * {
-            thread_data_t *tds = (thread_data_t *) arg;
-            
-            uint64_t start_key = tds->n / tds->num_thread * (uint64_t)tds->id;
-            uint64_t end_key = start_key + tds->n / tds->num_thread;
-
-            clht_gc_thread_init(tds->ht, tds->id);
-            barrier_cross(&barrier);
-
-            for (uint64_t i = start_key; i < end_key; i++) {
-                    uintptr_t val = clht_get(tds->ht->ht, tds->keys[i]);
-                    if (val != tds->keys[i]) {
-                        std::cout << "[CLHT] wrong key read: " << val << "expected: " << tds->keys[i] << std::endl;
-                        exit(1);
-                    }
-            }
-        };
-
-        pthread_t *threads = new pthread_t[num_thread];
-
-        for (int i = 0; i < num_thread; i++){
-            pthread_create(&threads[i], NULL, func, &tds[i]);
-        }
-
-        for (int i = 0; i < num_thread; i++)
-            pthread_join(threads[i], NULL);
-
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
-                std::chrono::system_clock::now() - starttime);
-        printf("Throughput: run, %f ,ops/us\n", (n * 1.0) / duration.count());
-        delete [] threads;
-    }
     //BCD Should not free hashtable!!!
     //    clht_gc_destroy(hashtable);
 
