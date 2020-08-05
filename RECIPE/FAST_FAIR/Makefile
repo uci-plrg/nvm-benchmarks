@@ -4,7 +4,7 @@ CXX=/scratch/nvm/benchmarks/g++
 #CXX=g++
 LIBS=-lpthread
 INCLUDES=-I./include
-CFLAGS=-O0 -std=c++11 -g
+CFLAGS=-O0 -std=c++11 -g -DCLFLUSH_OPT=1
 
 output = example
 
