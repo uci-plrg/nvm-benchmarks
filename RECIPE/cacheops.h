@@ -7,6 +7,7 @@
 
 #define BUGFIX 1
 
+namespace PMCHECK {
 
 static unsigned long write_latency_in_ns = 0;
 static unsigned long cpu_freq_mhz = 2100;
@@ -53,5 +54,7 @@ inline void clflush(char *data, int len, bool front, bool back)
     }
     if (back)
         mfence();
+}
+
 }
 #endif

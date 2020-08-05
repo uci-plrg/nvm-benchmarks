@@ -28,7 +28,7 @@ inline Key *Key::make_leaf(char *key, size_t key_len, uint64_t value)
     k->key_len = key_len;
     memcpy(k->fkey, key, key_len);
 #ifdef BUGFIX
-    clflush((char*)k, sizeof(Key) + key_len, false, true);
+    PMCHECK::clflush((char*)k, sizeof(Key) + key_len, false, true);
 #endif
     return k;
 }
@@ -42,7 +42,7 @@ inline Key *Key::make_leaf(uint64_t key, size_t key_len, uint64_t value)
     k->key_len = key_len;
     reinterpret_cast<uint64_t *> (&k->fkey[0])[0] = __builtin_bswap64(key);
 #ifdef BUGFIX
-    clflush((char*)k, sizeof(Key) + key_len, false, true);
+    PMCHECK::clflush((char*)k, sizeof(Key) + key_len, false, true);
 #endif
     return k;
 }

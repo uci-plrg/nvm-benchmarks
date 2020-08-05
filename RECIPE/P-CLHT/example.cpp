@@ -10,8 +10,6 @@ using namespace std;
 #include "ssmem.h"
 #include "../cacheops.h"
 
-#define CACHEID(address) (((uintptr_t)address) & ~(64 - 1))
-
 extern "C" {
     void * getRegionFromID(uint ID);
     void setRegionFromID(uint ID, void *ptr);
@@ -117,7 +115,7 @@ void run(char **argv) {
             for (uint64_t i = index; i < end_key; i++) {
                 clht_put(tds->ht, tds->keys[i], tds->keys[i]);
                 counters[tds->id]++;
-                clflush((char*)&counters[tds->id], sizeof(counters[tds->id]), false, true);
+                PMCHECK::clflush((char*)&counters[tds->id], sizeof(counters[tds->id]), false, true);
             }
             return NULL;
         };
