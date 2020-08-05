@@ -39,6 +39,9 @@ void run(char **argv) {
     if(getRegionFromID(0) == NULL){
         tree = new ART_ROWEX::Tree(loadKey, num_thread);
         Keys = new Key*[n];
+        for(uint64_t i=0; i< n; i++){
+            Keys[i] = Key::make_leaf(keys[i], sizeof(uint64_t), keys[i]);
+        }
         setRegionFromID(0, tree);
         setRegionFromID(1, Keys);
     } else {
@@ -61,7 +64,6 @@ void run(char **argv) {
             uint64_t end_key = start_key + n / num_thread;
             auto t = tree->getThreadInfo(thread_id);
             for (uint64_t i = start_key; i < end_key; i++) {
-                Keys[i] = Key::make_leaf(keys[i], sizeof(uint64_t), keys[i]);
                 tree->insert(Keys[i], t);
             }
         };

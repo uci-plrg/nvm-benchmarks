@@ -5,6 +5,7 @@
 #include <cstring>
 #include <memory>
 #include <assert.h>
+#include <malloc.h>
 #include "P-ART/cacheops.h"
 typedef struct Key {
     uint64_t value;
@@ -20,8 +21,7 @@ typedef struct Key {
 
 inline Key *Key::make_leaf(char *key, size_t key_len, uint64_t value)
 {
-    void *aligned_alloc;
-    posix_memalign(&aligned_alloc, 64, sizeof(Key) + key_len);
+    void *aligned_alloc = memalign(64, sizeof(Key) + key_len);
     Key *k = reinterpret_cast<Key *> (aligned_alloc);
 
     k->value = value;
@@ -35,8 +35,7 @@ inline Key *Key::make_leaf(char *key, size_t key_len, uint64_t value)
 
 inline Key *Key::make_leaf(uint64_t key, size_t key_len, uint64_t value)
 {
-    void *aligned_alloc;
-    posix_memalign(&aligned_alloc, 64, sizeof(Key) + key_len);
+    void *aligned_alloc = memalign(64, sizeof(Key) + key_len);
     Key *k = reinterpret_cast<Key *> (aligned_alloc);
 
     k->value = value;
