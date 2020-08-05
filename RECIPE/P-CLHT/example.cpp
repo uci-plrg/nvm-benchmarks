@@ -151,9 +151,9 @@ void run(char **argv) {
         printf("Throughput: run, %f ,ops/us\n", (n * 1.0) / duration.count());
         delete [] threads;
     }
-    clht_gc_destroy(hashtable);
-    
-    delete tds;
+    //BCD Should not free hashtable!!!
+    //    clht_gc_destroy(hashtable);
+
     delete[] keys;
 }
 

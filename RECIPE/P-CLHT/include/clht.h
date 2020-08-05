@@ -167,7 +167,7 @@ typedef volatile uint32_t clht_lock_t;
 typedef volatile uint8_t clht_lock_t;
 #endif
 /* typedef volatile uint64_t clht_lock_t; */
-#define CLHT_LOCK_FREE 0
+#define CLHT_LOCK_FREE 1
 #define CLHT_LOCK_ACQR 1
 
 #define CLHT_CHECK_RESIZE(w)				\

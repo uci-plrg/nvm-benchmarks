@@ -164,7 +164,7 @@ ssmem_list_node_new(void* mem, ssmem_list_t* next)
 /* 
  *
  */
-inline ssmem_released_t*
+ssmem_released_t*
 ssmem_released_node_new(void* mem, ssmem_released_t* next)
 {
   ssmem_released_t* rel;
