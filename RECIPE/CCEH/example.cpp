@@ -23,10 +23,12 @@ void run(char **argv) {
 
     uint64_t n = std::atoll(argv[1]);
     uint64_t *keys = new uint64_t[n];
+
     // Generate keys
     for (uint64_t i = 0; i < n; i++) {
         keys[i] = i + 1;
     }
+
     int num_thread = atoi(argv[2]);
 
     if(getRegionFromID(0) == NULL){

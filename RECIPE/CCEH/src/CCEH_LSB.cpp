@@ -128,21 +128,33 @@ Segment** Segment::Split(void) {
 
 
 CCEH::CCEH(void)
-: dir{1}, global_depth{0}
+: dir(1), global_depth(0)
 {
   for (unsigned i = 0; i < dir.capacity; ++i) {
     dir._[i] = new Segment(global_depth);
     dir._[i]->pattern = i;
+#ifdef BUGFIX
+    clflush((char *)dir._[i], sizeof(Segment), false, true);
+#endif
   }
+#ifdef BUGFIX
+  clflush((char*)this, sizeof(CCEH), false, true);
+#endif
 }
 
 CCEH::CCEH(size_t initCap)
-: dir{initCap}, global_depth{static_cast<size_t>(log2(initCap))}
+: dir(initCap), global_depth(static_cast<size_t>(log2(initCap)))
 {
   for (unsigned i = 0; i < dir.capacity; ++i) {
     dir._[i] = new Segment(global_depth);
     dir._[i]->pattern = i;
+#ifdef BUGFIX
+    clflush((char *)dir._[i], sizeof(Segment), false, true);
+#endif
   }
+#ifdef BUGFIX
+  clflush((char*)this, sizeof(CCEH), false, true);
+#endif
 }
 
 CCEH::~CCEH(void)

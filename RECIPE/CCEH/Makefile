@@ -1,6 +1,6 @@
 #CXX := g++
 CXX := /scratch/nvm/benchmarks/g++
-CFLAGS := -std=c++17 -I. -lpthread -O3
+CFLAGS := -std=c++17 -I. -lpthread -O0 -g -DCLFLUSH_OPT=1
 LIBS=-lpthread
 OUTPUT=example
 

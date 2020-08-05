@@ -8,6 +8,8 @@
 #include "src/hash.h"
 #include "util/persist.h"
 
+#define BUGFIX 1
+
 constexpr size_t kSegmentBits = 8;
 constexpr size_t kMask = (1 << kSegmentBits)-1;
 constexpr size_t kShift = kSegmentBits;
@@ -63,6 +65,9 @@ struct Directory {
   Directory(void) {
     capacity = kDefaultDirectorySize;
     _ = new Segment*[capacity];
+  #ifdef BUGFIX
+    clflush((char*)_, sizeof(Segment*) * capacity, false, true);
+  #endif  
     lock = false;
     sema = 0;
   }
@@ -70,6 +75,9 @@ struct Directory {
   Directory(size_t size) {
     capacity = size;
     _ = new Segment*[capacity];
+  #ifdef BUGFIX
+    clflush((char*)_, sizeof(Segment*) * capacity, false, true);
+  #endif
     lock = false;
     sema = 0;
   }
