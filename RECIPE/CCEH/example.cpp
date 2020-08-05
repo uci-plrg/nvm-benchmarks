@@ -23,15 +23,12 @@ void run(char **argv) {
 
     uint64_t n = std::atoll(argv[1]);
     uint64_t *keys = new uint64_t[n];
-
     // Generate keys
     for (uint64_t i = 0; i < n; i++) {
         keys[i] = i + 1;
     }
-
     int num_thread = atoi(argv[2]);
 
-    printf("operation,n,ops/s\n");
     if(getRegionFromID(0) == NULL){
         hashTable = new CCEH(2);
         setRegionFromID(0, hashTable);
@@ -87,7 +84,7 @@ void run(char **argv) {
             for (uint64_t i = start_key; i < end_key; i++) {
                     const char * val = tds[thread_id].hashtable->Get( keys[i]);
                     if (val != (const char *)keys[i]) {
-                        std::cout << "[CLHT] wrong key read: " << val << "expected: " << keys[i] << std::endl;
+                        std::cout << "[CCEH] wrong key read: " << val << "expected: " << keys[i] << std::endl;
                         exit(1);
                     }
             }
