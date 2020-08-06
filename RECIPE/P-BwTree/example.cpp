@@ -9,7 +9,8 @@ using namespace std;
 using namespace wangziqi2013::bwtree;
 
 extern "C" {
-    void restart();
+    void * getRegionFromID(uint ID);
+    void setRegionFromID(uint ID, void *ptr);
 }
 
 /*
@@ -98,10 +99,13 @@ void run(char **argv) {
     int num_thread = atoi(argv[2]);
 
     printf("operation,n,ops/s\n");
-    if(tree == NULL){
+    if (getRegionFromID(0) == NULL) {
         tree = new BwTree<uint64_t, uint64_t, KeyComparator, KeyEqualityChecker> {true, KeyComparator{1}, KeyEqualityChecker{1}};
         tree->UpdateThreadLocal(1);
         tree->AssignGCID(0);
+        setRegionFromID(0, tree);
+    } else {
+        tree = (BwTree<uint64_t, uint64_t, KeyComparator, KeyEqualityChecker> *) getRegionFromID(0);
     }
     std::atomic<int> next_thread_id;
 
@@ -174,18 +178,11 @@ void run(char **argv) {
     delete[] keys;
 }
 
-char ** argvptr;
-
 int main(int argc, char **argv) {
     if (argc != 3) {
         printf("usage: %s [n] [nthreads]\nn: number of keys (integer)\nnthreads: number of threads (integer)\n", argv[0]);
         return 1;
     }
-    argvptr = argv;
     run(argv);
     return 0;
-}
-
-void restart(){
-    run(argvptr);
 }
