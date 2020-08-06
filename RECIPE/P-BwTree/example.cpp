@@ -3,7 +3,7 @@
 #include <random>
 #include <atomic>
 using namespace std;
-
+#include "../cacheops.h"
 #include "src/bwtree.h"
 
 using namespace wangziqi2013::bwtree;
@@ -84,7 +84,7 @@ class KeyEqualityChecker {
 };
 
 BwTree<uint64_t, uint64_t, KeyComparator, KeyEqualityChecker> *tree = NULL;
-
+uint64_t *counters = NULL;
 void run(char **argv) {
     std::cout << "Simple Example of P-BwTree" << std::endl;
 
@@ -104,8 +104,14 @@ void run(char **argv) {
         tree->UpdateThreadLocal(1);
         tree->AssignGCID(0);
         setRegionFromID(0, tree);
+        //Make sure counters and hashtable aren't in the same line:
+        // 64 bytes + n*sizeof(uint64_t) + 64 bytes.
+        counters = (uint64_t *)calloc(n + 16, sizeof(uint64_t));
+        counters = &counters[8];
+        setRegionFromID(1, counters);
     } else {
         tree = (BwTree<uint64_t, uint64_t, KeyComparator, KeyEqualityChecker> *) getRegionFromID(0);
+        counters = (uint64_t *) getRegionFromID(1);
     }
     std::atomic<int> next_thread_id;
 
@@ -120,8 +126,23 @@ void run(char **argv) {
             uint64_t end_key = start_key + n / num_thread;
 
             tree->AssignGCID(thread_id);
-            for (uint64_t i = start_key; i < end_key; i++) {
+            std::vector<uint64_t> v{};
+            v.reserve(1);
+            uint64_t index = start_key;
+            // First read to see the actual values made out to the memory
+            for (; index < start_key + counters[thread_id]; index++) {
+                v.clear();
+                tree->GetValue(keys[index], v);
+                if (v[0] != keys[index]) {
+                    std::cout << "[BwTree] wrong value read: " << v[0] << " expected:" << keys[index] << std::endl;
+                    break;
+                }
+            }
+
+            for (uint64_t i = index; i < end_key; i++) {
                 tree->Insert(keys[i], keys[i]);
+                counters[thread_id]++;
+                PMCHECK::clflush((char*)&counters[thread_id], sizeof(counters[thread_id]), false, true);
             }
             tree->UnregisterThread(thread_id);
         };
@@ -137,42 +158,6 @@ void run(char **argv) {
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::system_clock::now() - starttime);
         printf("Throughput: load, %f ,ops/us\n", (n * 1.0) / duration.count());
-    }
-
-    {
-        // Run
-        auto starttime = std::chrono::system_clock::now();
-        next_thread_id.store(0);
-        tree->UpdateThreadLocal(num_thread);
-        auto func = [&]() {
-            std::vector<uint64_t> v{};
-            v.reserve(1);
-            int thread_id = next_thread_id.fetch_add(1);
-            uint64_t start_key = n / num_thread * (uint64_t)thread_id;
-            uint64_t end_key = start_key + n / num_thread;
-
-            tree->AssignGCID(thread_id);
-            for (uint64_t i = start_key; i < end_key; i++) {
-                v.clear();
-                tree->GetValue(keys[i], v);
-                if (v[0] != keys[i]) {
-                    std::cout << "[BwTree] wrong value read: " << v[0] << " expected:" << keys[i] << std::endl;
-                }
-            }
-            tree->UnregisterThread(thread_id);
-        };
-
-        std::vector<std::thread> thread_group;
-
-        for (int i = 0; i < num_thread; i++)
-            thread_group.push_back(std::thread{func});
-
-        for (int i = 0; i < num_thread; i++)
-            thread_group[i].join();
-        tree->UpdateThreadLocal(1);
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
-                std::chrono::system_clock::now() - starttime);
-        printf("Throughput: run, %f ,ops/us\n", (n * 1.0) / duration.count());
     }
 
     delete[] keys;
