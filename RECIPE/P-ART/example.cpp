@@ -23,6 +23,8 @@ void loadKey(TID tid, Key &key) {
 
 ART_ROWEX::Tree *tree = NULL;
 Key ** Keys = NULL;
+uint64_t *counters = NULL;
+
 void run(char **argv) {
     std::cout << "Simple Example of P-ART" << std::endl;
     uint64_t n = std::atoll(argv[1]);
@@ -35,7 +37,6 @@ void run(char **argv) {
 
     int num_thread = atoi(argv[2]);
     
-    printf("operation,n,ops/s\n");
     if(getRegionFromID(0) == NULL){
         tree = new ART_ROWEX::Tree(loadKey, num_thread);
         Keys = new Key*[n];
@@ -44,9 +45,15 @@ void run(char **argv) {
         }
         setRegionFromID(0, tree);
         setRegionFromID(1, Keys);
+        //Make sure counters and hashtable aren't in the same line:
+        // 64 bytes + n*sizeof(uint64_t) + 64 bytes.
+        counters = (uint64_t *)calloc(n + 16, sizeof(uint64_t));
+        counters = &counters[8];
+        setRegionFromID(2, counters);
     } else {
         tree = (ART_ROWEX::Tree*)getRegionFromID(0);
         Keys = (Key **) getRegionFromID(1);
+        counters = (uint64_t *) getRegionFromID(2);
     }
     thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
 
@@ -63,8 +70,22 @@ void run(char **argv) {
             uint64_t start_key = n / num_thread * (uint64_t)thread_id;
             uint64_t end_key = start_key + n / num_thread;
             auto t = tree->getThreadInfo(thread_id);
-            for (uint64_t i = start_key; i < end_key; i++) {
+
+            uint64_t index = start_key;
+            // First read to see the actual values made out to the memory
+            for (; index < start_key + counters[tds->id]; index++) {
+                uint64_t *val = reinterpret_cast<uint64_t *> (tree->lookup(Keys[index], t));
+                if (*val != keys[index]) {
+                    std::cout << "wrong value read: " << *val << " expected:" << keys[index] << std::endl;
+                    //This write did not make out to the memory. So, we need to start inserting from here ... 
+                    break;
+                }
+            }
+            
+            for (uint64_t i = index; i < end_key; i++) {
                 tree->insert(Keys[i], t);
+                counters[tds->id]++;
+                PMCHECK::clflush((char*)&counters[tds->id], sizeof(counters[tds->id]), false, true);
             }
         };
         std::vector<std::thread> thread_group;
@@ -78,41 +99,6 @@ void run(char **argv) {
                 std::chrono::system_clock::now() - starttime);
         printf("Throughput: insert,%ld,%f ops/us\n", n, (n * 1.0) / duration.count());
         printf("Elapsed time: insert,%ld,%f sec\n", n, duration.count() / 1000000.0);
-    }
-
-    {
-        // Lookup
-        auto starttime = std::chrono::system_clock::now();
-        next_thread_id.store(0);
-        auto func = [&]() {
-            int thread_id = next_thread_id.fetch_add(1);
-            tds[thread_id].id = thread_id;
-            tds[thread_id].tree = tree;
-
-            uint64_t start_key = n / num_thread * (uint64_t)thread_id;
-            uint64_t end_key = start_key + n / num_thread;
-            auto t = tree->getThreadInfo(thread_id);
-            for (uint64_t i = start_key; i < end_key; i++) {
-                uint64_t *val = reinterpret_cast<uint64_t *> (tree->lookup(Keys[i], t));
-                if (*val != keys[i]) {
-                    std::cout << "wrong value read: " << *val << " expected:" << keys[i] << std::endl;
-                    throw;
-                }
-            }
-        };
-
-        std::vector<std::thread> thread_group;
-
-        for (int i = 0; i < num_thread; i++)
-            thread_group.push_back(std::thread{func});
-
-        for (int i = 0; i < num_thread; i++)
-            thread_group[i].join();
-
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
-                std::chrono::system_clock::now() - starttime);
-        printf("Throughput: lookup,%ld,%f ops/us\n", n, (n * 1.0) / duration.count());
-        printf("Elapsed time: lookup,%ld,%f sec\n", n, duration.count() / 1000000.0);
     }
 
     delete[] keys;
