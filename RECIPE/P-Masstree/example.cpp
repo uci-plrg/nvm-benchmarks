@@ -85,6 +85,7 @@ void run(char **argv) {
                 counters[tds->id]++;
                 masstree::clflush((char*)&counters[tds->id], sizeof(counters[tds->id]), true);
             }
+            return NULL;
         };
         pthread_t *threads = new pthread_t[num_thread];
 
@@ -101,35 +102,6 @@ void run(char **argv) {
         delete [] threads;
     }
 
-    {
-        // Lookup
-        auto starttime = std::chrono::system_clock::now();
-        next_thread_id.store(0);
-        auto func = [](void * arg) -> void * {
-            thread_data_t *tds = (thread_data_t *) arg;
-            
-            uint64_t start_key = tds->n / tds->num_thread * (uint64_t)tds->id;
-            uint64_t end_key = start_key + tds->n / tds->num_thread;
-
-            for (uint64_t i = start_key; i < end_key; i++) {
-                
-            }
-        };
-
-        pthread_t *threads = new pthread_t[num_thread];
-
-        for (int i = 0; i < num_thread; i++) {
-            pthread_create(&threads[i], NULL, func, &tds[i]);
-        }
-        for (int i = 0; i < num_thread; i++){
-            pthread_join(threads[i], NULL);
-        }    
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
-                std::chrono::system_clock::now() - starttime);
-        printf("Throughput: lookup,%ld,%f ops/us\n", n, (n * 1.0) / duration.count());
-        printf("Elapsed time: lookup,%ld,%f sec\n", n, duration.count() / 1000000.0);
-        delete [] threads;
-    }
     delete tds;
     delete[] keys;
 }
