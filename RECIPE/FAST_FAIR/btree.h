@@ -63,10 +63,11 @@ static inline void mfence()
     asm volatile("mfence":::"memory");
 }
 
-static inline void clflush(char *data, int len)
+static inline void clflush(char *data, int len, bool front = true, bool end = true)
 {
     volatile char *ptr = (char *)((unsigned long)data &~(CACHE_LINE_SIZE-1));
-    mfence();
+    if(front)
+        mfence();
     for(; ptr<data+len; ptr+=CACHE_LINE_SIZE){
         unsigned long etsc = read_tsc() + 
             (unsigned long)(write_latency_in_ns*CPU_FREQ_MHZ/1000);
@@ -79,7 +80,8 @@ static inline void clflush(char *data, int len)
 #endif
         while (read_tsc() < etsc) cpu_pause();
     }
-    mfence();
+    if(end)
+        mfence();
 }
 
 #ifdef LOCK_INIT
