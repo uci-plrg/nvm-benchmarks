@@ -100,9 +100,10 @@ void run(char **argv) {
 
     printf("operation,n,ops/s\n");
     if (getRegionFromID(0) == NULL) {
-        tree = new BwTree<uint64_t, uint64_t, KeyComparator, KeyEqualityChecker> {true, KeyComparator{1}, KeyEqualityChecker{1}};
-        tree->UpdateThreadLocal(1);
-        tree->AssignGCID(0);
+        tree = new BwTree<uint64_t, uint64_t, KeyComparator, KeyEqualityChecker> (true, KeyComparator{1}, KeyEqualityChecker{1});
+        //tree->UpdateThreadLocal(1);
+        //tree->AssignGCID(0);
+        tree->UpdateThreadLocal(num_thread);
         setRegionFromID(0, tree);
         //Make sure counters and hashtable aren't in the same line:
         // 64 bytes + n*sizeof(uint64_t) + 64 bytes.
@@ -119,7 +120,6 @@ void run(char **argv) {
         // Build tree
         auto starttime = std::chrono::system_clock::now();
         next_thread_id.store(0);
-        tree->UpdateThreadLocal(num_thread);
         auto func = [&]() {
             int thread_id = next_thread_id.fetch_add(1);
             uint64_t start_key = n / num_thread * (uint64_t)thread_id;

@@ -65,7 +65,7 @@
 
 // This must be declared before all include directives
 using NodeID = uint64_t;
-
+#define BUGFIX 1
 #include "sorted_small_set.h"
 #include "bloom_filter.h"
 #include "atomic_stack.h"
@@ -2775,8 +2775,9 @@ class BwTree : public BwTreeBase {
     }
 
     dummy("Call it here to avoid compiler warning\n");
-    
-    return;
+  #ifdef BUGFIX
+    clflush((char*)this, sizeof(BwTree), false, true);
+  #endif
   }
 
   /*
@@ -8905,8 +8906,10 @@ try_join_again:
         PerformGarbageCollection();
 
         // Sleep for 50 ms
+#ifndef BUGFIX        
         std::chrono::milliseconds duration(GC_INTERVAL);
         std::this_thread::sleep_for(duration);
+#endif
       }
 
       bwt_printf("exit flag is true; thread return\n");
