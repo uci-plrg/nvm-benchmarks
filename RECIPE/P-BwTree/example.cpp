@@ -85,35 +85,53 @@ class KeyEqualityChecker {
 
 BwTree<uint64_t, uint64_t, KeyComparator, KeyEqualityChecker> *tree = NULL;
 uint64_t *counters = NULL;
-void run(char **argv) {
-    std::cout << "Simple Example of P-BwTree" << std::endl;
+uint64_t *keys = NULL;
 
-    uint64_t n = std::atoll(argv[1]);
-    uint64_t *keys = new uint64_t[n];
-
-    // Generate keys
-    for (uint64_t i = 0; i < n; i++) {
-        keys[i] = i + 1;
-    }
-
-    int num_thread = atoi(argv[2]);
-
-    printf("operation,n,ops/s\n");
+void initOrRecoverPersistentData(uint64_t n, int num_thread) {
     if (getRegionFromID(0) == NULL) {
         tree = new BwTree<uint64_t, uint64_t, KeyComparator, KeyEqualityChecker> (true, KeyComparator{1}, KeyEqualityChecker{1});
         //tree->UpdateThreadLocal(1);
         //tree->AssignGCID(0);
         tree->UpdateThreadLocal(num_thread);
         setRegionFromID(0, tree);
+    } else {
+        tree = (BwTree<uint64_t, uint64_t, KeyComparator, KeyEqualityChecker> *) getRegionFromID(0);
+        assert(tree);
+    }
+
+    if(getRegionFromID(1) == NULL){
         //Make sure counters and hashtable aren't in the same line:
         // 64 bytes + n*sizeof(uint64_t) + 64 bytes.
         counters = (uint64_t *)calloc(n + 16, sizeof(uint64_t));
         counters = &counters[8];
         setRegionFromID(1, counters);
     } else {
-        tree = (BwTree<uint64_t, uint64_t, KeyComparator, KeyEqualityChecker> *) getRegionFromID(0);
         counters = (uint64_t *) getRegionFromID(1);
+        assert(counters);
     }
+
+    if(getRegionFromID(2) == NULL){
+        keys = new uint64_t[n];
+
+        // Generate keys
+        for (uint64_t i = 0; i < n; i++) {
+            keys[i] = i + 1;
+        }
+        PMCHECK::clflush((char*)keys, sizeof(uint64_t)*n, false, true);
+        setRegionFromID(2, keys);
+    } else {
+        keys = (uint64_t*) getRegionFromID(2);
+    }
+}
+
+void run(char **argv) {
+    std::cout << "Simple Example of P-BwTree" << std::endl;
+
+    uint64_t n = std::atoll(argv[1]);
+
+    int num_thread = atoi(argv[2]);
+
+    initOrRecoverPersistentData(n, num_thread);
     std::atomic<int> next_thread_id;
 
     {

@@ -168,7 +168,7 @@ extern bool print_flag;
 #define MAX_THREAD_COUNT ((int)0x7FFFFFFF)
 
 // The maximum number of nodes we could map in this index
-#define MAPPING_TABLE_SIZE ((size_t)(1 << 20))
+#define MAPPING_TABLE_SIZE ((size_t)(1 << 8))
 
 // If the length of delta chain exceeds ( >= ) this then we consolidate the node
 #define INNER_DELTA_CHAIN_LENGTH_THRESHOLD ((int)8)
@@ -454,7 +454,9 @@ class BwTreeBase {
     gc_metadata_p = reinterpret_cast<PaddedGCMetadata *>(
       (reinterpret_cast<size_t>(original_p) + CACHE_LINE_SIZE - 1) & \
         CACHE_LINE_MASK);
-    
+#ifdef BUGFIX
+    clflush((char*)&gc_metadata_p, sizeof(PaddedGCMetadata*), false, true);
+#endif
     // Make sure it is aligned
     assert(((size_t)gc_metadata_p % CACHE_LINE_SIZE) == 0);
     
@@ -466,7 +468,9 @@ class BwTreeBase {
     for(size_t i = 0;i < thread_num;i++) {
       new (gc_metadata_p + i) PaddedGCMetadata{};
     }
-    
+// #ifdef BUGFIX
+//     clflush((char*)gc_metadata_p, sizeof(PaddedGCMetadata)*thread_num, false, true);
+// #endif    
     return; 
   } 
   
@@ -588,6 +592,9 @@ class BwTreeBase {
    */
   inline void UnregisterThread(int thread_id) {
     GetGCMetaData(thread_id)->last_active_epoch = static_cast<uint64_t>(-1);
+  #ifdef BUGFIX
+    clflush((char*)&GetGCMetaData(thread_id)->last_active_epoch, sizeof(uint64_t), false, true);
+  #endif
   }
   
   /*
@@ -9831,15 +9838,25 @@ try_join_again:
     GarbageNode *garbage_node_p = \
       new GarbageNode{GetGlobalEpoch(), (void *)(node_p)};
     assert(garbage_node_p != nullptr);
-    
+#ifdef BUGFIX
+    clflush((char*)garbage_node_p, sizeof(GarbageNode), false, true);
+#endif
     // Link this new node to the end of the linked list
     // and then update last_p
     GetCurrentGCMetaData()->last_p->next_p = garbage_node_p;
+#ifdef BUGFIX
+    clflush((char*)GetCurrentGCMetaData()->last_p->next_p, sizeof(GarbageNode*), false, true);
+#endif
     GetCurrentGCMetaData()->last_p = garbage_node_p;
+#ifdef BUGFIX
+    clflush((char*)GetCurrentGCMetaData()->last_p, sizeof(GarbageNode*), false, true);
+#endif
     
     // Update the counter 
     GetCurrentGCMetaData()->node_count++;
-    
+#ifdef BUGFIX
+    clflush((char*)&GetCurrentGCMetaData()->node_count, sizeof(uint64_t), false, true);
+#endif
     // It is possible that we could not free enough number of nodes to
     // make it less than this threshold
     // So it is important to let the epoch counter be constantly increased
@@ -9887,7 +9904,9 @@ try_join_again:
       delete first_p;
       assert(GetGCMetaData(thread_id)->node_count != 0UL);
       GetGCMetaData(thread_id)->node_count--;
-      
+ #ifdef BUGFIX
+      clflush((char*)&GetGCMetaData(thread_id)->node_count, sizeof(uint64_t), false, true);
+ #endif     
       first_p = header_p->next_p;
     }
     
