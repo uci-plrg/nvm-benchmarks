@@ -115,7 +115,6 @@ void run(char **argv) {
     }
 
     delete tds;
-    delete[] keys;
 }
 
 int main(int argc, char **argv) {
@@ -124,8 +123,5 @@ int main(int argc, char **argv) {
         return 1;
     }
     run(argv);
-    if(tree != NULL) {
-        delete tree;
-    }
     return 0;
 }
