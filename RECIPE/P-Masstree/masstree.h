@@ -9,10 +9,12 @@
 #include <mutex>
 //#include <atomic>
 #include <assert.h>
+#include <malloc.h>
 #ifdef LOCK_INIT
 #include "tbb/concurrent_vector.h"
 #endif
 
+#define BUGFIX 1
 namespace masstree {
 
 static constexpr uint64_t CACHE_LINE_SIZE = 64;
@@ -143,6 +145,9 @@ class masstree {
         masstree (void *new_root) {
             root_ = new_root;
             clflush((char *)root_, 304, true);      // 304 is the leafnode size of masstree
+#ifdef BUGFIX
+            clflush((char *) this, sizeof(masstree), true);
+#endif
         }
 
         ~masstree() {
@@ -440,8 +445,7 @@ class leafnode {
         }
 
         void *operator new(size_t size) {
-            void *ret;
-            posix_memalign(&ret, CACHE_LINE_SIZE, size);
+            void *ret = memalign(CACHE_LINE_SIZE, size);
             return ret;
         }
 
@@ -605,10 +609,9 @@ void leafnode::prefetch() const
 
 leafvalue *masstree::make_leaf(char *key, size_t key_len, uint64_t value)
 {
-    void *aligned_alloc;
     size_t len = (key_len % sizeof(uint64_t)) == 0 ? key_len : (((key_len) / sizeof(uint64_t)) + 1) * sizeof(uint64_t);
-
-    posix_memalign(&aligned_alloc, CACHE_LINE_SIZE, sizeof(leafvalue) + len + sizeof(uint64_t));
+    void *aligned_alloc = memalign( CACHE_LINE_SIZE, sizeof(leafvalue) + len + sizeof(uint64_t));
+    
     leafvalue *lv = reinterpret_cast<leafvalue *> (aligned_alloc);
     memset(lv, 0, sizeof(leafvalue) + len + sizeof(uint64_t));
 
@@ -626,10 +629,9 @@ leafvalue *masstree::make_leaf(char *key, size_t key_len, uint64_t value)
 
 leafvalue *leafnode::smallest_leaf(size_t key_len, uint64_t value)
 {
-    void *aligned_alloc;
     size_t len = (key_len % sizeof(uint64_t)) == 0 ? key_len : (((key_len) / sizeof(uint64_t)) + 1) * sizeof(uint64_t);
+    void *aligned_alloc = memalign(CACHE_LINE_SIZE, sizeof(leafvalue) + len);
 
-    posix_memalign(&aligned_alloc, CACHE_LINE_SIZE, sizeof(leafvalue) + len);
     leafvalue *lv = reinterpret_cast<leafvalue *> (aligned_alloc);
     memset(lv, 0, sizeof(leafvalue) + len);
 
