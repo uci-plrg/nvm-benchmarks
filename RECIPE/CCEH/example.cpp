@@ -2,7 +2,6 @@
 #include <random>
 #include <iostream>
 #include <future>
-#include <assert.h>
 #include "src/CCEH.h"
 
 using namespace std;
@@ -35,7 +34,6 @@ void run(char **argv) {
 
     if(getRegionFromID(0) == NULL){
         hashTable = new CCEH(2);
-        clflush((char*)hashTable, sizeof(CCEH*), false, true);
         setRegionFromID(0, hashTable);
         
     } else {
@@ -47,7 +45,6 @@ void run(char **argv) {
         // 64 bytes + n*sizeof(uint64_t) + 64 bytes.
         counters = (uint64_t *)calloc(n + 16, sizeof(uint64_t));
         counters = &counters[8];
-        clflush((char*)counters, sizeof(uint64_t)*n, false, true);
         setRegionFromID(1, counters);
     } else {
         counters = (uint64_t *) getRegionFromID(1);
