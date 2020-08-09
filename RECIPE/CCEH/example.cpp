@@ -46,6 +46,7 @@ void run(char **argv) {
         // 64 bytes + n*sizeof(uint64_t) + 64 bytes.
         counters = (uint64_t *)calloc(n + 16, sizeof(uint64_t));
         counters = &counters[8];
+        clflush((char*)counters, sizeof(uint64_t)*n, false, true);
         setRegionFromID(1, counters);
     } else {
         counters = (uint64_t *) getRegionFromID(1);
