@@ -69,7 +69,7 @@ void run(char **argv) {
             uint64_t end_key = start_key + n / num_thread;
             uint64_t index = start_key;
             // First read to see the actual values made out to the memory
-            for (; index < start_key + counters[tds->id]; index++) {
+            for (; index < start_key + counters[thread_id]; index++) {
                 const char * val = tds[thread_id].hashtable->Get( keys[index]);
                 if (val != (const char *)keys[index]) {
                     std::cout << "[CCEH] wrong key read: " << val << "expected: " << keys[index] << std::endl;
@@ -80,7 +80,6 @@ void run(char **argv) {
             // Now resuming adding keys to the tree.
             for (uint64_t i = index; i < end_key; i++) {
                 assert(tds[thread_id].hashtable != NULL);
-                    tds[thread_id].hashtable->Capacity();
                 tds[thread_id].hashtable->Insert( keys[i], reinterpret_cast<const char*>( keys[i]));
                 counters[thread_id]++;
                 clflush((char*)&counters[thread_id], sizeof(counters[thread_id]), false, true);
