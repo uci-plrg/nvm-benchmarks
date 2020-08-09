@@ -2,6 +2,7 @@
 #include <random>
 #include <iostream>
 #include <future>
+#include <assert.h>
 #include "src/CCEH.h"
 
 using namespace std;
