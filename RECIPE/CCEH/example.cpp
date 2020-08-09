@@ -2,6 +2,7 @@
 #include <random>
 #include <iostream>
 #include <future>
+#include <assert.h>
 #include "src/CCEH.h"
 
 using namespace std;
@@ -34,15 +35,23 @@ void run(char **argv) {
 
     if(getRegionFromID(0) == NULL){
         hashTable = new CCEH(2);
+        clflush((char*)hashTable, sizeof(CCEH*), false, true);
         setRegionFromID(0, hashTable);
+        
+    } else {
+        hashTable = (CCEH*) getRegionFromID(0);
+        assert(hashTable);
+    }
+    if (getRegionFromID(1) == NULL) {
         //Make sure counters and hashtable aren't in the same line:
         // 64 bytes + n*sizeof(uint64_t) + 64 bytes.
         counters = (uint64_t *)calloc(n + 16, sizeof(uint64_t));
         counters = &counters[8];
+        clflush((char*)counters, sizeof(uint64_t)*n, false, true);
         setRegionFromID(1, counters);
     } else {
-        hashTable = (CCEH*) getRegionFromID(0);
         counters = (uint64_t *) getRegionFromID(1);
+        assert(counters);
     }
     thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
 
@@ -71,9 +80,11 @@ void run(char **argv) {
             }
             // Now resuming adding keys to the tree.
             for (uint64_t i = index; i < end_key; i++) {
+                assert(tds[thread_id].hashtable != NULL);
+                    tds[thread_id].hashtable->Capacity();
                 tds[thread_id].hashtable->Insert( keys[i], reinterpret_cast<const char*>( keys[i]));
-                counters[tds->id]++;
-                clflush((char*)&counters[tds->id], sizeof(counters[tds->id]), false, true);
+                counters[thread_id]++;
+                clflush((char*)&counters[thread_id], sizeof(counters[thread_id]), false, true);
             }
         };
 
