@@ -1,7 +1,7 @@
 #include "btree.h"
 #include <string>
 #include <random>
-
+#include <assert.h>
 using namespace std;
 
 extern "C" {
@@ -33,14 +33,22 @@ void run(char **argv) {
     if (getRegionFromID(0) == NULL){
         ffair = new fastfair::btree();
         setRegionFromID(0, ffair);
+    } else {
+        ffair = (fastfair::btree *) getRegionFromID(0);
+        assert(ffair);
+    }
+
+    if(getRegionFromID(1) == NULL) {
         //Make sure counters and hashtable aren't in the same line:
         // 64 bytes + n*sizeof(uint64_t) + 64 bytes.
         counters = (uint64_t *)calloc(n + 16, sizeof(uint64_t));
         counters = &counters[8];
+        fastfair::clflush((char*)counters, sizeof(uint64_t)*n, false, true);
         setRegionFromID(1, counters);
     } else {
-        ffair = (fastfair::btree *) getRegionFromID(0);
         counters = (uint64_t *) getRegionFromID(1);
+        assert(counters);
+
     }
     thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
 
@@ -59,7 +67,7 @@ void run(char **argv) {
             uint64_t end_key = start_key + n / num_thread;
             uint64_t index = start_key;
             // First read to see the actual values made out to the memory
-            for (; index < start_key + counters[tds->id]; index++) {
+            for (; index < start_key + counters[thread_id]; index++) {
                 char * val = tds[thread_id].fair->btree_search( keys[index]);
                 if (val != (char *)keys[index]) {
                     std::cout << "[FAST_FAIR] wrong key read: " << val << "expected: " << keys[index] << std::endl;
@@ -69,8 +77,8 @@ void run(char **argv) {
 
             for (uint64_t i = index; i < end_key; i++) {
                 tds[thread_id].fair->btree_insert( keys[i], (char *) keys[i]);
-                counters[tds->id]++;
-                fastfair::clflush((char*)&counters[tds->id], sizeof(counters[tds->id]), false, true);
+                counters[thread_id]++;
+                fastfair::clflush((char*)&counters[thread_id], sizeof(counters[thread_id]), false, true);
             }
         };
 

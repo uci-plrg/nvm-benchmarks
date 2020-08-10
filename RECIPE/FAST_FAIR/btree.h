@@ -20,6 +20,8 @@
 #include "tbb/concurrent_vector.h"
 #endif
 
+#define BUGFIX 1
+
 #define DUMMY_PTR (void*)0xffffffff
 extern int SimulateCrash;
 namespace fastfair {
@@ -1837,12 +1839,18 @@ class page{
 btree::btree(){
     root = (char*)new page();
     height = 1;
+#ifdef BUGFIX
+    clflush((char*)this, sizeof(btree), false, true);
+#endif
 }
 
 void btree::setNewRoot(char *new_root) {
     this->root = (char*)new_root;
     clflush((char *)&this->root, sizeof(char *));
     ++height;
+#ifdef BUGFIX
+    clflush((char*)&this->height, sizeof(int), false, true);
+#endif
 }
 
 key_item *btree::make_key_item(char *key, size_t key_len, bool flush)
