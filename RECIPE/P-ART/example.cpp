@@ -2,6 +2,7 @@
 #include <chrono>
 #include <random>
 #include <thread>
+#include <assert.h>
 using namespace std;
 #include "Tree.h"
 
@@ -39,22 +40,37 @@ void run(char **argv) {
     
     if(getRegionFromID(0) == NULL){
         tree = new ART_ROWEX::Tree(loadKey, num_thread);
+        setRegionFromID(0, tree);
+    } else {
+        tree = (ART_ROWEX::Tree*)getRegionFromID(0);
+        assert(tree);
+    }
+
+    if(getRegionFromID(1) == NULL){
         Keys = new Key*[n];
         for(uint64_t i=0; i< n; i++){
             Keys[i] = Key::make_leaf(keys[i], sizeof(uint64_t), keys[i]);
+            PMCHECK::clflush((char*)&Keys[i], sizeof(Key), false, true);
         }
-        setRegionFromID(0, tree);
+        PMCHECK::clflush((char*)Keys, sizeof(Key*)*n, false, true);
         setRegionFromID(1, Keys);
+    } else {
+        Keys = (Key **) getRegionFromID(1);
+        assert(Keys);
+    }
+
+    if(getRegionFromID(2) == NULL) {
         //Make sure counters and hashtable aren't in the same line:
         // 64 bytes + n*sizeof(uint64_t) + 64 bytes.
         counters = (uint64_t *)calloc(n + 16, sizeof(uint64_t));
         counters = &counters[8];
+        PMCHECK::clflush((char*)counters, sizeof(uint64_t)*n, false, true);
         setRegionFromID(2, counters);
     } else {
-        tree = (ART_ROWEX::Tree*)getRegionFromID(0);
-        Keys = (Key **) getRegionFromID(1);
         counters = (uint64_t *) getRegionFromID(2);
+        assert(counters);
     }
+
     thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
 
     std::atomic<int> next_thread_id;
@@ -73,10 +89,11 @@ void run(char **argv) {
 
             uint64_t index = start_key;
             // First read to see the actual values made out to the memory
-            for (; index < start_key + counters[tds->id]; index++) {
+            for (; index < start_key + counters[thread_id]; index++) {
                 uint64_t *val = reinterpret_cast<uint64_t *> (tree->lookup(Keys[index], t));
-                if (*val != keys[index]) {
-                    std::cout << "wrong value read: " << *val << " expected:" << keys[index] << std::endl;
+                if (val == NULL || *val != keys[index]) {
+                    uint64_t readVal = val == NULL? (uint64_t) -1 : *val;
+                    std::cout << "wrong value read: " << readVal << " expected:" << keys[index] << std::endl;
                     //This write did not make out to the memory. So, we need to start inserting from here ... 
                     break;
                 }
@@ -84,8 +101,8 @@ void run(char **argv) {
             
             for (uint64_t i = index; i < end_key; i++) {
                 tree->insert(Keys[i], t);
-                counters[tds->id]++;
-                PMCHECK::clflush((char*)&counters[tds->id], sizeof(counters[tds->id]), false, true);
+                counters[thread_id]++;
+                PMCHECK::clflush((char*)&counters[thread_id], sizeof(counters[thread_id]), false, true);
             }
         };
         std::vector<std::thread> thread_group;
