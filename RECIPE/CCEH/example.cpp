@@ -36,9 +36,9 @@ void run(char **argv) {
     if(getRegionFromID(0) == NULL){
         hashTable = new CCEH(2);
         setRegionFromID(0, hashTable);
-        
     } else {
         hashTable = (CCEH*) getRegionFromID(0);
+        clflush((char*)&hashTable, sizeof(CCEH *), false, true);
         assert(hashTable);
     }
     if (getRegionFromID(1) == NULL) {
@@ -53,7 +53,6 @@ void run(char **argv) {
         assert(counters);
     }
     thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
-
     std::atomic<int> next_thread_id;
 
     {

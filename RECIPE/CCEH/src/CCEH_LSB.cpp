@@ -101,6 +101,9 @@ Segment** Segment::Split(void) {
   clflush((char*)split[1], sizeof(Segment));
   local_depth = local_depth + 1;
   clflush((char*)&local_depth, sizeof(size_t));
+#ifdef BUGFIX
+  clflush((char*)split, sizeof(Segment*)*2, false, true);
+#endif
 
   return split;
 #else
@@ -121,7 +124,9 @@ Segment** Segment::Split(void) {
 
   clflush((char*)split[0], sizeof(Segment));
   clflush((char*)split[1], sizeof(Segment));
-
+#ifdef BUGFIX
+  clflush((char*)split, sizeof(Segment*)*2, false, true);
+#endif
   return split;
 #endif
 }
@@ -135,6 +140,7 @@ CCEH::CCEH(void)
     dir._[i]->pattern = i;
 #ifdef BUGFIX
     clflush((char *)dir._[i], sizeof(Segment), false, true);
+    clflush((char*)&dir._[i], sizeof(Segment*), false, true);
 #endif
   }
 #ifdef BUGFIX
@@ -150,6 +156,7 @@ CCEH::CCEH(size_t initCap)
     dir._[i]->pattern = i;
 #ifdef BUGFIX
     clflush((char *)dir._[i], sizeof(Segment), false, true);
+    clflush((char*)&dir._[i], sizeof(Segment*), false, true);
 #endif
   }
 #ifdef BUGFIX
@@ -208,7 +215,10 @@ RETRY:
 
     s[0]->pattern = (key_hash % (size_t)pow(2, s[0]->local_depth-1));
     s[1]->pattern = s[0]->pattern + (1 << (s[0]->local_depth-1));
-
+#ifdef BUGFIX
+    clflush((char*)&s[0]->pattern, sizeof(size_t));
+    clflush((char*)&s[1]->pattern, sizeof(size_t));
+#endif
     // Directory management
     while (!dir.Acquire()) {
       asm("nop");
@@ -228,6 +238,9 @@ RETRY:
         memcpy(_dir+dir.capacity, d, sizeof(Segment*)*dir.capacity);
         _dir[x] = s[0];
         _dir[x+dir.capacity] = s[1];
+#ifdef BUGFIX
+        clflush((char*)_dir, sizeof(Segment*)*dir.capacity*2, false, true);
+#endif
         clflush((char*)&dir._[0], sizeof(Segment*)*dir.capacity);
         dir._ = _dir;
         clflush((char*)&dir._, sizeof(void*));
@@ -240,6 +253,9 @@ RETRY:
       }
 #ifdef INPLACE
       s[0]->sema = 0;
+#ifdef BUGFIX
+      clflush((char*)&s[0]->sema, sizeof(int64_t), false, true);
+#endif      
 #endif
     }  // End of critical section
     while (!dir.Release()) {
