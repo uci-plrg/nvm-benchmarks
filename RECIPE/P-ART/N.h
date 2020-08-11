@@ -146,6 +146,8 @@ namespace ART_ROWEX {
 
         static N *getAnyChild(const N *n);
 
+        static std::atomic<N *> *getChildNodes(N *n, uint &size);
+
         static Key *getAnyChildTid(const N *n);
 
         static void deleteChildren(N *node);
@@ -209,6 +211,8 @@ namespace ART_ROWEX {
         void getChildren(uint8_t start, uint8_t end, std::tuple<uint8_t, N *> *&children,
                          uint32_t &childrenCount) const;
 
+        std::atomic<N *> *getChildNodes(uint &size);
+
         uint32_t getCount() const;
     };
 
@@ -268,6 +272,8 @@ namespace ART_ROWEX {
         void getChildren(uint8_t start, uint8_t end, std::tuple<uint8_t, N *> *&children,
                          uint32_t &childrenCount) const;
 
+        std::atomic<N *> *getChildNodes(uint &size);    
+
         uint32_t getCount() const;
     };
 
@@ -306,6 +312,8 @@ namespace ART_ROWEX {
         void getChildren(uint8_t start, uint8_t end, std::tuple<uint8_t, N *> *&children,
                          uint32_t &childrenCount) const;
 
+        std::atomic<N *> *getChildNodes(uint &size);
+
         uint32_t getCount() const;
     };
 
@@ -339,6 +347,8 @@ namespace ART_ROWEX {
 
         void getChildren(uint8_t start, uint8_t end, std::tuple<uint8_t, N *> *&children,
                          uint32_t &childrenCount) const;
+
+        std::atomic<N *> *getChildNodes(uint &size);
 
         uint32_t getCount() const;
     };

@@ -19,6 +19,8 @@ namespace ART_ROWEX {
 
         void *checkKey(const Key *ret, const Key *k) const;
 
+        void unlockSubTree( N *n);
+
         LoadKeyFunction loadKey;
 
         Epoche epoche;
@@ -72,6 +74,8 @@ namespace ART_ROWEX {
         ThreadInfo getThreadInfo(uint64_t id);
 
         void *lookup(const Key *k, ThreadInfo &threadEpocheInfo) const;
+
+        void recoverFromCrash();
 
         bool lookupRange(const Key *start, const Key *end, const Key *continueKey, Key *result[], std::size_t resultLen,
                          std::size_t &resultCount, ThreadInfo &threadEpocheInfo) const;

@@ -45,6 +45,11 @@ namespace ART_ROWEX {
         clflush((char *)&children[index], sizeof(N *), false, true);
     }
 
+    std::atomic<N *> *N48::getChildNodes(uint &size) {
+        size = 48;
+        return children;
+    }
+
     N *N48::getChild(const uint8_t k) const {
         uint8_t index = childIndex[k].load();
         if (index == emptyMarker) {

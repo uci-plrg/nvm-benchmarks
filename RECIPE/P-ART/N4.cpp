@@ -74,6 +74,11 @@ namespace ART_ROWEX {
         __builtin_unreachable();
     }
 
+    std::atomic<N *> *N4::getChildNodes(uint &size) {
+        size = 4;
+        return children;
+    }
+
     N *N4::getAnyChild() const {
         N *anyChild = nullptr;
         for (uint32_t i = 0; i < 4; ++i) {

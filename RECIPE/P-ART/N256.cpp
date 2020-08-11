@@ -35,6 +35,11 @@ namespace ART_ROWEX {
         clflush((char *)&children[key], sizeof(N *), false, true);
     }
 
+    std::atomic<N *> *N256::getChildNodes(uint &size) {
+        size = 256;
+        return children;
+    }
+
     N *N256::getChild(const uint8_t k) const {
         return children[k].load();
     }

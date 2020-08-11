@@ -119,6 +119,9 @@ namespace ART_ROWEX {
 
     void N::writeUnlock() {
         typeVersionLockObsolete.fetch_add(0b10);
+#ifdef BUGFIX
+        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);
+#endif
     }
 
     N *N::getAnyChild(const N *node) {
@@ -138,6 +141,29 @@ namespace ART_ROWEX {
             case NTypes::N256: {
                 auto n = static_cast<const N256 *>(node);
                 return n->getAnyChild();
+            }
+        }
+        assert(false);
+        __builtin_unreachable();
+    }
+
+    std::atomic<N *> *N::getChildNodes(N *node, uint &size) {
+        switch (node->getType()) {
+            case NTypes::N4: {
+                N4 * n = static_cast<N4 *>(node);
+                return n->getChildNodes(size);
+            }
+            case NTypes::N16: {
+                auto n = static_cast<N16 *>(node);
+                return n->getChildNodes(size);
+            }
+            case NTypes::N48: {
+                auto n = static_cast<N48 *>(node);
+                return n->getChildNodes(size);
+            }
+            case NTypes::N256: {
+                auto n = static_cast<N256 *>(node);
+                return n->getChildNodes(size);
             }
         }
         assert(false);

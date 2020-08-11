@@ -80,6 +80,11 @@ namespace ART_ROWEX {
         return true;
     }
 
+    std::atomic<N *> *N16::getChildNodes(uint &size) {
+        size = 16;
+        return children;
+    }
+
     N *N16::getAnyChild() const {
         N *anyChild = nullptr;
         for (int i = 0; i < 16; ++i) {

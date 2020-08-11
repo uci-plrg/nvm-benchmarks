@@ -35,6 +35,25 @@ namespace ART_ROWEX {
         return ThreadInfo(this->epoche, id);
     }
 
+    void Tree::unlockSubTree( N *n) {
+        if(!N::isLeaf(n)){
+            n->writeUnlock();
+            uint size =0;
+            std::atomic<N *> * children = N::getChildNodes(n, size);
+            for(uint i=0; i< size; i++) {
+                if(children[i] != nullptr){
+                    N* child = children[i].load();
+                    unlockSubTree(child);
+                }
+            }
+        }
+    }
+
+    void Tree::recoverFromCrash() {
+        N *node = root;
+        unlockSubTree(node);
+    }
+
     void *Tree::lookup(const Key *k, ThreadInfo &threadEpocheInfo) const {
         EpocheGuardReadonly epocheGuard(threadEpocheInfo);
         N *node = root;

@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include <array>
+#include "../cacheops.h"
 #define BUGFIX 1
 
 namespace ART {
@@ -73,6 +74,10 @@ namespace ART {
                 number_of_threads(thread_num) 
         {
             deletionLists = new DeletionList[number_of_threads];
+#ifdef BUGFIX
+            PMCHECK::clflush((char*)deletionLists, sizeof(DeletionList)*number_of_threads, false, true);
+            PMCHECK::clflush((char*)&deletionLists, sizeof(DeletionList*), false, true);
+#endif
         }
 
         Epoche(Epoche &e): startGCThreshhold(e.startGCThreshhold), number_of_threads(e.number_of_threads) {}
