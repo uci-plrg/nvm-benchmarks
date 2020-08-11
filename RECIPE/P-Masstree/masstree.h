@@ -1338,7 +1338,11 @@ void *leafnode::leaf_insert(masstree *t, void *root, uint32_t depth, leafvalue *
         //        reusing the existing split mechanism)
         if (this->next != NULL && this->key(this->permutation[this->permutation.size() - 1]) > this->next->highest) {
             this->next = this->next->next;
+#ifdef BUGFIX
+            clflush((char *)&this->next, sizeof(leafnode *), true);
+#else
             clflush((char *)this->next, sizeof(leafnode *), true);
+#endif
         }
 
         leafnode *new_sibling = new leafnode(this->level_);
@@ -1542,7 +1546,11 @@ void *leafnode::inter_insert(masstree *t, void *root, uint32_t depth, leafvalue 
         //        reusing the existing split mechanism)
         if (this->next != NULL && this->key(this->permutation[this->permutation.size() - 1]) > this->next->highest) {
             this->next = this->next->next;
+#ifdef BUGFIX
+            clflush((char *)&this->next, sizeof(leafnode *), true);
+#else
             clflush((char *)this->next, sizeof(leafnode *), true);
+#endif
         }
 
         leafnode *new_sibling = new leafnode(this->level_);
