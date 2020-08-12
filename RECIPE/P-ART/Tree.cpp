@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fstream>
+#include "N.h"
 
 #ifdef ARTDEBUG
 	std::ostream &art_cout = std::cout;
@@ -37,11 +38,54 @@ namespace ART_ROWEX {
 
     void Tree::unlockSubTree( N *n) {
         if(!N::isLeaf(n)){
+          if (n->isLocked(n->getVersion()))
             n->writeUnlock();
             uint size =0;
             std::atomic<N *> * children = N::getChildNodes(n, size);
+#ifdef BUGFIX
+            if (n->getType() == NTypes::N48) {
+              auto nt = static_cast<N48 *>(n);
+              for(int i=0; i<256; i++)
+                if (nt->childIndex[i].load() >= nt->compactCount) {
+                                    nt->childIndex[i].store(0, std::memory_order_release);
+                  N::clflush((char *)&nt->childIndex[i], sizeof(uint8_t), false, true);
+                }
+            }
+#endif
+
             for(uint i=0; i< size; i++) {
-                if(children[i] != nullptr){
+#ifdef BUGFIX
+              switch(n->getType()) {
+
+              case NTypes::N4: {
+                auto nt = static_cast<N4 *>(n);
+                if (i >= nt->compactCount) {
+                   nt->keys[i].store(0, std::memory_order_release);
+                  nt->children[i].store(NULL, std::memory_order_release);                  
+                }
+                break;
+              }
+              case NTypes::N16: {
+                auto nt = static_cast<N16 *>(n);
+                if (i >= nt->compactCount) {
+                  nt->keys[i].store(0, std::memory_order_release);
+                  nt->children[i].store(NULL, std::memory_order_release);                  
+                }
+                break;
+              }
+              case NTypes::N48: {
+                auto nt = static_cast<N48 *>(n);
+                if (i >= nt->compactCount) {
+                  nt->children[i].store(NULL, std::memory_order_release);                  
+                }
+                break;
+              }
+              default:
+                break;
+              }
+#endif
+              
+              if(children[i] != nullptr){
                     N* child = children[i].load();
                     unlockSubTree(child);
                 }
@@ -371,16 +415,16 @@ namespace ART_ROWEX {
             
 	    if (nextNode == nullptr) {
                 node->lockVersionOrRestart(v, needRestart);
-		if (needRestart) goto restart;
+                if (needRestart) goto restart;
 
                 N::insertAndUnlock(node, parentNode, parentKey, nodeKey, N::setLeaf(k), epocheInfo, needRestart);
                 if (needRestart) goto restart;
-		return;
+                return;
             }
             if (N::isLeaf(nextNode)) {
                 node->lockVersionOrRestart(v, needRestart);
                 if (needRestart) goto restart;
-		Key *key;
+                Key *key;
                 key = N::getLeaf(nextNode);
 
                 level++;

@@ -99,6 +99,13 @@ void run(char **argv) {
                     break;
                 }
             }
+
+            if (index < end_key) {
+              uint64_t *val = reinterpret_cast<uint64_t *> (tree->lookup(Keys[index], t));
+              if (val != NULL)
+                index++;
+            }
+
             
             for (uint64_t i = index; i < end_key; i++) {
                 tree->insert(Keys[i], t);

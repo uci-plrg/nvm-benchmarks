@@ -58,7 +58,7 @@ namespace ART_ROWEX {
 #endif
         }
 
-        N(NTypes type, uint32_t level, const Prefix &prefi) : prefix(prefi), level(level) {
+    N(NTypes type, uint32_t level, const Prefix &prefi) : prefix(*(uint64_t *)&prefi), level(level) {
             setType(type);
 #ifdef BUGFIX
         typeVersionLockObsolete.store(0b100);
@@ -76,11 +76,12 @@ namespace ART_ROWEX {
         //2b type 60b version 1b lock 1b obsolete
         std::atomic<uint64_t> typeVersionLockObsolete{0b100};
         // version 1, unlocked, not obsolete
-        std::atomic<Prefix> prefix;
+        std::atomic<uint64_t> prefix;
         const uint32_t level;
         uint16_t count = 0;
+    public:
         uint16_t compactCount = 0;
-
+    protected:
 
 
         void setType(NTypes type);
@@ -278,7 +279,8 @@ namespace ART_ROWEX {
     };
 
     class N48 : public N {
-        std::atomic<uint8_t> childIndex[256];
+    public:
+      std::atomic<uint8_t> childIndex[256];
         std::atomic<N *> children[48];
     public:
         static const uint8_t emptyMarker = 48;

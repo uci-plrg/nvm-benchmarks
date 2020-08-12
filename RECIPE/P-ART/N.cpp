@@ -103,8 +103,8 @@ namespace ART_ROWEX {
     }
 
     void N::lockVersionOrRestart(uint64_t &version, bool &needRestart) {
-        if (isLocked(version) || isObsolete(version)) {
-            needRestart = true;
+      if (isLocked(version) || isObsolete(version)) {
+	needRestart = true;
             return;
         }
         if (typeVersionLockObsolete.compare_exchange_strong(version, version + 0b10)) {
@@ -434,7 +434,8 @@ namespace ART_ROWEX {
     }
 
     Prefix N::getPrefi() const {
-        return prefix.load();
+      uint64_t tv = prefix.load();
+      return *((Prefix*) &tv);
     }
 
     inline void N::setPrefix(const uint8_t *prefix, uint32_t length, bool flush) {
@@ -442,11 +443,11 @@ namespace ART_ROWEX {
             Prefix p;
             memcpy(p.prefix, prefix, std::min(length, maxStoredPrefixLength));
             p.prefixCount = length;
-            this->prefix.store(p, std::memory_order_release);
+            this->prefix.store(*(uint64_t*)&p, std::memory_order_release);
         } else {
             Prefix p;
             p.prefixCount = 0;
-            this->prefix.store(p, std::memory_order_release);
+            this->prefix.store(*(uint64_t*)&p, std::memory_order_release);
         }
         if (flush) clflush((char *)&(this->prefix), sizeof(Prefix), false, true);
     }
@@ -461,7 +462,7 @@ namespace ART_ROWEX {
             p.prefix[prefixCopyCount - 1] = key;
         }
         p.prefixCount += nodeP.prefixCount + 1;
-        this->prefix.store(p, std::memory_order_release);
+        this->prefix.store(*(uint64_t*)&p, std::memory_order_release);
         clflush((char *)&this->prefix, sizeof(Prefix), false, true);
     }
 
