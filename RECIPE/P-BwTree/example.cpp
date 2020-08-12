@@ -178,7 +178,6 @@ void run(char **argv) {
         printf("Throughput: load, %f ,ops/us\n", (n * 1.0) / duration.count());
     }
 
-    delete[] keys;
 }
 
 int main(int argc, char **argv) {

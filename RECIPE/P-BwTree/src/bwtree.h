@@ -1996,7 +1996,11 @@ class BwTree : public BwTreeBase {
       tail{p_tail},
       limit{p_limit},
       next{nullptr}
-    {}
+    {
+  #ifdef BUGFIX
+    clflush((char*)this, sizeof(AllocationMeta), false, true);
+  #endif
+    }
     
     /*
      * TryAllocate() - Try to allocate from this chunk
