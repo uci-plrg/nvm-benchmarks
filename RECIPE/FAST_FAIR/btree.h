@@ -166,6 +166,9 @@ class header{
 #ifdef LOCK_INIT
 			lock_initializer.push_back(mtx);
 #endif
+#ifdef BUGFIX
+    clflush((char*)this, sizeof(header), false, true);
+#endif
         }
 
         ~header() {
