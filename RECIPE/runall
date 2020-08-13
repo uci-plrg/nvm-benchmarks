@@ -1,0 +1,59 @@
+#!/bin/bash
+export PMCheck="-s"
+NUMBERKEYS=4
+NUMBERTHREADS=2
+export PATH=/scratch/nvm/benchmarks:$PATH
+prefix=results
+BUILD=false
+
+rm -f $prefix--*
+
+BENCHMARK=CCEH
+echo "**********************"
+echo $BENCHMARK
+echo "**********************"
+
+cd $BENCHMARK
+rm -f PMCheckOutput*
+if $BUILD
+then
+make clean &> cleanlog
+make &> buildlog
+fi
+time ./run.sh ./example $NUMBERKEYS $NUMBERTHREADS &> ../$prefix--$BENCHMARK
+cd ..
+
+BENCHMARK=FAST_FAIR
+
+echo "**********************"
+echo $BENCHMARK
+echo "**********************"
+
+cd $BENCHMARK
+rm -f PMCheckOutput*
+if $BUILD
+then
+make clean &> cleanlog
+make &> buildlog
+fi
+time ./run.sh ./example $NUMBERKEYS $NUMBERTHREADS &> ../$prefix--$BENCHMARK
+cd ..
+
+for BENCHMARK in P-ART P-BwTree P-CLHT P-Masstree
+do
+echo "**********************"
+echo $BENCHMARK
+echo "**********************"
+
+cd $BENCHMARK
+rm -f PMCheckOutput*
+if $BUILD
+then
+rm -rf CMakeFiles CMakeCache.txt
+cmake . &> cmakelog
+make clean &> cleanlog
+make &> buildlog
+fi
+time ./run.sh ./example $NUMBERKEYS $NUMBERTHREADS &> ../$prefix--$BENCHMARK
+cd ..
+done
