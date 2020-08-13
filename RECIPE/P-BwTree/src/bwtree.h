@@ -2021,6 +2021,9 @@ class BwTree : public BwTreeBase {
       // This substracts size from tail, and assigns
       // the value to local variable in one atomic step
       char *new_tail = tail.fetch_sub(size) - size;
+  #ifdef BUGFIX
+    clflush((char*)&tail, sizeof(tail), false, true);
+  #endif
       
       // If the newly allocated memory is under the minimum then
       // the chunk could not be used anymore

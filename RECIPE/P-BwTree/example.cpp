@@ -172,9 +172,11 @@ void run(char **argv) {
 
         for (int i = 0; i < num_thread; i++)
             thread_group[i].join();
-        tree->UpdateThreadLocal(1);
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::system_clock::now() - starttime);
+#ifndef BUGFIX
+        tree->UpdateThreadLocal(1);
+#endif
         printf("Throughput: load, %f ,ops/us\n", (n * 1.0) / duration.count());
     }
 
