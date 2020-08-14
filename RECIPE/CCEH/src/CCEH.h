@@ -65,8 +65,9 @@ struct Directory {
   Directory(void) {
     capacity = kDefaultDirectorySize;
     _ = new Segment*[capacity];
-  #ifdef BUGFIX
-    clflush((char*)_, sizeof(Segment*) * capacity, false, true);
+    //b1--fake
+#ifdef BUGFIX
+    //            clflush((char*)_, sizeof(Segment*) * capacity, false, true);
   #endif  
     lock = false;
     sema = 0;
@@ -75,8 +76,9 @@ struct Directory {
   Directory(size_t size) {
     capacity = size;
     _ = new Segment*[capacity];
-  #ifdef BUGFIX
-    clflush((char*)_, sizeof(Segment*) * capacity, false, true);
+    //b2--fake
+#ifdef BUGFIX
+    //clflush((char*)_, sizeof(Segment*) * capacity, false, true);
   #endif
     lock = false;
     sema = 0;

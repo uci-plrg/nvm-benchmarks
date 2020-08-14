@@ -101,8 +101,9 @@ Segment** Segment::Split(void) {
   clflush((char*)split[1], sizeof(Segment));
   local_depth = local_depth + 1;
   clflush((char*)&local_depth, sizeof(size_t));
+  //b3
 #ifdef BUGFIX
-  clflush((char*)split, sizeof(Segment*)*2, false, true);
+  //  clflush((char*)split, sizeof(Segment*)*2, false, true);
 #endif
 
   return split;
@@ -124,8 +125,9 @@ Segment** Segment::Split(void) {
 
   clflush((char*)split[0], sizeof(Segment));
   clflush((char*)split[1], sizeof(Segment));
+  //b4
 #ifdef BUGFIX
-  clflush((char*)split, sizeof(Segment*)*2, false, true);
+  //    clflush((char*)split, sizeof(Segment*)*2, false, true);
 #endif
   return split;
 #endif
@@ -138,13 +140,15 @@ CCEH::CCEH(void)
   for (unsigned i = 0; i < dir.capacity; ++i) {
     dir._[i] = new Segment(global_depth);
     dir._[i]->pattern = i;
+    //b5
 #ifdef BUGFIX
-    clflush((char *)dir._[i], sizeof(Segment), false, true);
-    clflush((char*)&dir._[i], sizeof(Segment*), false, true);
+    //    clflush((char *)dir._[i], sizeof(Segment), false, true);
+    //clflush((char*)&dir._[i], sizeof(Segment*), false, true);
 #endif
   }
+  //b6
 #ifdef BUGFIX
-  clflush((char*)this, sizeof(CCEH), false, true);
+  //clflush((char*)this, sizeof(CCEH), false, true);
 #endif
 }
 
@@ -154,11 +158,13 @@ CCEH::CCEH(size_t initCap)
   for (unsigned i = 0; i < dir.capacity; ++i) {
     dir._[i] = new Segment(global_depth);
     dir._[i]->pattern = i;
+    //b7 & b8--real
 #ifdef BUGFIX
     clflush((char *)dir._[i], sizeof(Segment), false, true);
     clflush((char*)&dir._[i], sizeof(Segment*), false, true);
 #endif
   }
+  //b9--real
 #ifdef BUGFIX
   clflush((char*)this, sizeof(CCEH), false, true);
 #endif
@@ -215,9 +221,10 @@ RETRY:
 
     s[0]->pattern = (key_hash % (size_t)pow(2, s[0]->local_depth-1));
     s[1]->pattern = s[0]->pattern + (1 << (s[0]->local_depth-1));
+    //b9
 #ifdef BUGFIX
-    clflush((char*)&s[0]->pattern, sizeof(size_t));
-    clflush((char*)&s[1]->pattern, sizeof(size_t));
+    //    clflush((char*)&s[0]->pattern, sizeof(size_t));
+    //clflush((char*)&s[1]->pattern, sizeof(size_t));
 #endif
     // Directory management
     while (!dir.Acquire()) {
@@ -238,8 +245,9 @@ RETRY:
         memcpy(_dir+dir.capacity, d, sizeof(Segment*)*dir.capacity);
         _dir[x] = s[0];
         _dir[x+dir.capacity] = s[1];
+        //b10
 #ifdef BUGFIX
-        clflush((char*)_dir, sizeof(Segment*)*dir.capacity*2, false, true);
+        //        clflush((char*)_dir, sizeof(Segment*)*dir.capacity*2, false, true);
 #endif
         clflush((char*)&dir._[0], sizeof(Segment*)*dir.capacity);
         dir._ = _dir;
@@ -253,8 +261,9 @@ RETRY:
       }
 #ifdef INPLACE
       s[0]->sema = 0;
+      //b11
 #ifdef BUGFIX
-      clflush((char*)&s[0]->sema, sizeof(int64_t), false, true);
+      //      clflush((char*)&s[0]->sema, sizeof(int64_t), false, true);
 #endif      
 #endif
     }  // End of critical section
