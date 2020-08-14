@@ -134,7 +134,7 @@ struct HOTRowexInsertStack {
 			   ? HOTRowexFirstInsertLevel<EntryType> { nextInsertStackEntry ,
 				  {0, 0, static_cast<uint32_t>(nextInsertStackEntry->getChildPointer().getNode()->getNumberEntries()), mismatchingBit},
 				   false}
-			   : HOTRowexFirstInsertLevel<EntryType> { possibleInsertStackEntry, insertInformation, isSingleEntry & isLeafEntry & (possibleInsertStackEntry->getChildPointer().getHeight() > 1) };
+			   : HOTRowexFirstInsertLevel<EntryType> { possibleInsertStackEntry, insertInformation, isSingleEntry && isLeafEntry && (possibleInsertStackEntry->getChildPointer().getHeight() > 1) };
 	}
 
 	idx::contenthelpers::OptionalValue<hot::commons::DiscriminativeBit> getMismatchingBit(uint8_t const *newKeyBytes) const {

@@ -77,10 +77,6 @@ template<typename DiscriminativeBitsRepresentation, typename PartialKeyType>  vo
 	return memoryForNode;
 };
 
-template<typename DiscriminativeBitsRepresentation, typename PartialKeyType> void HOTRowexNode<DiscriminativeBitsRepresentation, PartialKeyType>::operator delete (void * rawMemory) {
-	free(rawMemory);
-}
-
 template<typename DiscriminativeBitsRepresentation, typename PartialKeyType> inline hot::commons::NodeAllocationInformation HOTRowexNode<DiscriminativeBitsRepresentation, PartialKeyType>::getNodeAllocationInformation(uint16_t const numberEntries) {
 	constexpr uint32_t entriesMasksBaseSize = static_cast<uint32_t>(sizeof(hot::commons::SparsePartialKeys<PartialKeyType>));
 	constexpr uint32_t baseSize = static_cast<uint32_t>(sizeof(HOTRowexNode<DiscriminativeBitsRepresentation, PartialKeyType>)) - entriesMasksBaseSize;
@@ -112,8 +108,9 @@ template<typename DiscriminativeBitsRepresentation, typename PartialKeyType> tem
 	HOTRowexChildPointer const * __restrict__ existingPointers = sourceNode.getPointers();
 	HOTRowexChildPointer * __restrict__ targetPointers = this->getPointers();
 
-	SourcePartialKeyType __restrict__ const * existingMasks = sourceNode.mPartialKeys.mEntries;
-	PartialKeyType __restrict__ * targetMasks = mPartialKeys.mEntries;
+	SourcePartialKeyType const * __restrict__ existingMasks = sourceNode.mPartialKeys.mEntries;
+
+	PartialKeyType* __restrict__ targetMasks = mPartialKeys.mEntries;
 
 	PartialKeyConversionInformation const & conversionInformation = getConversionInformation(sourceNode, insertInformation);
 	hot::commons::DiscriminativeBit const & keyInformation = insertInformation.mKeyInformation;
@@ -208,8 +205,9 @@ template<typename DiscriminativeBitsRepresentation, typename PartialKeyType> tem
 	HOTRowexChildPointer const * __restrict__ existingPointers = sourceNode.getPointers();
 	HOTRowexChildPointer * __restrict__ targetPointers = this->getPointers();
 
-	SourcePartialKeyType __restrict__ const * existingMasks = sourceNode.mPartialKeys.mEntries;
-	PartialKeyType __restrict__ * targetMasks = mPartialKeys.mEntries;
+	SourcePartialKeyType const *  __restrict__ existingMasks = sourceNode.mPartialKeys.mEntries;
+
+	PartialKeyType* __restrict__ targetMasks = mPartialKeys.mEntries;
 
 	for(unsigned int targetIndex = 0; targetIndex < numberEntriesBeforeAffectedSubtree; ++targetIndex) {
 		unsigned int sourceIndex = firstIndexInRange + targetIndex;
@@ -261,31 +259,6 @@ template<typename DiscriminativeBitsRepresentation, typename PartialKeyType> inl
 }
 
 inline void reportInvalidResultIndex(uint resultIndex, uint entryIndex);
-
-template<typename DiscriminativeBitsRepresentation, typename PartialKeyType> inline hot::commons::InsertInformation HOTRowexNode<DiscriminativeBitsRepresentation, PartialKeyType>::getInsertInformation(
-	uint entryIndex, hot::commons::DiscriminativeBit const & discriminativeBit
-) const {
-	PartialKeyType existingEntryMask = mPartialKeys.mEntries[entryIndex];
-	assert(([&]() -> bool {
-		uint resultIndex = this->toResultIndex(mPartialKeys.search(existingEntryMask));
-		bool isCorrectResultIndex = resultIndex == entryIndex;
-		if(!isCorrectResultIndex) {
-			reportInvalidResultIndex(resultIndex, entryIndex);
-		};
-		return isCorrectResultIndex;
-	})());
-
-	PartialKeyType prefixBits = mDiscriminativeBitsRepresentation.template getPrefixBitsMask<PartialKeyType>(discriminativeBit);
-	PartialKeyType subtreePrefixMask = existingEntryMask & prefixBits;
-
-	uint32_t affectedSubtreeMask = mPartialKeys.getAffectedSubtreeMask(prefixBits, subtreePrefixMask) & this->mUsedEntriesMask;
-
-	assert(affectedSubtreeMask != 0);
-	uint32_t firstIndexInAffectedSubtree = __builtin_ctz(affectedSubtreeMask);
-	uint32_t numberEntriesInAffectedSubtree = _mm_popcnt_u32(affectedSubtreeMask);
-
-	return { subtreePrefixMask, firstIndexInAffectedSubtree, numberEntriesInAffectedSubtree, discriminativeBit };
-}
 
 inline void reportInvalidResultIndex(uint resultIndex, uint entryIndex) {
 	int indexToReport = static_cast<int>(resultIndex) - 1; //only
