@@ -21,7 +21,7 @@ namespace ART_ROWEX {
         keys[compactCount].store(key, flush ? std::memory_order_release : std::memory_order_relaxed);
         children[compactCount].store(n, flush ? std::memory_order_release : std::memory_order_relaxed);
 #ifdef BUGFIX
-        if (flush) clflush((char *)this, sizeof(N4), true, true);
+        //        if (flush) clflush((char *)this, sizeof(N4), true, true);//b3...doesn't appeat to be necessary
 #endif
         compactCount++;
         count++;

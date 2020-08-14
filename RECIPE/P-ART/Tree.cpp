@@ -23,7 +23,7 @@ namespace ART_ROWEX {
     Tree::Tree(LoadKeyFunction loadKey, uint threads_num) : root(new N256(0, {})), loadKey(loadKey), epoche(256, threads_num) {
         N::clflush((char *)root, sizeof(N256), true, true);
 #ifdef BUGFIX
-        N::clflush((char*)this, sizeof(Tree), false, true);
+        N::clflush((char*)this, sizeof(Tree), false, true); //b8
 #endif
     }
 
@@ -47,8 +47,8 @@ namespace ART_ROWEX {
               auto nt = static_cast<N48 *>(n);
               for(int i=0; i<256; i++)
                 if (nt->childIndex[i].load() >= nt->compactCount) {
-                                    nt->childIndex[i].store(0, std::memory_order_release);
-                  N::clflush((char *)&nt->childIndex[i], sizeof(uint8_t), false, true);
+                  //                                    nt->childIndex[i].store(0, std::memory_order_release);
+                  //N::clflush((char *)&nt->childIndex[i], sizeof(uint8_t), false, true);
                 }
             }
 #endif
@@ -60,23 +60,23 @@ namespace ART_ROWEX {
               case NTypes::N4: {
                 auto nt = static_cast<N4 *>(n);
                 if (i >= nt->compactCount) {
-                   nt->keys[i].store(0, std::memory_order_release);
-                  nt->children[i].store(NULL, std::memory_order_release);                  
+                  //nt->keys[i].store(0, std::memory_order_release);
+                  //nt->children[i].store(NULL, std::memory_order_release);                  
                 }
                 break;
               }
               case NTypes::N16: {
                 auto nt = static_cast<N16 *>(n);
                 if (i >= nt->compactCount) {
-                  nt->keys[i].store(0, std::memory_order_release);
-                  nt->children[i].store(NULL, std::memory_order_release);                  
+                  //nt->keys[i].store(0, std::memory_order_release);
+                  //nt->children[i].store(NULL, std::memory_order_release);                  
                 }
                 break;
               }
               case NTypes::N48: {
                 auto nt = static_cast<N48 *>(n);
                 if (i >= nt->compactCount) {
-                  nt->children[i].store(NULL, std::memory_order_release);                  
+                  //nt->children[i].store(NULL, std::memory_order_release);                  
                 }
                 break;
               }

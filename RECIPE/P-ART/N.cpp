@@ -68,7 +68,7 @@ namespace ART_ROWEX {
     void N::setType(NTypes type) {
         typeVersionLockObsolete.fetch_add(convertTypeToVersion(type));
 #ifdef BUGFIX
-        clflush((char *)&typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);
+        //        clflush((char *)&typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true); b4...doesn't appear necessary
 #endif
     }
 
@@ -98,7 +98,7 @@ namespace ART_ROWEX {
             }
         } while (!typeVersionLockObsolete.compare_exchange_weak(version, version + 0b10));
 #ifdef BUGFIX
-        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);
+        //        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);  //b5
 #endif
     }
 
@@ -109,7 +109,7 @@ namespace ART_ROWEX {
         }
         if (typeVersionLockObsolete.compare_exchange_strong(version, version + 0b10)) {
 #ifdef BUGFIX
-        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);
+          //clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);//b6
 #endif
             version = version + 0b10;
         } else {
@@ -120,7 +120,7 @@ namespace ART_ROWEX {
     void N::writeUnlock() {
         typeVersionLockObsolete.fetch_add(0b10);
 #ifdef BUGFIX
-        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);
+        //        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true); //b7
 #endif
     }
 

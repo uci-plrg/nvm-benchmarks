@@ -76,7 +76,7 @@ namespace ART {
             deletionLists = new DeletionList[number_of_threads];
 #ifdef BUGFIX
             PMCHECK::clflush((char*)deletionLists, sizeof(DeletionList)*number_of_threads, false, true);//real..b1
-            //PMCHECK::clflush((char*)&deletionLists, sizeof(DeletionList*), false, true);//doesn't appear real
+            //PMCHECK::clflush((char*)&deletionLists, sizeof(DeletionList*), false, true);//doesn't appear real...b2
 #endif
         }
 
