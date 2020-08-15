@@ -6,7 +6,7 @@
 
 namespace hot { namespace commons {
 
-template<uint numberExtractionMasks> struct MultiMaskPartialKeyMapping;
+template<uint numberExtractionMasks> class MultiMaskPartialKeyMapping;
 
 /**
  * A partial key mapping which by using an offset and a 64 bit mask is able to extract partial keys consisting of discriminative bits contained in successive 64 bits.

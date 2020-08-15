@@ -56,7 +56,9 @@ public:
 	/**
 	 * releases a nodes memory
 	 */
-	inline void operator delete (void *);
+	inline void operator delete (void * rawMemory) {
+		free(rawMemory);
+	}
 
 	/**
 	 * determines the allocation information necessary to allocate a node of this type with a specifc number of entries
@@ -169,7 +171,31 @@ public:
 	 * @param discriminativeBit the additional discriminative bit which is required to distinguish the new entry from the currently contained entries
 	 * @return the insertion information
 	 */
-	inline hot::commons::InsertInformation getInsertInformation(uint entryIndex, hot::commons::DiscriminativeBit const & discriminativeBit) const;
+
+	inline hot::commons::InsertInformation getInsertInformation(
+	uint entryIndex, hot::commons::DiscriminativeBit const & discriminativeBit
+	) const {
+	PartialKeyType existingEntryMask = mPartialKeys.mEntries[entryIndex];
+	assert(([&]() -> bool {
+		uint resultIndex = this->toResultIndex(mPartialKeys.search(existingEntryMask));
+		bool isCorrectResultIndex = resultIndex == entryIndex;
+		if(!isCorrectResultIndex) {
+			reportInvalidResultIndex(resultIndex, entryIndex);
+		};
+		return isCorrectResultIndex;
+	})());
+
+	PartialKeyType prefixBits = mDiscriminativeBitsRepresentation.template getPrefixBitsMask<PartialKeyType>(discriminativeBit);
+	PartialKeyType subtreePrefixMask = existingEntryMask & prefixBits;
+
+	uint32_t affectedSubtreeMask = mPartialKeys.getAffectedSubtreeMask(prefixBits, subtreePrefixMask) & this->mUsedEntriesMask;
+
+	assert(affectedSubtreeMask != 0);
+	uint32_t firstIndexInAffectedSubtree = __builtin_ctz(affectedSubtreeMask);
+	uint32_t numberEntriesInAffectedSubtree = _mm_popcnt_u32(affectedSubtreeMask);
+
+	return { subtreePrefixMask, firstIndexInAffectedSubtree, numberEntriesInAffectedSubtree, discriminativeBit };
+	}
 
 	/**
 	 * This method creates a copy of the existing node containing the new value.

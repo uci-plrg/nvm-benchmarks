@@ -15,6 +15,8 @@ public:
 		mMemoryReclamation->enterCriticalSection(threadID);
 	}
 
+	MemoryGuard(EpochBasedMemoryReclamationStrategy* memoryReclamation) : mMemoryReclamation(memoryReclamation) {};
+
 	~MemoryGuard() {
 		mMemoryReclamation->leaveCriticialSection(threadID);
 	}

@@ -159,13 +159,13 @@ inline bool HOTRowexChildPointer::isAValidNode() const {
 }
 
 inline bool HOTRowexChildPointer::isEmpty() const {
-	constexpr intptr_t EMPTY_CHILD_POINTER = reinterpret_cast<intptr_t>(nullptr) << 1;
+	intptr_t EMPTY_CHILD_POINTER = reinterpret_cast<intptr_t>(nullptr) << 1;
 	intptr_t currentValue = mPointer.load(read_memory_order);
 	return currentValue == EMPTY_CHILD_POINTER;
 }
 
 inline bool HOTRowexChildPointer::isUsed() const {
-	constexpr intptr_t EMPTY_CHILD_POINTER = reinterpret_cast<intptr_t>(nullptr) << 1;
+	intptr_t EMPTY_CHILD_POINTER = reinterpret_cast<intptr_t>(nullptr) << 1;
 	intptr_t currentValue = mPointer.load(read_memory_order);
 	return currentValue != EMPTY_CHILD_POINTER;
 }
