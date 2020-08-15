@@ -146,7 +146,7 @@ class masstree {
             root_ = new_root;
             clflush((char *)root_, 304, true);      // 304 is the leafnode size of masstree
 #ifdef BUGFIX
-            clflush((char *) this, sizeof(masstree), true);
+            //clflush((char *) this, sizeof(masstree), true);//b1
 #endif
         }
 
@@ -1339,7 +1339,7 @@ void *leafnode::leaf_insert(masstree *t, void *root, uint32_t depth, leafvalue *
         if (this->next != NULL && this->key(this->permutation[this->permutation.size() - 1]) > this->next->highest) {
             this->next = this->next->next;
 #ifdef BUGFIX
-            clflush((char *)&this->next, sizeof(leafnode *), true);
+            clflush((char *)&this->next, sizeof(leafnode *), true);//b2
 #else
             clflush((char *)this->next, sizeof(leafnode *), true);
 #endif
@@ -1546,11 +1546,11 @@ void *leafnode::inter_insert(masstree *t, void *root, uint32_t depth, leafvalue 
         //        reusing the existing split mechanism)
         if (this->next != NULL && this->key(this->permutation[this->permutation.size() - 1]) > this->next->highest) {
             this->next = this->next->next;
-#ifdef BUGFIX
-            clflush((char *)&this->next, sizeof(leafnode *), true);
-#else
+            //#ifdef BUGFIX
+            //clflush((char *)&this->next, sizeof(leafnode *), true);//b3
+            //#else
             clflush((char *)this->next, sizeof(leafnode *), true);
-#endif
+            //#endif
         }
 
         leafnode *new_sibling = new leafnode(this->level_);
