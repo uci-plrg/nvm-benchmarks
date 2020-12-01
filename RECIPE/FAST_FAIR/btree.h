@@ -167,7 +167,7 @@ class header{
 			lock_initializer.push_back(mtx);
 #endif
 #ifdef BUGFIX
-      clflush((char*)this, sizeof(header), false, true); //b1
+    //   clflush((char*)this, sizeof(header), false, true);
 #endif
         }
 
@@ -186,7 +186,7 @@ class entry{
             key.ikey = UINT64_MAX;
             ptr = NULL;
 #ifdef BUGFIX
-      clflush((char*)this, sizeof(entry), false, true); //b2 ...requires -f option
+    //   clflush((char*)this, sizeof(entry), false, true);
 #endif
         }
 
@@ -1844,9 +1844,12 @@ class page{
  */
 btree::btree(){
     root = (char*)new page();
+#ifdef BUGFIX
+    clflush((char*)root, sizeof(page)); //b1 ...requires -f option
+#endif
     height = 1;
 #ifdef BUGFIX
-    clflush((char*)this, sizeof(btree), false, true);//b3
+    clflush((char*)this, sizeof(btree), false, true);//b2
 #endif
 }
 
