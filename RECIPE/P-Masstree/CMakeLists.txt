@@ -33,5 +33,5 @@ endif()
 
 set(P_MASS_TEST example.cpp)
 add_executable(example ${P_MASS_TEST})
-
+file(COPY run.sh DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(example pthread)
