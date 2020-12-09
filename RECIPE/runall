@@ -1,6 +1,6 @@
 #!/bin/bash
-export PMCheck="-s"
-NUMBERKEYS=4
+export PMCheck="-c0 -p1"
+NUMBERKEYS=10000
 NUMBERTHREADS=2
 export PATH=/scratch/nvm/benchmarks:$PATH
 prefix=results
