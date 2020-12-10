@@ -175,7 +175,7 @@ void run(char **argv) {
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
                 std::chrono::system_clock::now() - starttime);
 #ifndef BUGFIX
-        tree->UpdateThreadLocal(1);
+        tree->UpdateThreadLocal(1); //bug b1
 #endif
         printf("Throughput: load, %f ,ops/us\n", (n * 1.0) / duration.count());
     }
