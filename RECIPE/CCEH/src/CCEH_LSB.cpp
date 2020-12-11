@@ -161,6 +161,8 @@ CCEH::CCEH(size_t initCap)
     //b7 & b8--real
 #ifdef BUGFIX
     clflush((char *)dir._[i], sizeof(Segment), false, true);
+#endif
+#ifdef BUGFIX
     clflush((char*)&dir._[i], sizeof(Segment*), false, true);
 #endif
   }

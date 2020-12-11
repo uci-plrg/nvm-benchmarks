@@ -223,6 +223,8 @@ clht_hashtable_create(uint64_t num_buckets)
     hashtable->table_prev = NULL;
 #ifdef BUGFIX
     clflush(hashtable, sizeof(clht_hashtable_t), false);//b2
+#endif
+#ifdef BUGFIX
     clflush(hashtable->table, num_buckets * (sizeof(bucket_t)), false);//b3
 #endif
     return hashtable;
