@@ -43,7 +43,9 @@ void run(char **argv) {
         setRegionFromID(0, tree);
     } else {
         tree = (ART_ROWEX::Tree*)getRegionFromID(0);
-        tree->recoverFromCrash();
+#ifdef BUGFIX
+        tree->recoverFromCrash(); //b3
+#endif
         assert(tree);
     }
 
