@@ -16,7 +16,8 @@ class AutoTunerArgParser:
 def main():
 	global configs
 	argprocess = AutoTunerArgParser()
-	execNum = ''
+	log10 = ''
+        execNum = ''
 	crashPoint = ''
 	naiveNum = ''
 	result = []
@@ -28,10 +29,15 @@ def main():
 				crashPoint = line
 			elif line.startswith("Total naive execution"):
                                 naiveNum=line
+                        elif not log10 and line.startswith("base 10 log sum"):
+                                log10 = line.split("=")[1].replace('\n','')
 
 	print(execNum)
 	print(crashPoint)
-	print(naiveNum)
+        if "inf" in naiveNum:
+            print("Total naive execution = 10 ^ (" + log10 + ")\n")
+        else:
+	    print(naiveNum)
 
 if __name__ == "__main__":
 	main()
