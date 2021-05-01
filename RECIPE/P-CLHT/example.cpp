@@ -113,8 +113,8 @@ void run(char **argv) {
             }
             // Now resuming adding keys to the tree.
             for (uint64_t i = index; i < end_key; i++) {
-                clht_put(tds->ht, tds->keys[i], tds->keys[i]);
                 counters[tds->id]++;
+                clht_put(tds->ht, tds->keys[i], tds->keys[i]);
                 PMCHECK::clflush((char*)&counters[tds->id], sizeof(counters[tds->id]), false, true);
             }
             return NULL;

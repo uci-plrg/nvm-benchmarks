@@ -96,8 +96,8 @@ void run(char **argv) {
             }
             // Now resuming adding keys to the tree.
             for (uint64_t i = index; i < end_key; i++) {
-                tree->put(keys[i], &keys[i]);
                 counters[thread_id]++;
+                tree->put(keys[i], &keys[i]);
                 masstree::clflush((char*)&counters[thread_id], sizeof(counters[thread_id]), true);
             }
             return NULL;
