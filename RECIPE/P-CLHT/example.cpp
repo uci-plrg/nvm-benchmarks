@@ -65,7 +65,10 @@ void run(char **argv) {
         keys[i] = i + 1;
     }
     // Retreiving data structure from persistent memory.
-    if (getRegionFromID(0) == NULL) {
+    if (getRegionFromID(0) != NULL && getRegionFromID(1) != NULL) {
+        hashtable = (clht_t*) getRegionFromID(0);
+        counters = (uint64_t *) getRegionFromID(1);
+    } else {
         hashtable = clht_create(512);
         setRegionFromID(0, hashtable);
         //Make sure counters and hashtable aren't in the same line:
@@ -73,9 +76,6 @@ void run(char **argv) {
         counters = (uint64_t *)calloc(n + 16, sizeof(uint64_t));
         counters = &counters[8];
         setRegionFromID(1, counters);
-    } else {
-        hashtable = (clht_t*) getRegionFromID(0);
-        counters = (uint64_t *) getRegionFromID(1);
     }  
     barrier_init(&barrier, num_thread);
     std::atomic<int> next_thread_id;

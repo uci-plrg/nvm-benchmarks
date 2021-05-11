@@ -37,17 +37,17 @@ void run(char **argv) {
     }
 
     int num_thread = atoi(argv[2]);
-    
-    if(getRegionFromID(0) == NULL){
-        tree = new ART_ROWEX::Tree(loadKey, num_thread);
-        setRegionFromID(0, tree);
-    } else {
+    if(getRegionFromID(0) != NULL && getRegionFromID(1) != NULL && getRegionFromID(2) != NULL) {
         tree = (ART_ROWEX::Tree*)getRegionFromID(0);
         tree->recoverFromCrash();
         assert(tree);
-    }
-
-    if(getRegionFromID(1) == NULL){
+        Keys = (Key **) getRegionFromID(1);
+        assert(Keys);
+        counters = (uint64_t *) getRegionFromID(2);
+        assert(counters);
+    } else {
+        tree = new ART_ROWEX::Tree(loadKey, num_thread);
+        setRegionFromID(0, tree);
         Keys = new Key*[n];
         for(uint64_t i=0; i< n; i++){
             Keys[i] = Key::make_leaf(keys[i], sizeof(uint64_t), keys[i]);
@@ -55,21 +55,12 @@ void run(char **argv) {
         }
         PMCHECK::clflush((char*)Keys, sizeof(Key*)*n, false, true);
         setRegionFromID(1, Keys);
-    } else {
-        Keys = (Key **) getRegionFromID(1);
-        assert(Keys);
-    }
-
-    if(getRegionFromID(2) == NULL) {
         //Make sure counters and hashtable aren't in the same line:
         // 64 bytes + n*sizeof(uint64_t) + 64 bytes.
         counters = (uint64_t *)calloc(n + 16, sizeof(uint64_t));
         counters = &counters[8];
         PMCHECK::clflush((char*)counters, sizeof(uint64_t)*n, false, true);
         setRegionFromID(2, counters);
-    } else {
-        counters = (uint64_t *) getRegionFromID(2);
-        assert(counters);
     }
 
     thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));

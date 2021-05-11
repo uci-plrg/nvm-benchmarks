@@ -25,26 +25,23 @@ uint64_t *counters = NULL;
 uint64_t *keys = NULL;
 
 void initOrRecoverPersistentData(uint64_t n) {
-    if (getRegionFromID(0) == NULL) {
+    if(getRegionFromID(0) != NULL && getRegionFromID(1) != NULL && getRegionFromID(2) != NULL) {
+        tree = (masstree::masstree *) getRegionFromID(0);
+        assert(tree);
+        counters = (uint64_t *) getRegionFromID(1);
+        assert(counters);
+        keys = (uint64_t *) getRegionFromID(2);
+        assert(keys);
+    } else {
         masstree::leafnode *init_root = new masstree::leafnode(0);
         tree = new masstree::masstree(init_root);
         setRegionFromID(0, tree);
-    } else {
-        tree = (masstree::masstree *) getRegionFromID(0);
-        assert(tree);
-    }
-    if (getRegionFromID(1) == NULL) {
         //Make sure counters and hashtable aren't in the same line:
         // 64 bytes + n*sizeof(uint64_t) + 64 bytes.
         counters = (uint64_t *)calloc(n + 16, sizeof(uint64_t));
         counters = &counters[8];
         masstree::clflush((char*)counters, sizeof(uint64_t)*n, true);
         setRegionFromID(1, counters);
-    } else {
-        counters = (uint64_t *) getRegionFromID(1);
-        assert(counters);
-    }
-    if(getRegionFromID(2) == NULL){
         keys = new uint64_t[n];
         // Generate keys
         for (uint64_t i = 0; i < n; i++) {
@@ -52,9 +49,6 @@ void initOrRecoverPersistentData(uint64_t n) {
         }
         masstree::clflush((char*)keys, sizeof(uint64_t) * n , true);
         setRegionFromID(2, keys);
-    } else {
-        keys = (uint64_t *) getRegionFromID(2);
-        assert(keys);
     }
 }
 

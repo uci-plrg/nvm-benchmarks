@@ -29,26 +29,21 @@ void run(char **argv) {
     }
 
     int num_thread = atoi(argv[2]);
-
-    if (getRegionFromID(0) == NULL){
-        ffair = new fastfair::btree();
-        setRegionFromID(0, ffair);
-    } else {
+    if(getRegionFromID(0) != NULL && getRegionFromID(1) != NULL)
+    {
         ffair = (fastfair::btree *) getRegionFromID(0);
         assert(ffair);
-    }
-
-    if(getRegionFromID(1) == NULL) {
+        counters = (uint64_t *) getRegionFromID(1);
+        assert(counters);
+    } else {
+        ffair = new fastfair::btree();
+        setRegionFromID(0, ffair);
         //Make sure counters and hashtable aren't in the same line:
         // 64 bytes + n*sizeof(uint64_t) + 64 bytes.
         counters = (uint64_t *)calloc(n + 16, sizeof(uint64_t));
         counters = &counters[8];
         fastfair::clflush((char*)counters, sizeof(uint64_t)*n, false, true);
         setRegionFromID(1, counters);
-    } else {
-        counters = (uint64_t *) getRegionFromID(1);
-        assert(counters);
-
     }
     thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
 
