@@ -15,7 +15,11 @@ P-BwTree/build
 P-Masstree/build
 P-CLHT/build
 P-HOT/build
-
+*/*.log
+*/*/*.o
+*/*.o
+*.log
+*/example
 pmdk
 
 *tags
