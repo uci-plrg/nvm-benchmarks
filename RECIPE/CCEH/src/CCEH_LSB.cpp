@@ -218,7 +218,6 @@ RETRY:
       // another thread is doing split
       goto RETRY;
     }
-
     s[0]->pattern = (key_hash % (size_t)pow(2, s[0]->local_depth-1));
     s[1]->pattern = s[0]->pattern + (1 << (s[0]->local_depth-1));
     //b9
@@ -369,6 +368,17 @@ size_t Segment::numElem(void) {
 }
 
 bool CCEH::Recovery(void) {
+  dir.lock = false;
+  dir.sema = 0;
+  for (unsigned i = 0; i < dir.capacity; ++i) {
+    dir._[i]->sema = 0;
+    for( unsigned j = 0; j< Segment::kNumSlot; j++) {
+      if( dir._[i]->_[j].key == SENTINEL) {
+        dir._[i]->_[j].key = INVALID;
+      }
+    }
+    
+  }
   return false;
 }
 

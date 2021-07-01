@@ -35,6 +35,9 @@ void run(char **argv) {
 
     if(getRegionFromID(0) != NULL && getRegionFromID(1) != NULL) {
         hashTable = (CCEH*) getRegionFromID(0);
+#ifdef VERIFYFIX
+        hashTable->Recovery();
+#endif
         clflush((char*)&hashTable, sizeof(CCEH *), false, true);
         assert(hashTable);
         counters = (uint64_t *) getRegionFromID(1);
@@ -50,13 +53,12 @@ void run(char **argv) {
         setRegionFromID(1, counters);
     }
 
-    thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
-    std::atomic<int> next_thread_id;
+    thread_data_t *tds = (thread_data_t *) calloc(num_thread, sizeof(thread_data_t));
+    std::atomic<int> next_thread_id(0);
 
     {
         // Load
         auto starttime = std::chrono::system_clock::now();
-        next_thread_id.store(0);
         auto func = [&]() {
             int thread_id = next_thread_id.fetch_add(1);
             tds[thread_id].id = thread_id;
