@@ -375,6 +375,7 @@ bool CCEH::Recovery(void) {
     for( unsigned j = 0; j< Segment::kNumSlot; j++) {
       if( dir._[i]->_[j].key == SENTINEL) {
         dir._[i]->_[j].key = INVALID;
+        dir._[i]->_[j].value = NONE;
       }
     }
     
