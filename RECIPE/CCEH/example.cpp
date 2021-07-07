@@ -10,6 +10,8 @@ using namespace std;
 extern "C" {
     void * getRegionFromID(uint ID);
     void setRegionFromID(uint ID, void *ptr);
+    void jaaru_recovery_procedure_begin();
+    void jaaru_recovery_procedure_end();
 }
 
 typedef struct thread_data {
@@ -36,7 +38,9 @@ void run(char **argv) {
     if(getRegionFromID(0) != NULL && getRegionFromID(1) != NULL) {
         hashTable = (CCEH*) getRegionFromID(0);
 #ifdef VERIFYFIX
+        jaaru_recovery_procedure_begin();
         hashTable->Recovery();
+        jaaru_recovery_procedure_end();
 #endif
         clflush((char*)&hashTable, sizeof(CCEH *), false, true);
         assert(hashTable);
@@ -79,8 +83,8 @@ void run(char **argv) {
             // Now resuming adding keys to the tree.
             for (uint64_t i = index; i < end_key; i++) {
                 assert(tds[thread_id].hashtable != NULL);
-                counters[thread_id]++;
                 tds[thread_id].hashtable->Insert( keys[i], reinterpret_cast<const char*>( keys[i]));
+                counters[thread_id]++;
                 clflush((char*)&counters[thread_id], sizeof(counters[thread_id]), false, true);
             }
         };
