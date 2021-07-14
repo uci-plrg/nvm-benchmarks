@@ -339,9 +339,9 @@ class BwTreeBase {
       last_p{&header},
       node_count{0UL}
     {
-  // #ifdef BUGFIX
-  //   clflush((char*)this, sizeof(*this), false, true);
-  // #endif
+  #ifdef BUGFIX
+    clflush((char*)this, sizeof(*this), false, true);
+  #endif
     }
   };
   
@@ -472,9 +472,9 @@ class BwTreeBase {
     for(size_t i = 0;i < thread_num;i++) {
       new (gc_metadata_p + i) PaddedGCMetadata{};
     }
-// #ifdef BUGFIX
-//     clflush((char*)gc_metadata_p, sizeof(PaddedGCMetadata)*thread_num, false, true);
-// #endif    
+#ifdef BUGFIX
+    clflush((char*)gc_metadata_p, sizeof(PaddedGCMetadata)*thread_num, false, true);
+#endif    
     return; 
   } 
   
@@ -570,7 +570,9 @@ class BwTreeBase {
    */
   inline void IncreaseEpoch() {
     epoch++;
-    
+    #ifdef BUGFIX
+    clflush((char*)&epoch, sizeof(uint64_t), false, false);
+    #endif    
     return;
   }
   
@@ -2075,6 +2077,9 @@ class BwTree : public BwTreeBase {
       // a chunk that has already been installed here
       bool ret = next.compare_exchange_strong(expected, new_meta_base);
       if(ret == true) {
+        #ifdef BUGFIX
+        clflush((char*)&next, sizeof(next), false, false);
+        #endif
         return new_meta_base; 
       }
       
@@ -9925,9 +9930,9 @@ try_join_again:
     // reset last_p to the header
     if(first_p == nullptr) {
       GetGCMetaData(thread_id)->last_p = header_p;
-  // #ifdef BUGFIX
-  //   clflush((char*)GetGCMetaData(thread_id), sizeof(*GetGCMetaData(thread_id)), false, true);
-  // #endif
+  #ifdef BUGFIX
+    clflush((char*)GetGCMetaData(thread_id), sizeof(*GetGCMetaData(thread_id)), false, true);
+  #endif
     }
     
     return;
