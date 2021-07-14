@@ -59,7 +59,7 @@ inline void DeletionList::add(void *n, uint64_t globalEpoch) {
         label->next = headDeletionList;
         headDeletionList = label;
 #ifdef BUGFIX
-       PMCHECK::clflush((char*)headDeletionList, sizeof(DeletionList)*number_of_threads, false, false);//b4
+       PMCHECK::clflush((char*)headDeletionList, sizeof(DeletionList)*headDeletionList, false, false);//b4
 #endif
     }
     label->nodes[label->nodesCount] = n;
