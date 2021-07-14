@@ -50,8 +50,13 @@ void run(char **argv) {
         setRegionFromID(0, tree);
         Keys = new Key*[n];
         for(uint64_t i=0; i< n; i++){
+#ifdef BUGFIX
+            PMCHECK::clflush((char*)&Keys[i], sizeof(Key), false, true);//b1
+#endif
             Keys[i] = Key::make_leaf(keys[i], sizeof(uint64_t), keys[i]);
-            PMCHECK::clflush((char*)&Keys[i], sizeof(Key), false, true);
+#ifndef BUGFIX
+            PMCHECK::clflush((char*)&Keys[i], sizeof(Key), false, true);//b1
+#endif
         }
         PMCHECK::clflush((char*)Keys, sizeof(Key*)*n, false, true);
         setRegionFromID(1, Keys);
