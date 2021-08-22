@@ -10,6 +10,7 @@
 
 #define BUGFIX 1
 #define VERIFYFIX 1
+//#define VERIFYFIXADV 1
 
 constexpr size_t kSegmentBits = 8;
 constexpr size_t kMask = (1 << kSegmentBits)-1;

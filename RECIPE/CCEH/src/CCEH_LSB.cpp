@@ -19,6 +19,9 @@ int Segment::Insert(Key_t& key, Value_t value, size_t loc, size_t key_hash) {
   while (!CAS(&sema, &lock, lock+1)) {
     lock = sema;
   }
+#ifdef VERIFYFIX
+    clflush((char*)&sema, sizeof(sema), false, true); // VIOLATION 1
+#endif
   Key_t LOCK = INVALID;
   for (unsigned i = 0; i < kNumPairPerCacheLine * kNumCacheLine; ++i) {
     auto slot = (loc + i) % kNumSlot;
@@ -26,9 +29,15 @@ int Segment::Insert(Key_t& key, Value_t value, size_t loc, size_t key_hash) {
       _[slot].key = INVALID;
     }
     if (CAS(&_[slot].key, &LOCK, SENTINEL)) {
+#ifdef VERIFYFIX
+    clflush((char*)&_[slot].key, sizeof(_[slot].key), false, true); // VIOLATION 4
+#endif
       _[slot].value = value;
       mfence();
       _[slot].key = key;
+#ifdef VERIFYFIX
+    clflush((char*)&_[slot].key, sizeof(_[slot].key), false, true); // VIOLATION 5
+#endif
       ret = 0;
       break;
     } else {
@@ -36,9 +45,15 @@ int Segment::Insert(Key_t& key, Value_t value, size_t loc, size_t key_hash) {
     }
   }
   lock = sema;
+#ifdef VERIFYFIX
+    clflush((char*)&sema, sizeof(sema), false, true); // VIOLATION 2
+#endif
   while (!CAS(&sema, &lock, lock-1)) {
     lock = sema;
   }
+#ifdef VERIFYFIX
+    clflush((char*)&sema, sizeof(sema), false, true); // VIOLATION 3
+#endif
   return ret;
 #else
   if (sema == -1) return 2;
