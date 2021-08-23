@@ -45,14 +45,13 @@ void run(char **argv) {
         fastfair::clflush((char*)counters, sizeof(uint64_t)*n, false, true);
         setRegionFromID(1, counters);
     }
-    thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
+    thread_data_t *tds = (thread_data_t *) calloc(num_thread, sizeof(thread_data_t));
 
-    std::atomic<int> next_thread_id;
+    std::atomic<int> next_thread_id(0);
 
     {
         // Load
         auto starttime = std::chrono::system_clock::now();
-        next_thread_id.store(0);
         auto func = [&]() {
             int thread_id = next_thread_id.fetch_add(1);
             tds[thread_id].id = thread_id;
@@ -65,14 +64,14 @@ void run(char **argv) {
             for (; index < start_key + counters[thread_id]; index++) {
                 char * val = tds[thread_id].fair->btree_search( keys[index]);
                 if (val != (char *)keys[index]) {
-                    std::cout << "[FAST_FAIR] wrong key read: " << val << "expected: " << keys[index] << std::endl;
+                    std::cout << "[FAST_FAIR] wrong key read: " << (uint64_t)val << "expected: " << keys[index] << std::endl;
                     break;
                 }
             }
 
             for (uint64_t i = index; i < end_key; i++) {
-                counters[thread_id]++;
                 tds[thread_id].fair->btree_insert( keys[i], (char *) keys[i]);
+                counters[thread_id]++;
                 fastfair::clflush((char*)&counters[thread_id], sizeof(counters[thread_id]), false, true);
             }
         };
