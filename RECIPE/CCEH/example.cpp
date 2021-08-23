@@ -44,7 +44,7 @@ void run(char **argv) {
         jaaru_recovery_procedure_end();
 #endif
 #ifdef VERIFYFIX
-        jaaru_ignore_analysis((char *) &clflushCount, sizeof(clflushCount));
+        // jaaru_ignore_analysis((char *) &clflushCount, sizeof(clflushCount));
 #endif
         clflush((char*)&hashTable, sizeof(CCEH *), false, true);
         assert(hashTable);
