@@ -15,6 +15,9 @@
 #endif
 
 #define BUGFIX 1
+//#define VERIFYFIXADV 1
+
+void *masstreeptr = NULL;
 namespace masstree {
 
 static constexpr uint64_t CACHE_LINE_SIZE = 64;
@@ -141,9 +144,19 @@ typedef struct key_indexed_position {
 class masstree {
     private:
         void *root_;
+#ifdef VERIFYFIXADV
+        void *leafnodes[2048];
+        uint32_t count;
+        std::mutex *treelock;
+#endif
     public:
         masstree (void *new_root) {
             root_ = new_root;
+#ifdef VERIFYFIXADV
+            treelock = new std::mutex();
+            count=0;
+            leafnodes[count++] = new_root;
+#endif
             clflush((char *)root_, 304, true);      // 304 is the leafnode size of masstree
 #ifdef BUGFIX
             clflush((char *) this, sizeof(masstree), true);
@@ -178,6 +191,11 @@ class masstree {
         int scan(uint64_t min, int num, uint64_t *buf);
 
         int scan(char *min, int num, leafvalue *buf[]);
+#ifdef VERIFYFIXADV
+        void recover();
+
+        void addLeafNode(void* node);
+#endif
 };
 
 class permuter {
@@ -422,6 +440,11 @@ class leafnode {
             next = NULL;
             leftmost_ptr = NULL;
             highest = 0;
+#ifdef VERIFYFIXADV
+            if(masstreeptr != NULL) {
+                ((masstree *)masstreeptr)->addLeafNode(this);
+            }
+#endif
 #ifdef LOCK_INIT
             lock_initializer.push_back(wlock);
 #endif
@@ -439,6 +462,11 @@ class leafnode {
             entry[0].value = right;
 
             permutation = permuter::make_sorted(1);
+#ifdef VERIFYFIXADV
+            if(masstreeptr != NULL) {
+                ((masstree *)masstreeptr)->addLeafNode(this);
+            }
+#endif
 #ifdef LOCK_INIT
             lock_initializer.push_back(wlock);
 #endif
@@ -454,6 +482,10 @@ class leafnode {
         key_indexed_position key_lower_bound_by(uint64_t key);
 
         key_indexed_position key_lower_bound(uint64_t key);
+
+#ifdef VERIFYFIXADV
+        void resetMutex() {wlock = new std::mutex(); printf("LOG: RESETTING LOCK %p\n", wlock);}
+#endif
 
         void lock() {wlock->lock();}
 
@@ -2285,5 +2317,20 @@ leaf_retry:
 
     return count;
 }
+#ifdef VERIFYFIXADV
+void masstree::recover() {
+    treelock = new std::mutex();
+    for(uint i=0; i< count; i++) {
+        ((leafnode*)leafnodes[i])->resetMutex();
+    }
+}
+
+void masstree::addLeafNode(void *node) {
+    treelock->lock();
+    leafnodes[count++] = node;
+    treelock->unlock();
+    clflush((char *) this, sizeof(masstree), true);
+}
+#endif
 }
 #endif

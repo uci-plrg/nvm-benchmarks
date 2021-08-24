@@ -21,6 +21,7 @@
 #endif
 
 #define BUGFIX 1
+#define VERIFYFIX 1
 
 #define DUMMY_PTR (void*)0xffffffff
 extern int SimulateCrash;
@@ -147,10 +148,14 @@ class header{
         uint32_t switch_counter;    // 4 bytes
         std::mutex *mtx;            // 8 bytes
         union Key highest;          // 8 bytes
+#ifdef VERIFYFIX
+        uint8_t dummy[5];           // 5 bytes
+#endif
         uint8_t is_deleted;         // 1 bytes
         int16_t last_index;         // 2 bytes
+#ifndef VERIFYFIX
         uint8_t dummy[5];           // 5 bytes
-
+#endif
         friend class page;
         friend class btree;
 
@@ -577,6 +582,9 @@ class page{
                 else
                     hdr.switch_counter += 2;
 
+#ifdef VERIFYFIX
+                clflush((char*)&hdr.switch_counter, sizeof(hdr.switch_counter));
+#endif
                 // FAST
                 if(*num_entries == 0) {  // this page is empty
                     entry* new_entry = (entry*) &records[0];
@@ -641,6 +649,9 @@ class page{
 
                 if(update_last_index) {
                     hdr.last_index = *num_entries;
+#ifdef VERIFYFIX
+                    clflush((char*) &hdr.last_index, sizeof(hdr.last_index));
+#endif
                 }
                 ++(*num_entries);
             }
