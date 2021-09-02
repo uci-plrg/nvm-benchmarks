@@ -5,7 +5,6 @@
 #include <array>
 #include "../cacheops.h"
 #define BUGFIX 1
-#define BUGFIX2 1
 
 namespace ART {
 

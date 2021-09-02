@@ -68,13 +68,12 @@ void run(char **argv) {
         setRegionFromID(2, counters);
     }
 
-    thread_data_t *tds = (thread_data_t *) malloc(num_thread * sizeof(thread_data_t));
+    thread_data_t *tds = (thread_data_t *) calloc(num_thread, sizeof(thread_data_t));
+    std::atomic<int> next_thread_id(0);
 
-    std::atomic<int> next_thread_id;
     {
         // Build tree
         auto starttime = std::chrono::system_clock::now();
-        next_thread_id.store(0);
         auto func = [&]() {
             int thread_id = next_thread_id.fetch_add(1);
             tds[thread_id].id = thread_id;
@@ -104,8 +103,8 @@ void run(char **argv) {
 
             
             for (uint64_t i = index; i < end_key; i++) {
-                counters[thread_id]++;
                 tree->insert(Keys[i], t);
+                counters[thread_id]++;
                 PMCHECK::clflush((char*)&counters[thread_id], sizeof(counters[thread_id]), false, true);
             }
         };

@@ -64,15 +64,12 @@ inline void DeletionList::add(void *n, uint64_t globalEpoch) {
     }
     label->nodes[label->nodesCount] = n;
     label->nodesCount++;
-#ifdef BUGFIX2
+#ifdef BUGFIX
     PMCHECK::clflush((char*)&label->nodesCount, sizeof(label->nodesCount), false, false);//b6
 #endif
     label->epoche = globalEpoch;
 
     added++;
-#ifdef BUGFIX2
-    PMCHECK::clflush((char*)&added, sizeof(added), false, false);//b6
-#endif
 }
 
 inline LabelDelete *DeletionList::head() {
@@ -88,9 +85,6 @@ inline void Epoche::markNodeForDeletion(void *n, ThreadInfo &epocheInfo) {
 #ifndef LOCK_INIT
     epocheInfo.getDeletionList().add(n, currentEpoche.load());
     epocheInfo.getDeletionList().thresholdCounter++;
-#ifdef BUGFIX
-    PMCHECK::clflush((char*)&epocheInfo.getDeletionList().thresholdCounter, sizeof(size_t), false, false);//b6
-#endif
 #endif
 }
 
@@ -98,9 +92,6 @@ inline void Epoche::exitEpocheAndCleanup(ThreadInfo &epocheInfo) {
     DeletionList &deletionList = epocheInfo.getDeletionList();
     if ((deletionList.thresholdCounter & (64 - 1)) == 1) {
         currentEpoche++;
-#ifdef BUGFIX2
-        PMCHECK::clflush((char*)&currentEpoche, sizeof(std::atomic<uint64_t>), false, false);//b6
-#endif
     }
     if (deletionList.thresholdCounter > startGCThreshhold) {
         if (deletionList.size() == 0) {
