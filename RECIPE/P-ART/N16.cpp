@@ -10,6 +10,9 @@ namespace ART_ROWEX {
             return false;
         }
         keys[compactCount].store(flipSign(key), flush ? std::memory_order_release : std::memory_order_relaxed);
+#ifdef VERIFYFIX
+        clflush((char*)&keys[compactCount],sizeof(keys[compactCount]), false, true); //b3 by pmverifier
+#endif
         children[compactCount].store(n, flush ? std::memory_order_release : std::memory_order_relaxed);
         if (flush) clflush((char *)&children[compactCount], sizeof(N *), false, true);
         compactCount++;

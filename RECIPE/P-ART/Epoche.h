@@ -6,6 +6,15 @@
 #include "../cacheops.h"
 #define BUGFIX 1
 
+#define VERIFYFIX 1
+
+extern "C" {
+    void jaaru_ignore_analysis(char * addrs, size_t size);
+    void jaaru_recovery_procedure_begin();
+    void jaaru_recovery_procedure_end();
+
+}
+
 namespace ART {
 
     struct LabelDelete {
@@ -77,6 +86,10 @@ namespace ART {
 #ifdef BUGFIX
             PMCHECK::clflush((char*)deletionLists, sizeof(DeletionList)*number_of_threads, false, true);//real..b1
             //PMCHECK::clflush((char*)&deletionLists, sizeof(DeletionList*), false, true);//doesn't appear real...b2
+#endif
+#ifdef VERIFYFIX
+            jaaru_ignore_analysis((char*)this,sizeof(*this));
+            jaaru_ignore_analysis((char*)deletionLists, sizeof(DeletionList)*number_of_threads);
 #endif
         }
 

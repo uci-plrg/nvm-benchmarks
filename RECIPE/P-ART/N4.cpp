@@ -19,9 +19,12 @@ namespace ART_ROWEX {
             return false;
         }
         keys[compactCount].store(key, flush ? std::memory_order_release : std::memory_order_relaxed);
+#ifdef VERIFYFIX
+        if (flush) clflush((char *)&keys[compactCount], sizeof(keys[compactCount]), false, true); //b6 by pmverifier
+#endif
         children[compactCount].store(n, flush ? std::memory_order_release : std::memory_order_relaxed);
-#ifdef BUGFIX
-        //        if (flush) clflush((char *)this, sizeof(N4), true, true);//b3...doesn't appeat to be necessary
+#ifdef VERIFYFIX
+        if (flush) clflush((char *)&children[compactCount], sizeof(children[compactCount]), false, true); //b4 by pmverifier
 #endif
         compactCount++;
         count++;

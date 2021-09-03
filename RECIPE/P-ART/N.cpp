@@ -30,7 +30,6 @@ namespace ART_ROWEX {
 
     inline void N::mfence()
     {
-    	printf("Tree: in MFence\n");
         asm volatile("mfence":::"memory");
     }
 
@@ -44,7 +43,6 @@ namespace ART_ROWEX {
                 (unsigned long)(write_latency_in_ns * cpu_freq_mhz/1000);
 #ifdef CLFLUSH
             asm volatile("clflush %0" : "+m" (*(volatile char *)ptr));
-    	    printf("Tree:In clflush(%p)\n", ptr);
 #elif CLFLUSH_OPT
             asm volatile(".byte 0x66; clflush %0" : "+m" (*(volatile char *)(ptr)));
 #elif CLWB
@@ -97,8 +95,8 @@ namespace ART_ROWEX {
                 return;
             }
         } while (!typeVersionLockObsolete.compare_exchange_weak(version, version + 0b10));
-#ifdef BUGFIX
-        //        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);  //b5
+#ifdef VERIFYFIX
+        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);  //b5 by pmverifier
 #endif
     }
 
@@ -108,8 +106,8 @@ namespace ART_ROWEX {
             return;
         }
         if (typeVersionLockObsolete.compare_exchange_strong(version, version + 0b10)) {
-#ifdef BUGFIX
-          //clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);//b6
+#ifdef VERIFYFIX
+          clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true);//b1 by pmverifier
 #endif
             version = version + 0b10;
         } else {
@@ -119,8 +117,8 @@ namespace ART_ROWEX {
 
     void N::writeUnlock() {
         typeVersionLockObsolete.fetch_add(0b10);
-#ifdef BUGFIX
-        //        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true); //b7
+#ifdef VERIFYFIX
+        clflush((char*) &typeVersionLockObsolete, sizeof(typeVersionLockObsolete), false, true); //b2 by pmverifier
 #endif
     }
 
