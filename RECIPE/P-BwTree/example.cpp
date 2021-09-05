@@ -123,12 +123,11 @@ void run(char **argv) {
     int num_thread = atoi(argv[2]);
 
     initOrRecoverPersistentData(n, num_thread);
-    std::atomic<int> next_thread_id;
+    std::atomic<int> next_thread_id{0};
 
     {
         // Build tree
         auto starttime = std::chrono::system_clock::now();
-        next_thread_id.store(0);
         auto func = [&]() {
             int thread_id = next_thread_id.fetch_add(1);
             uint64_t start_key = n / num_thread * (uint64_t)thread_id;

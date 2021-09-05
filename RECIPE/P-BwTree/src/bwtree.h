@@ -66,9 +66,16 @@
 // This must be declared before all include directives
 using NodeID = uint64_t;
 #define BUGFIX 1
+#define VERIFYFIX 1
 #include "sorted_small_set.h"
 #include "bloom_filter.h"
 #include "atomic_stack.h"
+
+extern "C" {
+    void jaaru_ignore_analysis(char * addrs, size_t size);
+    void jaaru_recovery_procedure_begin();
+    void jaaru_recovery_procedure_end();
+}
 
 // Copied from Linux kernel code to facilitate branch prediction unit on CPU
 // if there is one
@@ -453,7 +460,9 @@ class BwTreeBase {
     original_p = static_cast<unsigned char *>(
       malloc(CACHE_LINE_SIZE * (thread_num + 1)));
     assert(original_p != nullptr);
-    
+#ifdef VERIFYFIX
+      jaaru_ignore_analysis((char *)original_p, CACHE_LINE_SIZE * (thread_num + 1));
+#endif
     // Align the address to cache line boundary
     gc_metadata_p = reinterpret_cast<PaddedGCMetadata *>(
       (reinterpret_cast<size_t>(original_p) + CACHE_LINE_SIZE - 1) & \
@@ -497,7 +506,9 @@ class BwTreeBase {
     original_p{nullptr},
     thread_num{total_thread_num.load()},
     epoch{0UL} {
-    
+  #ifdef VERIFYFIX
+    jaaru_ignore_analysis((char *)this, sizeof(BwTreeBase));
+  #endif
     // Allocate memory for thread local data structure
     PrepareThreadLocal();
     
@@ -8336,7 +8347,10 @@ before_switch:
     EpochManager(BwTree *p_tree_p) :
       tree_p{p_tree_p} {
       current_epoch_p = new EpochNode{};
-
+#ifdef VERIFYFIX
+    jaaru_ignore_analysis((char*)this, sizeof(*this));
+    jaaru_ignore_analysis((char*)current_epoch_p, sizeof(EpochNode));
+#endif
       // These two are atomic variables but we could
       // simply assign to them
       current_epoch_p->active_thread_count = 0;
@@ -9897,6 +9911,9 @@ try_join_again:
    * GetCurrentGCMetaData()
    */
   void PerformGC(int thread_id) {
+#ifdef VERIFYFIX
+    jaaru_recovery_procedure_begin();
+#endif
     // First of all get the minimum epoch of all active threads
     // This is the upper bound for deleted epoch in garbage node
     uint64_t min_epoch = SummarizeGCEpoch();
@@ -9934,7 +9951,9 @@ try_join_again:
   //   clflush((char*)GetGCMetaData(thread_id), sizeof(*GetGCMetaData(thread_id)), false, true);
   // #endif
     }
-    
+#ifdef VERIFYFIX
+    jaaru_recovery_procedure_end();
+#endif
     return;
   }
 
