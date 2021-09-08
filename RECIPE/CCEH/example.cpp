@@ -38,14 +38,7 @@ void run(char **argv) {
 
     if(getRegionFromID(0) != NULL && getRegionFromID(1) != NULL) {
         hashTable = (CCEH*) getRegionFromID(0);
-#ifdef VERIFYFIXADV
-        jaaru_recovery_procedure_begin();
         hashTable->Recovery();
-        jaaru_recovery_procedure_end();
-#endif
-#ifdef VERIFYFIX
-        // jaaru_ignore_analysis((char *) &clflushCount, sizeof(clflushCount));
-#endif
         clflush((char*)&hashTable, sizeof(CCEH *), false, true);
         assert(hashTable);
         counters = (uint64_t *) getRegionFromID(1);
@@ -59,9 +52,6 @@ void run(char **argv) {
         counters = &counters[8];
         clflush((char*)counters, sizeof(uint64_t)*n, false, true);
         setRegionFromID(1, counters);
-#ifdef VERIFYFIX
-        //TODO: void jaaru_ignore_analysis(char * addrs, size_t size);
-#endif
     }
 
     thread_data_t *tds = (thread_data_t *) calloc(num_thread, sizeof(thread_data_t));
