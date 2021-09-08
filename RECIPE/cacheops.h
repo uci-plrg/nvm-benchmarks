@@ -44,7 +44,6 @@ inline void clflush(char *data, int len, bool front, bool back)
             (unsigned long)(write_latency_in_ns * cpu_freq_mhz/1000);
 #ifdef CLFLUSH
         asm volatile("clflush %0" : "+m" (*(volatile char *)ptr));
-        printf("Tree:In clflush(%p)\n", ptr);
 #elif CLFLUSH_OPT
         asm volatile(".byte 0x66; clflush %0" : "+m" (*(volatile char *)(ptr)));
 #elif CLWB
