@@ -94,10 +94,8 @@ namespace ART_ROWEX {
     }
 
     void Tree::recoverFromCrash() {
-        jaaru_recovery_procedure_begin();
         N *node = root;
         unlockSubTree(node);
-        jaaru_recovery_procedure_end();
     }
 
     void *Tree::lookup(const Key *k, ThreadInfo &threadEpocheInfo) const {
