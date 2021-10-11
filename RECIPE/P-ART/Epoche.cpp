@@ -42,9 +42,9 @@ inline void DeletionList::remove(LabelDelete *label, LabelDelete *prev) {
 
 inline void DeletionList::add(void *n, uint64_t globalEpoch) {
     deletitionListCount++;
-    #ifdef BUGFIX
-    PMCHECK::clflush((char*)&deletitionListCount, sizeof(deletitionListCount), false, false);//b5
-    #endif
+    // #ifdef BUGFIX
+    // PMCHECK::clflush((char*)&deletitionListCount, sizeof(deletitionListCount), false, false);//b5
+    // #endif
     LabelDelete *label;
     if (headDeletionList != nullptr && headDeletionList->nodesCount < headDeletionList->nodes.size()) {
         label = headDeletionList;
@@ -58,15 +58,15 @@ inline void DeletionList::add(void *n, uint64_t globalEpoch) {
         label->nodesCount = 0;
         label->next = headDeletionList;
         headDeletionList = label;
-#ifdef BUGFIX
-       PMCHECK::clflush((char*)headDeletionList, sizeof(DeletionList)*deletitionListCount, false, false);//b4
-#endif
+// #ifdef BUGFIX
+    //    PMCHECK::clflush((char*)headDeletionList, sizeof(DeletionList)*deletitionListCount, false, false);//b4
+// #endif
     }
     label->nodes[label->nodesCount] = n;
     label->nodesCount++;
-#ifdef BUGFIX
-    PMCHECK::clflush((char*)&label->nodesCount, sizeof(label->nodesCount), false, false);//b6
-#endif
+// #ifdef BUGFIX
+    // PMCHECK::clflush((char*)&label->nodesCount, sizeof(label->nodesCount), false, false);//b6
+// #endif
     label->epoche = globalEpoch;
 
     added++;

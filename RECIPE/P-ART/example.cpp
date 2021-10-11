@@ -39,7 +39,9 @@ void run(char **argv) {
     int num_thread = atoi(argv[2]);
     if(getRegionFromID(0) != NULL && getRegionFromID(1) != NULL && getRegionFromID(2) != NULL) {
         tree = (ART_ROWEX::Tree*)getRegionFromID(0);
+#ifdef BUGFIX
         tree->recoverFromCrash();
+#endif
         assert(tree);
         Keys = (Key **) getRegionFromID(1);
         assert(Keys);
@@ -50,13 +52,13 @@ void run(char **argv) {
         setRegionFromID(0, tree);
         Keys = new Key*[n];
         for(uint64_t i=0; i< n; i++){
-#ifdef BUGFIX
-            PMCHECK::clflush((char*)&Keys[i], sizeof(Key), false, true);//b1
-#endif
+// #ifdef BUGFIX
+//             PMCHECK::clflush((char*)&Keys[i], sizeof(Key), false, true);//b1
+// #endif
             Keys[i] = Key::make_leaf(keys[i], sizeof(uint64_t), keys[i]);
-#ifndef BUGFIX
-            PMCHECK::clflush((char*)&Keys[i], sizeof(Key), false, true);//b1
-#endif
+// #ifndef BUGFIX
+//             PMCHECK::clflush((char*)&Keys[i], sizeof(Key), false, true);//b1
+// #endif
         }
         PMCHECK::clflush((char*)Keys, sizeof(Key*)*n, false, true);
         setRegionFromID(1, Keys);
