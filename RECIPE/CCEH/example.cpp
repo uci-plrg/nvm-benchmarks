@@ -38,8 +38,8 @@ void run(char **argv) {
 
     if(getRegionFromID(0) != NULL && getRegionFromID(1) != NULL) {
         hashTable = (CCEH*) getRegionFromID(0);
-        hashTable->Recovery();
-        clflush((char*)&hashTable, sizeof(CCEH *), false, true);
+        // hashTable->Recovery();
+        // clflush((char*)&hashTable, sizeof(CCEH *), false, true);
         assert(hashTable);
         counters = (uint64_t *) getRegionFromID(1);
         assert(counters);
