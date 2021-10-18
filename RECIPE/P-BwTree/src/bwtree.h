@@ -481,9 +481,9 @@ class BwTreeBase {
     for(size_t i = 0;i < thread_num;i++) {
       new (gc_metadata_p + i) PaddedGCMetadata{};
     }
-// #ifdef BUGFIX
-//     clflush((char*)gc_metadata_p, sizeof(PaddedGCMetadata)*thread_num, false, true);
-// #endif    
+#ifdef BUGFIX
+    clflush((char*)gc_metadata_p, sizeof(PaddedGCMetadata)*thread_num, false, true);
+#endif    
     return; 
   } 
   
@@ -581,9 +581,9 @@ class BwTreeBase {
    */
   inline void IncreaseEpoch() {
     epoch++;
-    #ifdef BUGFIX
-    clflush((char*)&epoch, sizeof(uint64_t), false, false);
-    #endif    
+    // #ifdef BUGFIX
+    // clflush((char*)&epoch, sizeof(uint64_t), false, false);
+    // #endif    
     return;
   }
   
@@ -610,7 +610,7 @@ class BwTreeBase {
   inline void UnregisterThread(int thread_id) {
     GetGCMetaData(thread_id)->last_active_epoch = static_cast<uint64_t>(-1);
   #ifdef BUGFIX
-    clflush((char*)&GetGCMetaData(thread_id)->last_active_epoch, sizeof(uint64_t), false, true);
+    // clflush((char*)&GetGCMetaData(thread_id)->last_active_epoch, sizeof(uint64_t), false, true);
   #endif
   }
   
@@ -2088,9 +2088,9 @@ class BwTree : public BwTreeBase {
       // a chunk that has already been installed here
       bool ret = next.compare_exchange_strong(expected, new_meta_base);
       if(ret == true) {
-        #ifdef BUGFIX
-        clflush((char*)&next, sizeof(next), false, false);
-        #endif
+        // #ifdef BUGFIX
+        // clflush((char*)&next, sizeof(next), false, false);
+        // #endif
         return new_meta_base; 
       }
       
@@ -9869,23 +9869,23 @@ try_join_again:
       new GarbageNode{GetGlobalEpoch(), (void *)(node_p)};
     assert(garbage_node_p != nullptr);
 #ifdef BUGFIX
-    clflush((char*)garbage_node_p, sizeof(GarbageNode), false, true);
+    // clflush((char*)garbage_node_p, sizeof(GarbageNode), false, true);
 #endif
     // Link this new node to the end of the linked list
     // and then update last_p
     GetCurrentGCMetaData()->last_p->next_p = garbage_node_p;
 #ifdef BUGFIX
-    clflush((char*)GetCurrentGCMetaData()->last_p->next_p, sizeof(GarbageNode*), false, true);
+    // clflush((char*)GetCurrentGCMetaData()->last_p->next_p, sizeof(GarbageNode*), false, true);
 #endif
     GetCurrentGCMetaData()->last_p = garbage_node_p;
 #ifdef BUGFIX
-    clflush((char*)GetCurrentGCMetaData()->last_p, sizeof(GarbageNode*), false, true);
+    // clflush((char*)GetCurrentGCMetaData()->last_p, sizeof(GarbageNode*), false, true);
 #endif
     
     // Update the counter 
     GetCurrentGCMetaData()->node_count++;
 #ifdef BUGFIX
-    clflush((char*)&GetCurrentGCMetaData()->node_count, sizeof(uint64_t), false, true);
+    // clflush((char*)&GetCurrentGCMetaData()->node_count, sizeof(uint64_t), false, true);
 #endif
     // It is possible that we could not free enough number of nodes to
     // make it less than this threshold
@@ -9938,7 +9938,7 @@ try_join_again:
       assert(GetGCMetaData(thread_id)->node_count != 0UL);
       GetGCMetaData(thread_id)->node_count--;
  #ifdef BUGFIX
-      clflush((char*)&GetGCMetaData(thread_id)->node_count, sizeof(uint64_t), false, true);
+      // clflush((char*)&GetGCMetaData(thread_id)->node_count, sizeof(uint64_t), false, true);
  #endif     
       first_p = header_p->next_p;
     }
