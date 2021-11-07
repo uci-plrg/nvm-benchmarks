@@ -64,9 +64,9 @@ inline void DeletionList::add(void *n, uint64_t globalEpoch) {
     }
     label->nodes[label->nodesCount] = n;
     label->nodesCount++;
-// #ifdef BUGFIX
-    // PMCHECK::clflush((char*)&label->nodesCount, sizeof(label->nodesCount), false, false);//b6
-// #endif
+#ifdef VERIFYFIX
+    PMCHECK::clflush((char*)&label->nodesCount, sizeof(label->nodesCount), false, false);//b6
+#endif
     label->epoche = globalEpoch;
 
     added++;
