@@ -148,9 +148,9 @@ void run(char **argv) {
             }
 
             for (uint64_t i = index; i < end_key; i++) {
-                tree->Insert(keys[i], keys[i]);
                 counters[thread_id]++;
                 PMCHECK::clflush((char*)&counters[thread_id], sizeof(counters[thread_id]), false, true);
+                tree->Insert(keys[i], keys[i]);
             }
             tree->UnregisterThread(thread_id);
         };

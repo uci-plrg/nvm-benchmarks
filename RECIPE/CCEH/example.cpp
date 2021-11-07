@@ -80,9 +80,9 @@ void run(char **argv) {
             // Now resuming adding keys to the tree.
             for (uint64_t i = index; i < end_key; i++) {
                 assert(tds[thread_id].hashtable != NULL);
-                tds[thread_id].hashtable->Insert( keys[i], reinterpret_cast<const char*>( keys[i]));
                 counters[thread_id]++;
                 clflush((char*)&counters[thread_id], sizeof(counters[thread_id]), false, true);
+                tds[thread_id].hashtable->Insert( keys[i], reinterpret_cast<const char*>( keys[i]));
             }
         };
 

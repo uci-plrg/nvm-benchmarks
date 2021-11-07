@@ -70,9 +70,9 @@ void run(char **argv) {
             }
 
             for (uint64_t i = index; i < end_key; i++) {
-                tds[thread_id].fair->btree_insert( keys[i], (char *) keys[i]);
                 counters[thread_id]++;
                 fastfair::clflush((char*)&counters[thread_id], sizeof(counters[thread_id]), false, true);
+                tds[thread_id].fair->btree_insert( keys[i], (char *) keys[i]);
             }
         };
 

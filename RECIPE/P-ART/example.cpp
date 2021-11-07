@@ -105,9 +105,9 @@ void run(char **argv) {
 
             
             for (uint64_t i = index; i < end_key; i++) {
-                tree->insert(Keys[i], t);
                 counters[thread_id]++;
                 PMCHECK::clflush((char*)&counters[thread_id], sizeof(counters[thread_id]), false, true);
+                tree->insert(Keys[i], t);
             }
         };
         std::vector<std::thread> thread_group;
