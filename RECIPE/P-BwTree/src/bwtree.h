@@ -2087,10 +2087,10 @@ class BwTree : public BwTreeBase {
       // Always CAS with nullptr such that we will never install/replace
       // a chunk that has already been installed here
       bool ret = next.compare_exchange_strong(expected, new_meta_base);
+#ifdef VERIFYFIX
+      clflush((char*)&next, sizeof(next), false, true);
+#endif
       if(ret == true) {
-        // #ifdef BUGFIX
-        // clflush((char*)&next, sizeof(next), false, false);
-        // #endif
         return new_meta_base; 
       }
       
