@@ -601,6 +601,9 @@ class page{
                 else {
                     int i = *num_entries - 1, inserted = 0, to_flush_cnt = 0;
                     records[*num_entries+1].ptr = records[*num_entries].ptr;
+#ifdef VERIFYFIX
+                    clflush((char*)&(records[*num_entries+1].ptr), sizeof(char*));
+#endif
                     if(flush) {
                         if((uint64_t)&(records[*num_entries+1].ptr) % CACHE_LINE_SIZE == 0)
                             clflush((char*)&(records[*num_entries+1].ptr), sizeof(char*));
