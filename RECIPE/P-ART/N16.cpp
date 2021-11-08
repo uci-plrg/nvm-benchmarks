@@ -17,6 +17,9 @@ namespace ART_ROWEX {
         if (flush) clflush((char *)&children[compactCount], sizeof(N *), false, true);
         compactCount++;
         count++;
+#ifdef VERIFYFIX
+        clflush((char *)&count, sizeof(count), false, true);
+#endif
         // this clflush will atomically flush the cache line including counters and entire key entries
         if (flush) clflush((char *)this, sizeof(uintptr_t), true, true);
         return true;
